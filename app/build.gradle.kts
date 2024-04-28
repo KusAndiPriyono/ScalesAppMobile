@@ -72,6 +72,9 @@ dependencies {
     //Splash API
     implementation(libs.androidx.core.splashscreen)
 
+    //DataStore
+    implementation(libs.androidx.datastore.preferences)
+
     //Dagger Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
