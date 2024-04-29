@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.googleDevToolsKSP)
     alias(libs.plugins.googleDaggerHiltAndroid)
+    alias(libs.plugins.parcelize)
 }
 
 android {
@@ -72,10 +73,26 @@ dependencies {
     //Splash API
     implementation(libs.androidx.core.splashscreen)
 
+    //Google Fonts
+    implementation(libs.androidx.ui.text.google.fonts)
+
     //DataStore
     implementation(libs.androidx.datastore.preferences)
 
     //Dagger Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    //Compose Navigation
+    implementation(libs.androidx.navigation.compose)
+
+    //Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+
+    //Paging 3
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
 }
