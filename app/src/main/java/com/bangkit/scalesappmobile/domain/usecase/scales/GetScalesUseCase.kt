@@ -6,7 +6,7 @@ import com.bangkit.scalesappmobile.domain.repository.ScalesRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetScales @Inject constructor(
+class GetScalesUseCase @Inject constructor(
     private val scalesRepository: ScalesRepository
 ) {
     operator fun invoke(): Flow<PagingData<Scales>> {

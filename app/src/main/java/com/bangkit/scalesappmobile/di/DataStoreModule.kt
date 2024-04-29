@@ -2,6 +2,8 @@ package com.bangkit.scalesappmobile.di
 
 import android.content.Context
 import com.bangkit.scalesappmobile.data.repository.DataStoreRepositoryImpl
+import com.bangkit.scalesappmobile.domain.repository.DataStoreRepository
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,9 +13,8 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataStoreModule {
-    @Provides
+abstract class DataStoreModule {
+    @Binds
     @Singleton
-    fun provideDataStoreRepository(@ApplicationContext context: Context) =
-        DataStoreRepositoryImpl(context)
+    abstract fun bindDataStoreRepository(dataStoreRepositoryImpl: DataStoreRepositoryImpl): DataStoreRepository
 }

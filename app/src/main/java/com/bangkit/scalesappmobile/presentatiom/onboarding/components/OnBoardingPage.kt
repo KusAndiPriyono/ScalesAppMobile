@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,17 +23,18 @@ import com.bangkit.scalesappmobile.ui.theme.fontFamily
 
 @Composable
 fun OnBoardingPage(
-    modifier: Modifier = Modifier, page: Page
+    modifier: Modifier = Modifier, page: Page,
 ) {
     Column(modifier = modifier) {
         Image(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(fraction = 0.75f),
+                .height(500.dp),
             painter = painterResource(id = page.image),
             contentDescription = null,
+            contentScale = ContentScale.FillWidth
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = page.title,
             modifier = Modifier.padding(horizontal = 30.dp),
@@ -40,7 +42,7 @@ fun OnBoardingPage(
             fontFamily = fontFamily,
             color = MaterialTheme.colorScheme.scrim
         )
-        Spacer(modifier = Modifier.height(5.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = page.description,
             modifier = Modifier.padding(horizontal = 30.dp),
