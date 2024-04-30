@@ -5,5 +5,6 @@ import com.bangkit.scalesappmobile.domain.model.Scales
 import kotlinx.coroutines.flow.Flow
 
 interface ScalesRepository {
-    fun getScales(): Flow<PagingData<Scales>>
+
+    fun getScales(brand: List<String>): Flow<PagingData<Scales>>
 }

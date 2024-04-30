@@ -1,4 +1,4 @@
-package com.bangkit.scalesappmobile.data.util
+package com.bangkit.scalesappmobile.util
 
 object Constants {
     const val SCALES_DATA_STORE = "scalesDataStore"

@@ -98,4 +98,10 @@ dependencies {
     //Paging 3
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.paging.compose)
+
+    //SwipeRefresh
+    implementation(libs.accompanist.swiperefresh)
+
+    //Lottie
+    implementation(libs.lottie.compose)
 }

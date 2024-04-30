@@ -13,12 +13,16 @@ import javax.inject.Inject
 class ScalesRepositoryImpl @Inject constructor(
     private val scalesApiService: ScalesApiService
 ) : ScalesRepository {
-    override fun getScales(): Flow<PagingData<Scales>> {
+    override fun getScales(brand: List<String>): Flow<PagingData<Scales>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
             pagingSourceFactory = {
-                ScalesPagingSource(scalesApiService)
+                ScalesPagingSource(
+                    scalesApiService = scalesApiService,
+                    brand = brand.joinToString(separator = ",").replace(" ", "")
+                )
             }
         ).flow
     }
+
 }

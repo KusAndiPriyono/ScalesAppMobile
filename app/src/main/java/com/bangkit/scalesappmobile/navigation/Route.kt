@@ -9,4 +9,6 @@ sealed class Route(
     object HomeScreen : Route(route = "homeScreen")
     object AppStartNavigation : Route(route = "appStartNavigation")
     object ScalesNavigation : Route(route = "scalesNavigation")
+
+    object ScalesNavigatorScreen : Route(route = "scalesNavigator")
 }

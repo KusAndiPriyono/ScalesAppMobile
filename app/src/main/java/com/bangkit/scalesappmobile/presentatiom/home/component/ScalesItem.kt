@@ -2,28 +2,23 @@ package com.bangkit.scalesappmobile.presentatiom.home.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,85 +29,75 @@ import com.bangkit.scalesappmobile.domain.model.Scales
 
 @Composable
 fun ScalesItem(
-    scales: Scales,
-    onClick: (String) -> Unit,
-    addToFavorites: (scales: Scales) -> Unit,
-    removeFromFavorites: (scalesId: String) -> Unit,
-    isFavorite: (scalesId: String) -> Boolean,
+    modifier: Modifier = Modifier, scales: Scales, onClick: (() -> Unit)? = null
 ) {
-    val context = LocalContext.current
-    val favorite = isFavorite(scales.id)
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(vertical = 5.dp)
-            .clickable { onClick(scales.id) },
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
+    val context = LocalContext.current
+    Row(
+        modifier = modifier.clickable { onClick?.invoke() },
+
         ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp),
-                contentDescription = scales.name,
-                painter = rememberAsyncImagePainter(
-                    ImageRequest.Builder(context)
-                        .data(data = scales.imageCover)
-                        .apply(
-                            block = fun ImageRequest.Builder.() {
-                                placeholder(R.drawable.logo)
-                            }
-                        ).build()
-                ),
-                contentScale = ContentScale.Crop
+//        AsyncImage(
+//            modifier = Modifier
+//                .size(150.dp)
+//                .clip(MaterialTheme.shapes.medium),
+//            model = ImageRequest.Builder(context).data(scales.imageCover).crossfade(true).build(),
+//            contentDescription = null,
+////            contentScale = ContentScale.Crop
+//        )
+        Image(
+            modifier = Modifier
+                .size(150.dp)
+                .clip(MaterialTheme.shapes.medium),
+            contentDescription = scales.name,
+            painter = rememberAsyncImagePainter(
+                ImageRequest.Builder(context).data(scales.imageCover)
+                    .apply(block = fun ImageRequest.Builder.() {
+                        placeholder(R.drawable.logo)
+                    }).build()
             )
+        )
+        Column(
+//            verticalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier
+                .padding(horizontal = 3.dp)
+                .height(150.dp)
+        ) {
+            Text(
+                text = scales.equipmentDescription,
+                style = MaterialTheme.typography.bodyMedium.copy(),
+                color = MaterialTheme.colorScheme.onSurface,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(3.dp))
+            Text(
+                text = scales.brand,
+                style = MaterialTheme.typography.bodyMedium.copy(),
+                color = MaterialTheme.colorScheme.onSurface,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(3.dp))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth(0.75f)
-                        .padding(vertical = 3.dp),
-                    text = scales.name,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    text = scales.location,
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-                IconButton(
-                    onClick = {
-                        if (favorite) {
-                            removeFromFavorites(scales.id)
-                        } else {
-                            addToFavorites(scales)
-                        }
-                    }
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .size(30.dp),
-                        painter = if (favorite) {
-                            painterResource(id = R.drawable.filled_favorite)
-                        } else {
-                            painterResource(id = R.drawable.heart_plus)
-                        },
-                        contentDescription = null,
-                        tint = if (favorite) {
-                            Color(0xFFfa4a0c)
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        }
-                    )
-                }
+                Spacer(modifier = Modifier.width(6.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_time),
+                    contentDescription = null,
+                    modifier = Modifier.size(11.dp),
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = scales.nextCalibrationDate,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             }
         }
     }
@@ -123,13 +108,27 @@ fun ScalesItem(
 fun ScalesItemPreview() {
     ScalesItem(
         scales = Scales(
-            id = "1",
-            name = "Scales 1",
-            imageCover = "https://www.google.com",
-        ),
-        onClick = {},
-        addToFavorites = {},
-        removeFromFavorites = {},
-        isFavorite = { false }
+            brand = "brand",
+            calibrationDate = "calibrationDate",
+            calibrationPeriod = 1,
+            calibrationPeriodInYears = 1,
+            equipmentDescription = "equipmentDescription",
+            id = "id",
+            imageCover = "imageCover",
+            kindType = "kindType",
+            location = "location",
+            measuringEquipmentIdNumber = "measuringEquipmentIdNumber",
+            name = "name",
+            nextCalibrationDate = "nextCalibrationDate",
+            parentMachineOfEquipment = "parentMachineOfEquipment",
+            rangeCapacity = 1,
+            ratingsAverage = 1,
+            ratingsQuantity = 1,
+            serialNumber = "serialNumber",
+            slug = "slug",
+            status = "status",
+            unit = "unit",
+            v = 1
+        )
     )
 }

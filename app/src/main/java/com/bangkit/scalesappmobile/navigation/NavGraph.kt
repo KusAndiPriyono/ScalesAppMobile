@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.bangkit.scalesappmobile.presentatiom.onboarding.OnBoardingScreen
 import com.bangkit.scalesappmobile.presentatiom.onboarding.OnBoardingViewModel
+import com.bangkit.scalesappmobile.presentatiom.scales_navigator.ScalesNavigator
 
 @Composable
 fun NavGraph(
@@ -29,14 +30,15 @@ fun NavGraph(
                 )
             }
         }
-//        navigation(
-//            route = Route.LoginScreen.route,
-//            startDestination = Route.LoginScreen.route
-//        ) {
-//            composable(
-//                route = Route.LoginScreen.route
-//            ) {
-//            }
-//        }
+        navigation(
+            route = Route.ScalesNavigation.route,
+            startDestination = Route.ScalesNavigatorScreen.route
+        ) {
+            composable(
+                route = Route.ScalesNavigatorScreen.route
+            ) {
+                ScalesNavigator()
+            }
+        }
     }
 }

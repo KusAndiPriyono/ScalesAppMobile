@@ -1,7 +1,6 @@
 package com.bangkit.scalesappmobile.domain.model
 
 
-import com.bangkit.scalesappmobile.domain.model.User
 import com.google.gson.annotations.SerializedName
 
 data class Form(
