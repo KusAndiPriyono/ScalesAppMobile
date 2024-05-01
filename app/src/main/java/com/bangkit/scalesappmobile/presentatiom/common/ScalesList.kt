@@ -39,7 +39,7 @@ fun ScalesList(
 }
 
 @Composable
-fun ArticlesList(
+fun ScalesList(
     modifier: Modifier = Modifier,
     scales: LazyPagingItems<Scales>,
     onClick: (Scales) -> Unit

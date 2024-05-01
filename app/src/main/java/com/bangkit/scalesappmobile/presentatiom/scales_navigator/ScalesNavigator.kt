@@ -18,7 +18,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bangkit.scalesappmobile.R
+import com.bangkit.scalesappmobile.domain.model.Scales
 import com.bangkit.scalesappmobile.navigation.Route
+import com.bangkit.scalesappmobile.presentatiom.details.DetailsScreen
 import com.bangkit.scalesappmobile.presentatiom.home.HomeScreen
 import com.bangkit.scalesappmobile.presentatiom.home.HomeViewModel
 import com.bangkit.scalesappmobile.presentatiom.scales_navigator.component.BottomNavigation
@@ -49,9 +51,7 @@ fun ScalesNavigator() {
 
     //Hide the bottom navigation when the user is in the details screen
     val isBottomBarVisible = remember(key1 = backStackState) {
-        backStackState?.destination?.route == Route.HomeScreen.route ||
-                backStackState?.destination?.route == "" ||
-                backStackState?.destination?.route == ""
+        backStackState?.destination?.route == Route.HomeScreen.route || backStackState?.destination?.route == "" || backStackState?.destination?.route == ""
     }
 
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
@@ -62,8 +62,7 @@ fun ScalesNavigator() {
                 onItemClick = { index ->
                     when (index) {
                         0 -> navigateToTab(
-                            navController = navController,
-                            route = Route.HomeScreen.route
+                            navController = navController, route = Route.HomeScreen.route
                         )
 
 //                        1 -> navigateToTab(
@@ -76,8 +75,7 @@ fun ScalesNavigator() {
 //                            route = Route.BookmarkScreen.route
 //                        )
                     }
-                }
-            )
+                })
         }
     }) {
         val bottomPadding = it.calculateBottomPadding()
@@ -89,23 +87,21 @@ fun ScalesNavigator() {
             composable(route = Route.HomeScreen.route) { backStackEntry ->
                 val viewModel: HomeViewModel = hiltViewModel()
                 val scales = viewModel.scales.collectAsLazyPagingItems()
-                HomeScreen(
-                    scales = scales,
-                    navigateToSearch = {
+                HomeScreen(scales = scales, navigateToSearch = {
 //                        navigateToTab(
 //                            navController = navController,
 //                            route = Route.SearchScreen.route
 //                        )
-                    },
-                    navigateToDetails = { article ->
-//                        navigateToDetails(
-//                            navController = navController,
-//                            article = article
-//                        )
-                    },
-                    event = viewModel::onEvent,
-                    state = viewModel.state.value
+                }, navigateToDetails = { scales ->
+                    navigateToDetails(
+                        navController = navController, scales = scales
+                    )
+                }, event = viewModel::onEvent, state = viewModel.state.value
                 )
+            }
+
+            composable(route = Route.DetailsScreen.route) {
+                DetailsScreen()
             }
         }
     }
@@ -121,4 +117,11 @@ private fun navigateToTab(navController: NavController, route: String) {
         launchSingleTop = true
         restoreState = true
     }
+}
+
+private fun navigateToDetails(navController: NavController, scales: Scales) {
+    navController.currentBackStackEntry?.savedStateHandle?.set("scales", scales)
+    navController.navigate(
+        route = Route.DetailsScreen.route
+    )
 }

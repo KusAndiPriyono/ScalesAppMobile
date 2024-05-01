@@ -2,12 +2,10 @@ package com.bangkit.scalesappmobile.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.bangkit.scalesappmobile.data.remote.scales.ScalesApiService
 import com.bangkit.scalesappmobile.domain.model.Scales
 
 class ScalesPagingSource(
-    private val scalesApiService: ScalesApiService,
-    private val brand: String
+    private val scalesApiService: ScalesApiService
 ) : PagingSource<Int, Scales>() {
     override fun getRefreshKey(state: PagingState<Int, Scales>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -21,7 +19,7 @@ class ScalesPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Scales> {
         val page = params.key ?: 1
         return try {
-            val scalesResponse = scalesApiService.getAllScales(brand = brand, page = page)
+            val scalesResponse = scalesApiService.getAllScales(page = page)
             totalScalesCount += scalesResponse.data.size
             val data = scalesResponse.data.distinctBy { it.id }
 

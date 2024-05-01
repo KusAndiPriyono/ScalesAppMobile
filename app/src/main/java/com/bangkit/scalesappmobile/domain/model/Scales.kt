@@ -35,7 +35,7 @@ data class Scales(
     @SerializedName("rangeCapacity")
     val rangeCapacity: Int,
     @SerializedName("ratingsAverage")
-    val ratingsAverage: Int,
+    val ratingsAverage: Double,
     @SerializedName("ratingsQuantity")
     val ratingsQuantity: Int,
     @SerializedName("serialNumber")
