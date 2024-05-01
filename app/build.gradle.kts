@@ -107,4 +107,8 @@ dependencies {
 
     //Timber
     implementation(libs.timber)
+
+    //Chucker
+    debugImplementation(libs.library)
+    releaseImplementation(libs.library.no.op)
 }

@@ -2,7 +2,7 @@ package com.bangkit.scalesappmobile.data.remote
 
 import com.bangkit.scalesappmobile.data.remote.scales.GetAllScalesResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesDetailResponse
-import com.bangkit.scalesappmobile.domain.model.AuthResponse
+import com.bangkit.scalesappmobile.data.remote.scales.AuthResponse
 import com.bangkit.scalesappmobile.domain.model.LoginRequest
 import com.bangkit.scalesappmobile.domain.model.RefreshTokenRequest
 import com.bangkit.scalesappmobile.domain.model.RegisterRequest

@@ -1,6 +1,7 @@
-package com.bangkit.scalesappmobile.domain.model
+package com.bangkit.scalesappmobile.data.remote.scales
 
 
+import com.bangkit.scalesappmobile.domain.model.Scales
 import com.google.gson.annotations.SerializedName
 
 data class CreateResponse(

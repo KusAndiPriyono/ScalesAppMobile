@@ -1,6 +1,6 @@
 package com.bangkit.scalesappmobile.domain.repository
 
-import com.bangkit.scalesappmobile.domain.model.AuthResponse
+import com.bangkit.scalesappmobile.data.remote.scales.AuthResponse
 import com.bangkit.scalesappmobile.util.Resource
 
 interface AuthRepository {

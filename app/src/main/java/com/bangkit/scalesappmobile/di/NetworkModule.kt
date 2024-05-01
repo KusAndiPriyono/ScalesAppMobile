@@ -1,15 +1,22 @@
 package com.bangkit.scalesappmobile.di
 
+import android.content.Context
+import com.bangkit.scalesappmobile.data.remote.AuthInterceptor
 import com.bangkit.scalesappmobile.data.remote.ScalesApiService
-import com.bangkit.scalesappmobile.util.Constants.BASE_URL
+import com.bangkit.scalesappmobile.domain.repository.DataStoreRepository
+import com.bangkit.scalesappmobile.util.Constants
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -17,26 +24,85 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .connectTimeout(150, TimeUnit.SECONDS)
-            .readTimeout(150, TimeUnit.SECONDS)
+    @Provides
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    }
+
+    @Singleton
+    @Provides
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        return ChuckerInterceptor.Builder(context)
+            .collector(ChuckerCollector(context))
+            .redactHeaders(emptySet())
+            .alwaysReadResponseBody(false)
             .build()
     }
 
     @Provides
     @Singleton
-    fun provideRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(client)
-        .build()
+    fun provideAuthInterceptor(
+        dataStoreRepository: DataStoreRepository
+    ): AuthInterceptor {
+        return AuthInterceptor(dataStoreRepository)
+    }
 
     @Provides
     @Singleton
-    fun provideScalesApiService(retrofit: Retrofit): ScalesApiService =
-        retrofit.create(ScalesApiService::class.java)
+    fun provideOkHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        chuckerInterceptor: ChuckerInterceptor,
+        authInterceptor: AuthInterceptor
+    ): OkHttpClient {
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
+            .addInterceptor(chuckerInterceptor)
+            .callTimeout(15, TimeUnit.SECONDS)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+
+        return okHttpClient.build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideScalesDbApi(retrofit: Retrofit): ScalesApiService {
+        return retrofit.create()
+    }
+
+//    @Provides
+//    @Singleton
+//    fun provideOkHttpClient(): OkHttpClient {
+//        return OkHttpClient.Builder()
+//            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+//            .connectTimeout(150, TimeUnit.SECONDS)
+//            .readTimeout(150, TimeUnit.SECONDS)
+//            .build()
+//    }
+//
+//    @Provides
+//    @Singleton
+//    fun provideRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
+//        .baseUrl(BASE_URL)
+//        .addConverterFactory(GsonConverterFactory.create())
+//        .client(client)
+//        .build()
+//
+//    @Provides
+//    @Singleton
+//    fun provideScalesApiService(retrofit: Retrofit): ScalesApiService =
+//        retrofit.create(ScalesApiService::class.java)
 }

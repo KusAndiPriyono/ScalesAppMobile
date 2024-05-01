@@ -1,7 +1,7 @@
 package com.bangkit.scalesappmobile.data.repository
 
 import com.bangkit.scalesappmobile.data.remote.ScalesApiService
-import com.bangkit.scalesappmobile.domain.model.AuthResponse
+import com.bangkit.scalesappmobile.data.remote.scales.AuthResponse
 import com.bangkit.scalesappmobile.domain.model.LoginRequest
 import com.bangkit.scalesappmobile.domain.model.RegisterRequest
 import com.bangkit.scalesappmobile.domain.repository.AuthRepository
