@@ -104,4 +104,7 @@ dependencies {
 
     //Lottie
     implementation(libs.lottie.compose)
+
+    //Timber
+    implementation(libs.timber)
 }

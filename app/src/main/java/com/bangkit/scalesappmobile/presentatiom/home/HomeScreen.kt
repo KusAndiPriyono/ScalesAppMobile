@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.paging.compose.LazyPagingItems
 import com.bangkit.scalesappmobile.R
 import com.bangkit.scalesappmobile.domain.model.Scales
-import com.bangkit.scalesappmobile.presentatiom.common.ArticlesList
+import com.bangkit.scalesappmobile.presentatiom.common.ScalesList
 import kotlinx.coroutines.delay
 
 @Composable
@@ -119,7 +119,7 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        ArticlesList(
+        ScalesList(
             modifier = Modifier.padding(horizontal = 24.dp),
             scales = scales,
             onClick = navigateToDetails

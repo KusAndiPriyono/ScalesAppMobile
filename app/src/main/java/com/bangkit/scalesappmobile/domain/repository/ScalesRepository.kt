@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ScalesRepository {
 
-    fun getScales(brand: List<String>): Flow<PagingData<Scales>>
+    fun getScales(): Flow<PagingData<Scales>>
 }

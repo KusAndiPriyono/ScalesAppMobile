@@ -4,19 +4,19 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bangkit.scalesappmobile.domain.repository.DataStoreRepository
+import com.bangkit.scalesappmobile.domain.usecase.onboarding.GetIfUserIsLoggedInUseCase
 import com.bangkit.scalesappmobile.domain.usecase.onboarding.GetOnBoarding
 import com.bangkit.scalesappmobile.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getOnBoarding: GetOnBoarding,
+    private val getIfUserIsLoggedInUseCase: GetIfUserIsLoggedInUseCase
 ) : ViewModel() {
 
     private val _splashCondition = mutableStateOf(true)

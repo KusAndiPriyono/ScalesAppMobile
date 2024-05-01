@@ -9,7 +9,7 @@ import javax.inject.Inject
 class GetScalesUseCase @Inject constructor(
     private val scalesRepository: ScalesRepository
 ) {
-    operator fun invoke(brand: List<String>): Flow<PagingData<Scales>> {
-        return scalesRepository.getScales(brand = brand)
+    operator fun invoke(): Flow<PagingData<Scales>> {
+        return scalesRepository.getScales()
     }
 }

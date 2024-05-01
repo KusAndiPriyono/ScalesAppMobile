@@ -1,6 +1,6 @@
 package com.bangkit.scalesappmobile.di
 
-import com.bangkit.scalesappmobile.data.remote.scales.ScalesApiService
+import com.bangkit.scalesappmobile.data.remote.ScalesApiService
 import com.bangkit.scalesappmobile.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides

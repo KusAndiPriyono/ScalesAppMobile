@@ -1,7 +1,13 @@
-package com.bangkit.scalesappmobile.data.remote.scales
+package com.bangkit.scalesappmobile.data.remote
 
-import com.bangkit.scalesappmobile.data.remote.ErrorMessageResponse
+import com.bangkit.scalesappmobile.data.remote.scales.GetAllScalesResponse
+import com.bangkit.scalesappmobile.data.remote.scales.GetScalesDetailResponse
+import com.bangkit.scalesappmobile.domain.model.AuthResponse
+import com.bangkit.scalesappmobile.domain.model.LoginRequest
+import com.bangkit.scalesappmobile.domain.model.RefreshTokenRequest
+import com.bangkit.scalesappmobile.domain.model.RegisterRequest
 import okhttp3.RequestBody
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.FieldMap
 import retrofit2.http.GET
@@ -17,7 +23,6 @@ interface ScalesApiService {
 
     @GET("api/v1/scales")
     suspend fun getAllScales(
-        @Query("brand") brand: String,
         @Query("page") page: Int
     ): GetAllScalesResponse
 
@@ -31,18 +36,36 @@ interface ScalesApiService {
     suspend fun createNewScales(
         @Header("Authorization") token: String,
         @Part body: RequestBody
-    ): ErrorMessageResponse
+    )
 
     @PATCH("api/v1/scales/{id}")
     suspend fun updateScales(
         @Header("Authorization") token: String,
         @Path("id") id: String,
         @FieldMap body: Map<String, Any>
-    ): ErrorMessageResponse
+    )
 
     @DELETE("api/v1/scales/{id}")
     suspend fun deleteScales(
         @Header("Authorization") token: String,
         @Path("id") id: String
-    ): ErrorMessageResponse
+    )
+
+    @POST("api/v1/users/login")
+    suspend fun refreshToken(
+        @Body refreshTokenRequest: RefreshTokenRequest
+    ): AuthResponse?
+
+    @POST("api/v1/users/login")
+    suspend fun loginUser(
+        @Body loginRequest: LoginRequest
+    ): AuthResponse
+
+    @POST("api/v1/users/signup")
+    suspend fun registerUser(
+        @Body registerRequest: RegisterRequest
+    ): AuthResponse
+
+    @POST("api/v1/users/forgotPassword")
+    suspend fun forgotPassword(email: String)
 }
