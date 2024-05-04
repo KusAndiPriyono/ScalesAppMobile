@@ -57,8 +57,8 @@ fun HomeScreen(
         userRole = "admin",
         snackbarHostState = snackbarHostState,
         event = event,
-        navigateToDetails = { scales ->
-            navigator.openScalesDetails(id = scales.id)
+        navigateToDetails = { id ->
+            navigator.openScalesDetails(id = id.id)
         },
         onClickSearch = { /*TODO*/ }) {
     }

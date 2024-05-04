@@ -2,6 +2,7 @@ package com.bangkit.scalesappmobile.presentatiom.home.component
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,7 +18,7 @@ fun StandardToolbar(
     navigate: () -> Unit = {},
     showBackArrow: Boolean = false,
     navActions: @Composable RowScope.() -> Unit = {},
-    title: @Composable () -> Unit = {}
+    title: @Composable () -> Unit = {},
 ) {
     TopAppBar(
         title = title,
@@ -29,7 +30,7 @@ fun StandardToolbar(
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = null
                     )
                 }

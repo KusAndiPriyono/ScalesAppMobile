@@ -31,6 +31,7 @@ object NavGraphs {
         override val startRoute = LandingPageScreenDestination routedIn this
 
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
+            HomeScreenDestination,
             LandingPageScreenDestination,
             LoginScreenDestination,
             SignInScreenDestination,
