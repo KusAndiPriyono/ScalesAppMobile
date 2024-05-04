@@ -18,12 +18,15 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.bangkit.scalesappmobile.navigation.BottomNavItem
 import com.bangkit.scalesappmobile.navigation.CoreFeatureNavigator
 import com.bangkit.scalesappmobile.navigation.NavGraphs
+import com.bangkit.scalesappmobile.navigation.StandardScaffold
 import com.bangkit.scalesappmobile.navigation.scaleInEnterTransition
 import com.bangkit.scalesappmobile.navigation.scaleInPopEnterTransition
 import com.bangkit.scalesappmobile.navigation.scaleOutExitTransition
 import com.bangkit.scalesappmobile.navigation.scaleOutPopExitTransition
+import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
 import com.bangkit.scalesappmobile.ui.theme.ScalesAppMobileTheme
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -56,12 +59,27 @@ class MainActivity : ComponentActivity() {
                     val newBackStackEntry = navController.currentBackStackEntryAsState()
                     val route = newBackStackEntry.value?.destination?.route
 
-                    Box(modifier = Modifier.padding()) {
-                        AppNavigation(
-                            navController = navController, isLoggedIn = isLoggedIn,
-                            modifier = Modifier
-                                .fillMaxSize(),
+                    val bottomBarItems = listOf(
+                        BottomNavItem.Home,
+                        BottomNavItem.Settings
+                    )
+
+                    StandardScaffold(
+                        navController = navController,
+                        isLoggedIn = isLoggedIn,
+                        items = bottomBarItems,
+                        showBottomBar = route in listOf(
+                            "home/${HomeScreenDestination.route}",
+                            "settings/${HomeScreenDestination.route}"
                         )
+                    ) { innerPadding ->
+                        Box(modifier = Modifier.padding(innerPadding)) {
+                            AppNavigation(
+                                navController = navController, isLoggedIn = isLoggedIn,
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                            )
+                        }
                     }
                 }
             }
@@ -76,7 +94,7 @@ class MainActivity : ComponentActivity() {
     internal fun AppNavigation(
         navController: NavHostController,
         modifier: Modifier = Modifier,
-        isLoggedIn: Boolean
+        isLoggedIn: Boolean,
     ) {
         val navHostEngine = rememberAnimatedNavHostEngine(
             navHostContentAlignment = Alignment.TopCenter,
@@ -111,6 +129,20 @@ class MainActivity : ComponentActivity() {
                     }
                 ),
                 NavGraphs.home to NestedNavGraphDefaultAnimations(
+                    enterTransition = {
+                        scaleInEnterTransition()
+                    },
+                    exitTransition = {
+                        scaleOutExitTransition()
+                    },
+                    popEnterTransition = {
+                        scaleInPopEnterTransition()
+                    },
+                    popExitTransition = {
+                        scaleOutPopExitTransition()
+                    }
+                ),
+                NavGraphs.settings to NestedNavGraphDefaultAnimations(
                     enterTransition = {
                         scaleInEnterTransition()
                     },

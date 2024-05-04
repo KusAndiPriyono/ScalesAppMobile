@@ -18,7 +18,7 @@ import com.bangkit.scalesappmobile.presentatiom.home.component.ScalesItem
 
 @Composable
 fun ScalesList(
-    modifier: Modifier = Modifier, scales: List<Scales>, onClick: (Scales) -> Unit
+    modifier: Modifier = Modifier, scales: List<Scales>, onClick: (Scales) -> Unit,
 ) {
     if (scales.isEmpty()) {
 
@@ -32,7 +32,7 @@ fun ScalesList(
         items(
             count = scales.size,
         ) {
-            scales[it]?.let { scales ->
+            scales[it].let { scales ->
                 ScalesItem(scales = scales, onClick = { onClick(scales) })
             }
         }

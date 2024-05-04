@@ -16,6 +16,7 @@ class HomeViewModel @Inject constructor(
     private val getScalesUseCase: GetScalesUseCase,
 ) : ViewModel() {
 
+
     var state = mutableStateOf(HomeState())
         private set
 

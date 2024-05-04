@@ -22,7 +22,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val saveAccessTokenUseCase: SaveAccessTokenUseCase,
     private val saveUserIdUseCase: SaveUserIdUseCase,
-    private val loginUserUseCase: LoginUserUseCase
+    private val loginUserUseCase: LoginUserUseCase,
 ) : ViewModel() {
 
     private val _loginState = mutableStateOf(LoginState())
@@ -79,7 +79,7 @@ class LoginViewModel @Inject constructor(
                 is Resource.Success -> {
                     _loginState.value = loginState.value.copy(isLoading = false, data = result.data)
                     result.data?.token?.let { saveAccessTokenUseCase(it) }
-                    result.data?.user?.id?.let { saveUserIdUseCase(userId = it) }
+                    result.data?.user?.id?.let { saveUserIdUseCase(it) }
                     _eventFlow.emit(
                         UiEvents.NavigationEvent(route = "")
                     )

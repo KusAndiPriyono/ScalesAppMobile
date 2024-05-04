@@ -22,6 +22,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bangkit.scalesappmobile.R
 import com.bangkit.scalesappmobile.presentatiom.auth.AuthNavigator
+import com.bangkit.scalesappmobile.ui.theme.AngryColor
 import com.ramcosta.composedestinations.annotation.Destination
 
 @Destination
@@ -57,6 +59,7 @@ fun LandingPageScreen(
                     Alignment.BottomCenter
                 )
         ) {
+            val color: Color = AngryColor
             Button(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -65,7 +68,7 @@ fun LandingPageScreen(
                 },
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = color
                 )
             ) {
                 Row(
@@ -79,6 +82,7 @@ fun LandingPageScreen(
                     )
 
                     Text(
+                        modifier = Modifier.align(Alignment.CenterVertically),
                         text = "Daftar dengan Email",
                         style = TextStyle(
                             color = MaterialTheme.colorScheme.onPrimary,

@@ -6,6 +6,7 @@ import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestinati
 import com.bangkit.scalesappmobile.presentatiom.destinations.LandingPageScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LoginScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.OnBoardingScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
 import com.ramcosta.composedestinations.dynamic.routedIn
 import com.ramcosta.composedestinations.spec.DestinationSpec
@@ -44,7 +45,18 @@ object NavGraphs {
         override val startRoute = HomeScreenDestination routedIn this
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             HomeScreenDestination,
-            DetailsScreenDestination
+            DetailsScreenDestination,
+            LandingPageScreenDestination,
+            SettingsScreenDestination
+        ).routedIn(this).associateBy { it.route }
+    }
+
+    val settings = object : NavGraphSpec {
+        override val route = "settings"
+        override val startRoute = SettingsScreenDestination routedIn this
+        override val destinationsByRoute = listOf<DestinationSpec<*>>(
+            SettingsScreenDestination,
+            LandingPageScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 
@@ -55,7 +67,8 @@ object NavGraphs {
         override val nestedNavGraphs = listOf(
             appScales,
             auth,
-            home
+            home,
+            settings
         )
     }
 }

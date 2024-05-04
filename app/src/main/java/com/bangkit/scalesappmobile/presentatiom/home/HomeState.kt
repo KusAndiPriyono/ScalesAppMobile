@@ -6,5 +6,4 @@ data class HomeState(
     val isLoading: Boolean = false,
     val scrollValue: Int = 0,
     val maxScrollingValue: Int = 0,
-    val data: AuthResponse? = null,
 )

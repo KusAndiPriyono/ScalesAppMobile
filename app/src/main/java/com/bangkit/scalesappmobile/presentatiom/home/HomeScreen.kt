@@ -22,7 +22,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,25 +49,20 @@ fun HomeScreen(
     val state = viewModel.state.value
     val snackbarHostState = remember { SnackbarHostState() }
 
-
-    HomeScreenContent(
-        scales = scales,
+    HomeScreenContent(scales = scales,
         state = state,
-        userRole = "admin",
         snackbarHostState = snackbarHostState,
         event = event,
         navigateToDetails = { id ->
             navigator.openScalesDetails(id = id.id)
         },
-        onClickSearch = { /*TODO*/ }) {
-    }
+        onClickSearch = { /*TODO*/ }) {}
 }
 
 
 @Composable
 private fun HomeScreenContent(
     scales: LazyPagingItems<Scales>,
-    userRole: String,
     state: HomeState,
     snackbarHostState: SnackbarHostState,
     event: (HomeEvent) -> Unit,
@@ -76,59 +70,39 @@ private fun HomeScreenContent(
     onClickSearch: () -> Unit,
     onClickAddScales: () -> Unit,
 ) {
-    val visible = remember {
-        mutableStateOf(false)
-    }
 
-    if (userRole != state.data?.user?.role) {
-        visible.value = true
-    } else {
-        visible.value = false
-    }
-
-    Scaffold(
-        topBar = {
-            StandardToolbar(
-                navigate = {},
-                title = {
-                    SearchBox(
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .fillMaxWidth(),
-                        onClick = onClickSearch
-                    )
-                },
-                showBackArrow = false,
-                navActions = {}
+    Scaffold(topBar = {
+        StandardToolbar(navigate = {}, title = {
+            SearchBox(
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .fillMaxWidth(), onClick = onClickSearch
             )
-        },
+        }, showBackArrow = false, navActions = {})
+    },
         floatingActionButton = {
-            if (visible.value) {
-                FloatingActionButton(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    onClick = onClickAddScales
+            FloatingActionButton(
+                containerColor = MaterialTheme.colorScheme.primary, onClick = onClickAddScales
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
-                        AnimatedVisibility(visible = true) {
-                            Text(
-                                text = "Add Scales",
-                                style = MaterialTheme.typography.labelMedium,
-                                textAlign = TextAlign.Center
-                            )
-                        }
+                    Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
+                    AnimatedVisibility(visible = true) {
+                        Text(
+                            text = "Add Scales",
+                            style = MaterialTheme.typography.labelMedium,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
             }
-        },
-        snackbarHost = {
+
+        }, snackbarHost = {
             SnackbarHost(snackbarHostState)
-        }
-    ) { paddingValues ->
+        }) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -149,8 +123,7 @@ private fun HomeScreenContent(
                 delay(500)
                 if (state.maxScrollingValue > 0) {
                     scrollState.animateScrollTo(
-                        value = state.maxScrollingValue,
-                        animationSpec = infiniteRepeatable(
+                        value = state.maxScrollingValue, animationSpec = infiniteRepeatable(
                             tween(
                                 durationMillis = (state.maxScrollingValue - state.scrollValue) * 50_000 / state.maxScrollingValue,
                                 easing = LinearEasing,
