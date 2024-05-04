@@ -3,9 +3,11 @@ package com.bangkit.scalesappmobile.navigation
 import androidx.navigation.NavController
 import com.bangkit.scalesappmobile.presentatiom.auth.AuthNavigator
 import com.bangkit.scalesappmobile.presentatiom.destinations.DetailsScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.ForgotPasswordScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LandingPageScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LoginScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.home.HomeNavigator
 import com.bangkit.scalesappmobile.presentatiom.onboarding.AppNavigator
 import com.ramcosta.composedestinations.dynamic.within
@@ -21,11 +23,11 @@ class CoreFeatureNavigator(
     }
 
     override fun openForgotPassword() {
-        TODO("Not yet implemented")
+        navController.navigate(ForgotPasswordScreenDestination within NavGraphs.auth)
     }
 
     override fun openSignUp() {
-        TODO("Not yet implemented")
+        navController.navigate(SignInScreenDestination within NavGraphs.auth)
     }
 
     override fun openSignIn() {

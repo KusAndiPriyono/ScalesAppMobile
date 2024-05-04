@@ -79,7 +79,7 @@ fun LandingPageScreen(
                     )
 
                     Text(
-                        text = "Sign Up with Email",
+                        text = "Daftar dengan Email",
                         style = TextStyle(
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 14.sp
@@ -106,7 +106,7 @@ fun LandingPageScreen(
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
                         ) {
-                            append("Already have an account? ")
+                            append("Sudah memiliki akun? ")
                         }
 
                         withStyle(
@@ -116,7 +116,7 @@ fun LandingPageScreen(
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
                         ) {
-                            append("Sign In")
+                            append("Masuk")
                         }
                     }
                 )

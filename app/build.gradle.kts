@@ -43,7 +43,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.12"
+        kotlinCompilerExtensionVersion = "1.5.13"
     }
     packaging {
         resources {
@@ -80,6 +80,9 @@ dependencies {
 
     //Splash API
     implementation(libs.androidx.core.splashscreen)
+
+    //Material Icon
+    implementation(libs.androidx.material.icons.extended)
 
     //Google Fonts
     implementation(libs.androidx.ui.text.google.fonts)

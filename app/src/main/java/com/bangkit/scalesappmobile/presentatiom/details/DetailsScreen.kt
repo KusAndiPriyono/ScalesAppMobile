@@ -61,7 +61,7 @@ import java.time.format.DateTimeFormatter
 @Destination
 @Composable
 fun DetailsScreen(
-    id: String?, navigator: HomeNavigator, viewModel: DetailViewModel = hiltViewModel()
+    id: String?, navigator: HomeNavigator, viewModel: DetailViewModel = hiltViewModel(),
 ) {
     val state = rememberCollapsingToolbarScaffoldState()
     val scalesState = viewModel.details.value
@@ -86,7 +86,7 @@ fun DetailsScreen(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreenContent(
-    scalesState: DetailState, state: CollapsingToolbarScaffoldState, navigateToBack: () -> Unit
+    scalesState: DetailState, state: CollapsingToolbarScaffoldState, navigateToBack: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (!scalesState.isLoading && scalesState.scalesDetails != null) {
@@ -314,17 +314,17 @@ fun FormatStringToDate(
 @Preview(showBackground = true)
 @Composable
 fun ScalesProperties(
-    scales: ScalesDetails = sampleScalesDetails
+    scales: ScalesDetails = sampleScalesDetails,
 ) {
     Row(
         Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ScalesProperty(icon = R.drawable.ic_branding, value = scales.brand)
+        ScalesProperty(icon = R.drawable.ic_kindtype, value = scales.brand)
         ScalesProperty(icon = R.drawable.ic_kindtype, value = scales.kindType)
         ScalesProperty(
-            icon = R.drawable.ic_branding, value = "${scales.rangeCapacity} ${scales.unit}"
+            icon = R.drawable.ic_kindtype, value = "${scales.rangeCapacity} ${scales.unit}"
         )
         ScalesProperty(icon = R.drawable.ic_calendar, value = scales.status)
         ScalesProperty(icon = R.drawable.ic_calendar, value = scales.ratingsAverage.toString())
@@ -333,7 +333,7 @@ fun ScalesProperties(
 
 @Composable
 fun ScalesProperty(
-    modifier: Modifier = Modifier, icon: Int, value: String
+    modifier: Modifier = Modifier, icon: Int, value: String,
 ) {
     Box(
         modifier = modifier

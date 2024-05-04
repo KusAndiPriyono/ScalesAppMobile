@@ -22,6 +22,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,10 +54,11 @@ fun HomeScreen(
     HomeScreenContent(
         scales = scales,
         state = state,
+        userRole = "admin",
         snackbarHostState = snackbarHostState,
         event = event,
         navigateToDetails = { scales ->
-            navigator.openScalesDetails(scalesId = scales.id)
+            navigator.openScalesDetails(id = scales.id)
         },
         onClickSearch = { /*TODO*/ }) {
     }
@@ -66,13 +68,24 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenContent(
     scales: LazyPagingItems<Scales>,
+    userRole: String,
     state: HomeState,
     snackbarHostState: SnackbarHostState,
     event: (HomeEvent) -> Unit,
     navigateToDetails: (Scales) -> Unit,
     onClickSearch: () -> Unit,
-    onClickAddScales: () -> Unit
+    onClickAddScales: () -> Unit,
 ) {
+    val visible = remember {
+        mutableStateOf(false)
+    }
+
+    if (userRole != state.data?.user?.role) {
+        visible.value = true
+    } else {
+        visible.value = false
+    }
+
     Scaffold(
         topBar = {
             StandardToolbar(
@@ -90,23 +103,24 @@ private fun HomeScreenContent(
             )
         },
         floatingActionButton = {
-//            if (state.data?.user?.id == "" || state.data?.user?.role == "admin") {
-            FloatingActionButton(
-                containerColor = MaterialTheme.colorScheme.primary,
-                onClick = onClickAddScales
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+            if (visible.value) {
+                FloatingActionButton(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    onClick = onClickAddScales
                 ) {
-                    Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
-                    AnimatedVisibility(visible = true) {
-                        Text(
-                            text = "Add Scales",
-                            style = MaterialTheme.typography.labelMedium,
-                            textAlign = TextAlign.Center
-                        )
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
+                        AnimatedVisibility(visible = true) {
+                            Text(
+                                text = "Add Scales",
+                                style = MaterialTheme.typography.labelMedium,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
             }

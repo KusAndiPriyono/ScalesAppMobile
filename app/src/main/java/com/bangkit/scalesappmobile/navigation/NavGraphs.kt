@@ -1,10 +1,12 @@
 package com.bangkit.scalesappmobile.navigation
 
 import com.bangkit.scalesappmobile.presentatiom.destinations.DetailsScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.ForgotPasswordScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LandingPageScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LoginScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.OnBoardingScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
 import com.ramcosta.composedestinations.dynamic.routedIn
 import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.NavGraphSpec
@@ -30,7 +32,9 @@ object NavGraphs {
 
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             LandingPageScreenDestination,
-            LoginScreenDestination
+            LoginScreenDestination,
+            SignInScreenDestination,
+            ForgotPasswordScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 

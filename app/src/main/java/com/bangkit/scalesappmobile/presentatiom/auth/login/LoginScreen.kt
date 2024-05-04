@@ -12,7 +12,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -56,7 +59,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun LoginScreen(
     navigator: AuthNavigator,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val emailState = viewModel.emailState.value
     val passwordState = viewModel.passwordState.value
@@ -133,7 +136,7 @@ private fun SignInScreenContent(
         topBar = {
             IconButton(onClick = onClickNavigateBack) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = null,
                 )
             }
@@ -146,11 +149,11 @@ private fun SignInScreenContent(
             item {
                 Column {
                     Text(
-                        text = "Welcome Back",
+                        text = "Selamat Datang!",
                         style = MaterialTheme.typography.titleLarge
                     )
                     Text(
-                        text = "Login to your account to continue enjoying our services",
+                        text = "Login ke akun Anda untuk terus menikmati layanan kami",
                         style = MaterialTheme.typography.labelMedium
                     )
                 }
@@ -217,18 +220,18 @@ private fun SignInScreenContent(
                                     testTag = "PasswordToggle"
                                 }
                             ) {
-//                                Icon(
-//                                    imageVector = if (passwordState.isPasswordVisible) {
-//                                        Icons.Filled.VisibilityOff
-//                                    } else {
-//                                        Icons.Filled.Visibility
-//                                    },
-//                                    contentDescription = if (passwordState.isPasswordVisible) {
-//                                        "Hide Password"
-//                                    } else {
-//                                        "Show Password"
-//                                    }
-//                                )
+                                Icon(
+                                    imageVector = if (passwordState.isPasswordVisible) {
+                                        Icons.Filled.VisibilityOff
+                                    } else {
+                                        Icons.Filled.Visibility
+                                    },
+                                    contentDescription = if (passwordState.isPasswordVisible) {
+                                        "Sembunyikan Password"
+                                    } else {
+                                        "Tampilkan Password"
+                                    }
+                                )
                             }
                         }
                     )
@@ -253,7 +256,7 @@ private fun SignInScreenContent(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextButton(onClick = onClickForgotPassword) {
-                        Text(text = "Forgot password?")
+                        Text(text = "Lupa password?")
                     }
                 }
             }
@@ -269,7 +272,7 @@ private fun SignInScreenContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
-                        text = "Sign In",
+                        text = "Masuk",
                         textAlign = TextAlign.Center
                     )
                 }
@@ -284,7 +287,7 @@ private fun SignInScreenContent(
                 ) {
                     Text(
                         text = buildAnnotatedString {
-                            append("Don't have an account?")
+                            append("Belum punya akun?")
                             append(" ")
                             withStyle(
                                 style = SpanStyle(
@@ -292,7 +295,7 @@ private fun SignInScreenContent(
                                     fontWeight = FontWeight.Bold
                                 )
                             ) {
-                                append("Sign Up")
+                                append("Daftar")
                             }
                         },
                         fontFamily = fontFamily,

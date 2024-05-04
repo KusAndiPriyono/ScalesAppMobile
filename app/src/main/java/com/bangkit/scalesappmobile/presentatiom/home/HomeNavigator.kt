@@ -3,6 +3,6 @@ package com.bangkit.scalesappmobile.presentatiom.home
 interface HomeNavigator {
 
     fun openHome()
-    fun openScalesDetails(scalesId: String? = null)
+    fun openScalesDetails(id: String? = null)
     fun popBackStack()
 }
