@@ -11,5 +11,4 @@ interface DataStoreRepository {
     fun getUserId(): Flow<String?>
     suspend fun saveUserId(userId: String)
     suspend fun clear()
-
 }

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class GetScalesDetailResponse(
+data class GetScalesUpdateResponse(
     @SerializedName("data")
     val data: ScalesDetails,
     @SerializedName("status")

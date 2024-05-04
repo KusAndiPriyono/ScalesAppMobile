@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.bangkit.scalesappmobile.domain.repository.DataStoreRepository
 import com.bangkit.scalesappmobile.util.Constants.ACCESS_TOKEN
@@ -70,5 +71,10 @@ class DataStoreRepositoryImpl @Inject constructor(private val application: Appli
 
     companion object {
         val ON_BOARDING = booleanPreferencesKey("onBoarding")
+        val ID = stringPreferencesKey("id")
+        val EMAIL = stringPreferencesKey("email")
+        val NAME = stringPreferencesKey("name")
+        val PHOTO = stringPreferencesKey("photo")
+        val ROLE = stringPreferencesKey("role")
     }
 }

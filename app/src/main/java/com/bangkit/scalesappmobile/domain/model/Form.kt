@@ -1,8 +1,11 @@
 package com.bangkit.scalesappmobile.domain.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Form(
     @SerializedName("approval")
     val approval: String,
@@ -28,4 +31,4 @@ data class Form(
     val v: Int,
     @SerializedName("validUntil")
     val validUntil: String
-)
+) : Parcelable

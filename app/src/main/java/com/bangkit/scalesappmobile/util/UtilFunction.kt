@@ -1,6 +1,6 @@
 package com.bangkit.scalesappmobile.util
 
-import com.bangkit.scalesappmobile.domain.model.ErrorResponse
+import com.bangkit.scalesappmobile.data.remote.scales.ErrorResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext

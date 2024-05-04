@@ -1,8 +1,11 @@
 package com.bangkit.scalesappmobile.domain.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Review(
     @SerializedName("createdAt")
     val createdAt: String,
@@ -16,4 +19,4 @@ data class Review(
     val scale: String,
     @SerializedName("__v")
     val v: Int
-)
+) : Parcelable

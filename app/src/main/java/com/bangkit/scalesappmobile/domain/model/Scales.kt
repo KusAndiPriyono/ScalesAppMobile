@@ -16,7 +16,7 @@ data class Scales(
     val calibrationPeriodInYears: Int,
     @SerializedName("equipmentDescription")
     val equipmentDescription: String,
-    @SerializedName("_id")
+    @SerializedName("id")
     val id: String,
     @SerializedName("imageCover")
     val imageCover: String,
