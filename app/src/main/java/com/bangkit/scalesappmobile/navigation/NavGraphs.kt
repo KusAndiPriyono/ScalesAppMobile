@@ -1,5 +1,6 @@
 package com.bangkit.scalesappmobile.navigation
 
+import com.bangkit.scalesappmobile.presentatiom.destinations.CreateScalesScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.DetailsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.ForgotPasswordScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
@@ -46,6 +47,7 @@ object NavGraphs {
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             HomeScreenDestination,
             DetailsScreenDestination,
+            CreateScalesScreenDestination,
             LandingPageScreenDestination,
             SettingsScreenDestination
         ).routedIn(this).associateBy { it.route }

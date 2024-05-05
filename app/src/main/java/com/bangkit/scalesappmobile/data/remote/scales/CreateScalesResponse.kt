@@ -1,12 +1,12 @@
 package com.bangkit.scalesappmobile.data.remote.scales
 
 
-import com.bangkit.scalesappmobile.domain.model.Scales
+import com.bangkit.scalesappmobile.domain.model.CreateScalesRequest
 import com.google.gson.annotations.SerializedName
 
-data class CreateResponse(
+data class CreateScalesResponse(
     @SerializedName("data")
-    val data: Scales,
+    val data: CreateScalesRequest,
     @SerializedName("status")
-    val status: String
+    val status: String,
 )

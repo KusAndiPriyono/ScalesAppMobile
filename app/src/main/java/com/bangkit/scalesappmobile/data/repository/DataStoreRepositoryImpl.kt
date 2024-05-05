@@ -9,8 +9,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.bangkit.scalesappmobile.domain.repository.DataStoreRepository
-import com.bangkit.scalesappmobile.util.Constants.ACCESS_TOKEN
 import com.bangkit.scalesappmobile.util.Constants.SCALES_DATA_STORE
+import com.bangkit.scalesappmobile.util.Constants.TOKEN
 import com.bangkit.scalesappmobile.util.Constants.USER_ID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -34,19 +34,19 @@ class DataStoreRepositoryImpl @Inject constructor(private val application: Appli
 
     override fun getAccessToken(): Flow<String?> {
         return application.datastore.data.map { preferences ->
-            preferences[ACCESS_TOKEN]
+            preferences[TOKEN]
         }
     }
 
-    override suspend fun saveAccessToken(accessToken: String) {
+    override suspend fun saveAccessToken(token: String) {
         application.datastore.edit { preferences ->
-            preferences[ACCESS_TOKEN] = accessToken
+            preferences[TOKEN] = token
         }
     }
 
     override suspend fun deleteAccessToken() {
         application.datastore.edit { preferences ->
-            preferences.remove(ACCESS_TOKEN)
+            preferences.remove(TOKEN)
         }
     }
 
@@ -56,9 +56,9 @@ class DataStoreRepositoryImpl @Inject constructor(private val application: Appli
         }
     }
 
-    override suspend fun saveUserId(userId: String) {
+    override suspend fun saveUserId(id: String) {
         application.datastore.edit { preferences ->
-            preferences[USER_ID] = userId
+            preferences[USER_ID] = id
         }
     }
 

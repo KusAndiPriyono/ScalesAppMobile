@@ -4,8 +4,8 @@ import com.bangkit.scalesappmobile.domain.repository.AuthRepository
 import javax.inject.Inject
 
 class SaveUserIdUseCase @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) {
-    suspend operator fun invoke(userId: String) =
-        authRepository.saveUserId(userId)
+    suspend operator fun invoke(id: String) =
+        authRepository.saveUserId(id)
 }

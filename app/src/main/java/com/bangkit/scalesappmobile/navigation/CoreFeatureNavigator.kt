@@ -2,6 +2,8 @@ package com.bangkit.scalesappmobile.navigation
 
 import androidx.navigation.NavController
 import com.bangkit.scalesappmobile.presentatiom.auth.AuthNavigator
+import com.bangkit.scalesappmobile.presentatiom.createscales.CreateScalesNavigator
+import com.bangkit.scalesappmobile.presentatiom.destinations.CreateScalesScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.DetailsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.ForgotPasswordScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
@@ -18,7 +20,7 @@ import com.ramcosta.composedestinations.spec.NavGraphSpec
 class CoreFeatureNavigator(
     private val navGraph: NavGraphSpec,
     private val navController: NavController,
-) : AppNavigator, AuthNavigator, HomeNavigator, SettingsNavigator {
+) : AppNavigator, AuthNavigator, HomeNavigator, SettingsNavigator, CreateScalesNavigator {
     override fun openLandingPage() {
         navController.navigate(LandingPageScreenDestination within NavGraphs.auth)
     }
@@ -37,6 +39,14 @@ class CoreFeatureNavigator(
 
     override fun popBackStack() {
         navController.popBackStack()
+    }
+
+    override fun openCreateScales() {
+        navController.navigate(CreateScalesScreenDestination within NavGraphs.home)
+    }
+
+    override fun navigateBackToHome() {
+        TODO("Not yet implemented")
     }
 
     override fun openHome() {

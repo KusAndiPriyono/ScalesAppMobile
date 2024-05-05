@@ -1,14 +1,16 @@
 package com.bangkit.scalesappmobile.data.remote
 
 import com.bangkit.scalesappmobile.data.remote.scales.AuthResponse
+import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetAllScalesResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesDetailResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesUpdateResponse
+import com.bangkit.scalesappmobile.domain.model.CreateScalesRequest
 import com.bangkit.scalesappmobile.domain.model.ForgotPasswordRequest
 import com.bangkit.scalesappmobile.domain.model.LoginRequest
 import com.bangkit.scalesappmobile.domain.model.RefreshTokenRequest
 import com.bangkit.scalesappmobile.domain.model.RegisterRequest
-import okhttp3.RequestBody
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -36,8 +38,9 @@ interface ScalesApiService {
     @POST("api/v1/scales")
     suspend fun createNewScales(
         @Header("Authorization") token: String,
-        @Part body: RequestBody,
-    )
+        @Body createScalesRequest: CreateScalesRequest,
+        @Part imageCover: MultipartBody.Part,
+    ): CreateScalesResponse
 
     @PATCH("api/v1/scales/{id}")
     suspend fun updateScales(

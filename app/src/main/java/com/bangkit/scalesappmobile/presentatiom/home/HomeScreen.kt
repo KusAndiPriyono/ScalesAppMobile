@@ -56,7 +56,12 @@ fun HomeScreen(
         navigateToDetails = { id ->
             navigator.openScalesDetails(id = id.id)
         },
-        onClickSearch = { /*TODO*/ }) {}
+        onClickSearch = {
+
+        },
+        onClickAddScales = {
+            navigator.openCreateScales()
+        })
 }
 
 

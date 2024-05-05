@@ -55,11 +55,11 @@ class AuthRepositoryImpl @Inject constructor(
         dataStoreRepository.clear()
     }
 
-    override suspend fun saveAccessToken(accessToken: String) {
-        dataStoreRepository.saveAccessToken(accessToken)
+    override suspend fun saveAccessToken(token: String) {
+        dataStoreRepository.saveAccessToken(token)
     }
 
-    override suspend fun saveUserId(userId: String) {
-        dataStoreRepository.saveUserId(userId)
+    override suspend fun saveUserId(id: String) {
+        dataStoreRepository.saveUserId(id)
     }
 }
