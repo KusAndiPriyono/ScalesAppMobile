@@ -14,8 +14,6 @@ data class CreateScalesRequest(
     val calibrationDate: String,
     @SerializedName("calibrationPeriod")
     val calibrationPeriod: Int,
-    @SerializedName("calibrationPeriodInYears")
-    val calibrationPeriodInYears: Int,
     @SerializedName("equipmentDescription")
     val equipmentDescription: String,
     @SerializedName("imageCover")
@@ -24,8 +22,6 @@ data class CreateScalesRequest(
     val kindType: String,
     @SerializedName("location")
     val location: String,
-    @SerializedName("measuringEquipmentIdNumber")
-    val measuringEquipmentIdNumber: String,
     @SerializedName("name")
     val name: String,
     @SerializedName("nextCalibrationDate")

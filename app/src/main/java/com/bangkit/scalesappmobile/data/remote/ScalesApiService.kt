@@ -10,15 +10,13 @@ import com.bangkit.scalesappmobile.domain.model.ForgotPasswordRequest
 import com.bangkit.scalesappmobile.domain.model.LoginRequest
 import com.bangkit.scalesappmobile.domain.model.RefreshTokenRequest
 import com.bangkit.scalesappmobile.domain.model.RegisterRequest
-import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.Field
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -34,12 +32,9 @@ interface ScalesApiService {
         @Path("id") id: String,
     ): GetScalesDetailResponse
 
-    @Multipart
     @POST("api/v1/scales")
     suspend fun createNewScales(
-        @Header("Authorization") token: String,
         @Body createScalesRequest: CreateScalesRequest,
-        @Part imageCover: MultipartBody.Part,
     ): CreateScalesResponse
 
     @PATCH("api/v1/scales/{id}")

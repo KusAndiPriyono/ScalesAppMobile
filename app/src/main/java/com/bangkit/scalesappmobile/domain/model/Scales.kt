@@ -13,7 +13,7 @@ data class Scales(
     @SerializedName("calibrationPeriod")
     val calibrationPeriod: Int,
     @SerializedName("calibrationPeriodInYears")
-    val calibrationPeriodInYears: Int,
+    val calibrationPeriodInYears: Double,
     @SerializedName("equipmentDescription")
     val equipmentDescription: String,
     @SerializedName("id")

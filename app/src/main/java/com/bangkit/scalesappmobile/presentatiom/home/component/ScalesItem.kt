@@ -30,7 +30,7 @@ import com.bangkit.scalesappmobile.ui.theme.fontFamily
 @Composable
 fun ScalesItem(
     scales: Scales,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
 ) {
 
     val context = LocalContext.current
@@ -117,7 +117,7 @@ fun ScalesItemPreview() {
             brand = "brand",
             calibrationDate = "calibrationDate",
             calibrationPeriod = 1,
-            calibrationPeriodInYears = 1,
+            calibrationPeriodInYears = 1.1,
             equipmentDescription = "equipmentDescription",
             id = "id",
             imageCover = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg",
