@@ -130,6 +130,15 @@ dependencies {
 
     //Collapsing Toolbar
     implementation(libs.toolbar.compose)
+
+    // Date-Time Picker
+    implementation(libs.core)
+
+    // CALENDAR
+    implementation(libs.calendar)
+
+    // CLOCK
+    implementation(libs.clock)
 }
 
 kotlin {

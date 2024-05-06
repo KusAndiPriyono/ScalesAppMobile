@@ -1,22 +1,22 @@
 package com.bangkit.scalesappmobile.presentatiom.createscales
 
 import android.net.Uri
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,21 +29,31 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bangkit.scalesappmobile.presentatiom.auth.state.TextFieldState
-import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.bangkit.scalesappmobile.util.UiEvents
+import com.bangkit.scalesappmobile.util.formatDate
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.maxkeppeler.sheets.clock.ClockDialog
+import com.maxkeppeler.sheets.clock.models.ClockSelection
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.flow.collectLatest
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Destination
 @Composable
 fun CreateScalesScreen(
@@ -141,9 +151,12 @@ fun CreateScalesScreen(
         onClickCreate = {
             viewModel.createScales()
             keyboardController?.hide()
-        })
+        },
+    )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun CreateScreenContent(
     snackbarHostState: SnackbarHostState,
@@ -177,22 +190,34 @@ private fun CreateScreenContent(
     onClickNavigateBack: () -> Unit,
     onClickCreate: () -> Unit,
 ) {
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        },
-        topBar = {
-            IconButton(
-                onClick = onClickNavigateBack
-            ) {
-                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-            }
+    var currentDate by remember {
+        mutableStateOf(LocalDate.now())
+    }
+    var currentTime by remember {
+        mutableStateOf(LocalTime.now())
+    }
+    val dateDialog = rememberUseCaseState()
+    val timeDialog = rememberUseCaseState()
+    var dateTimeUpdated by remember { mutableStateOf(false) }
+    val formattedCalibrationDate = formatDate(LocalDate.parse(calibrationDate.text))
+
+
+    Scaffold(snackbarHost = {
+        SnackbarHost(hostState = snackbarHostState)
+    }, topBar = {
+        IconButton(
+            onClick = onClickNavigateBack
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null
+            )
         }
-    ) { paddingValues ->
+    }) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .padding(paddingValues)
-                .fillMaxSize(), contentPadding = PaddingValues(16.dp)
+                .fillMaxSize(),
+            contentPadding = PaddingValues(16.dp)
         ) {
             item {
                 Column {
@@ -209,235 +234,77 @@ private fun CreateScreenContent(
                 }
             }
             item {
-                Spacer(modifier = Modifier.padding(24.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = brand.text,
-                    onValueChange = { onCurrentBrandChange(it) },
-                    label = {
-                        Text(text = "Brand")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        keyboardType = KeyboardType.Email,
-                        autoCorrect = true
-                    )
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.padding(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = calibrationDate.text,
-                    onValueChange = { onCurrentCalibrationDateChange(it) },
-                    label = {
-                        Text(text = "Tanggal Kalibrasi")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        keyboardType = KeyboardType.Email,
-                        autoCorrect = true
-                    )
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.padding(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = calibrationPeriod.toString(),
-                    onValueChange = { onCurrentCalibrationPeriodChange(it.toInt()) },
-                    label = {
-                        Text(text = "Periode Kalibrasi")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        keyboardType = KeyboardType.Number,
-                        autoCorrect = true
-                    )
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.padding(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = equipmentDescription.text,
-                    onValueChange = { onCurrentEquipmentDescriptionChange(it) },
-                    label = {
-                        Text(text = "Deskripsi Alat")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        keyboardType = KeyboardType.Email,
-                        autoCorrect = true
-                    )
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.padding(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = kindType.text,
-                    onValueChange = { onCurrentKindTypeChange(it) },
-                    label = {
-                        Text(text = "Tipe Alat")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        keyboardType = KeyboardType.Email,
-                        autoCorrect = true
-                    )
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.padding(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = location.text,
-                    onValueChange = { onCurrentLocationChange(it) },
-                    label = {
-                        Text(text = "Lokasi Alat")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        keyboardType = KeyboardType.Email,
-                        autoCorrect = true
-                    )
-                )
-            }
-//            item {
-//                Spacer(modifier = Modifier.padding(8.dp))
-//                OutlinedTextField(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    value = imageCover.toString(),
-//                    onValueChange = { onCurrentKindTypeChange(it) },
-//                    label = {
-//                        Text(text = "Tipe Alat")
-//                    },
-//                    keyboardOptions = KeyboardOptions(
-//                        capitalization = KeyboardCapitalization.Words,
-//                        keyboardType = KeyboardType.Email,
-//                        autoCorrect = true
-//                    )
-//                )
-//            }
-            item {
-                Spacer(modifier = Modifier.padding(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = name.text,
-                    onValueChange = { onCurrentNameChange(it) },
-                    label = {
-                        Text(text = "Nama Jenis Timbangan")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        keyboardType = KeyboardType.Email,
-                        autoCorrect = true
-                    )
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.padding(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = nextCalibrationDate.text,
-                    onValueChange = { onCurrentNextCalibrationDateChange(it) },
-                    label = {
-                        Text(text = "Kalibrasi Selanjutnya")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        keyboardType = KeyboardType.Email,
-                        autoCorrect = true
-                    )
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.padding(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = parentMachineOfEquipment.text,
-                    onValueChange = { onCurrentParentMachineOfEquipmentChange(it) },
-                    label = {
-                        Text(text = "Mesin Induk Alat")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        keyboardType = KeyboardType.Email,
-                        autoCorrect = true
-                    )
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.padding(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = rangeCapacity.toString(),
-                    onValueChange = { onCurrentRangeCapacityChange(it.toInt()) },
-                    label = {
-                        Text(text = "Kapasitas Timbangan")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        keyboardType = KeyboardType.Email,
-                        autoCorrect = true
-                    )
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.padding(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = serialNumber.text,
-                    onValueChange = { onCurrentSerialNumberChange(it) },
-                    label = {
-                        Text(text = "Nomor Seri Alat")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        keyboardType = KeyboardType.Email,
-                        autoCorrect = true
-                    )
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.padding(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = unit.text,
-                    onValueChange = { onCurrentUnitChange(it) },
-                    label = {
-                        Text(text = "Satuan Timbangan")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        keyboardType = KeyboardType.Email,
-                        autoCorrect = true
-                    )
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.height(32.dp))
-                Button(onClick = onClickCreate, shape = RoundedCornerShape(8)) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                        text = "Buat Data Scales",
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-            item {
-                Row(
-                    Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+                Spacer(modifier = Modifier.padding(16.dp))
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                    elevation = CardDefaults.elevatedCardElevation(4.dp)
                 ) {
-                    Box {
-                        if (createScalesState.isLoading) {
-                            Spacer(modifier = Modifier.height(16.dp))
-                            LoadingStateComponent()
+                    OutlinedTextField(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                        value = calibrationDate.text,
+                        onValueChange = { onCurrentCalibrationDateChange(it) },
+                        label = {
+                            Text(text = "Tanggal Kalibrasi")
+                        },
+                        trailingIcon = {
+                            if (dateTimeUpdated) {
+                                IconButton(
+                                    onClick = {
+                                        currentDate = LocalDate.now()
+                                        currentTime = LocalTime.now()
+                                        dateTimeUpdated = false
+                                        onCurrentCalibrationDateChange(
+                                            ZonedDateTime.of(
+                                                currentDate,
+                                                currentTime,
+                                                ZoneId.systemDefault()
+                                            ).toString()
+                                        )
+                                    }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "CLose Icon",
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            } else {
+                                IconButton(
+                                    onClick = {
+                                        dateDialog.show()
+                                    }) {
+                                    Icon(
+                                        imageVector = Icons.Default.DateRange,
+                                        contentDescription = "Date Range Icon",
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            }
                         }
-                    }
+                    )
+                    CalendarDialog(
+                        state = dateDialog,
+                        selection = CalendarSelection.Date { localDate ->
+                            currentDate = localDate
+                            timeDialog.show()
+                        },
+                        config = CalendarConfig(monthSelection = true, yearSelection = true)
+                    )
+
+                    ClockDialog(
+                        state = timeDialog,
+                        selection = ClockSelection.HoursMinutes { hours, minutes ->
+                            currentTime = LocalTime.of(hours, minutes)
+                            dateTimeUpdated = true
+                            onCurrentCalibrationDateChange(
+                                ZonedDateTime.of(
+                                    currentDate,
+                                    currentTime,
+                                    ZoneId.systemDefault()
+                                ).toString()
+                            )
+                        }
+                    )
                 }
             }
         }

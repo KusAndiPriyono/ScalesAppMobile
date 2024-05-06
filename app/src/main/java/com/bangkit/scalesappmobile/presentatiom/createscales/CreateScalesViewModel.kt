@@ -49,7 +49,7 @@ class CreateScalesViewModel @Inject constructor(
     val scalesCalibrationDate: State<TextFieldState> = _scalesCalibrationDate
     fun setScalesCalibrationDate(value: String) {
         _scalesCalibrationDate.value = scalesCalibrationDate.value.copy(
-            text = value
+            text = value,
         )
     }
 
