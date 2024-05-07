@@ -14,12 +14,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -36,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bangkit.scalesappmobile.presentatiom.auth.AuthNavigator
 import com.bangkit.scalesappmobile.presentatiom.auth.state.LoginState
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
+import com.bangkit.scalesappmobile.ui.theme.AngryColor
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.bangkit.scalesappmobile.util.UiEvents
 import com.ramcosta.composedestinations.annotation.Destination
@@ -92,6 +94,11 @@ private fun ForgotPasswordScreenContent(
     onCLickSend: () -> Unit,
     onClickNavigateBack: () -> Unit,
 ) {
+
+    val colors = OutlinedTextFieldDefaults.colors(
+        unfocusedBorderColor = AngryColor,
+        focusedBorderColor = AngryColor
+    )
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
@@ -124,6 +131,7 @@ private fun ForgotPasswordScreenContent(
                     value = currentEmailText,
                     onValueChange = { onCurrentEmailTextChange(it) },
                     label = { Text(text = "Email") },
+                    colors = colors,
                     keyboardOptions = KeyboardOptions(
                         autoCorrect = true,
                         keyboardType = KeyboardType.Email
@@ -132,12 +140,18 @@ private fun ForgotPasswordScreenContent(
             }
             item {
                 Spacer(modifier = Modifier.height(32.dp))
-                Button(onClick = onCLickSend, shape = RoundedCornerShape(8)) {
+                Button(
+                    onClick = onCLickSend,
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(5.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = AngryColor)
+                ) {
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
                         text = "Lanjutkan",
+                        fontSize = MaterialTheme.typography.titleMedium.fontSize,
                         textAlign = TextAlign.Center,
                     )
                 }

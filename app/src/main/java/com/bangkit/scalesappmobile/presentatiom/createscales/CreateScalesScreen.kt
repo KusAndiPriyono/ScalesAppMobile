@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -50,6 +51,7 @@ import com.bangkit.scalesappmobile.presentatiom.createscales.component.NextCalib
 import com.bangkit.scalesappmobile.presentatiom.createscales.component.RangeCapacityTextField
 import com.bangkit.scalesappmobile.presentatiom.createscales.component.SerialNumberTextField
 import com.bangkit.scalesappmobile.presentatiom.createscales.component.UnitScalesTextField
+import com.bangkit.scalesappmobile.ui.theme.AngryColor
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.bangkit.scalesappmobile.util.UiEvents
 import com.ramcosta.composedestinations.annotation.Destination
@@ -313,7 +315,11 @@ private fun CreateScreenContent(
                 Spacer(modifier = Modifier.height(32.dp))
                 Button(
                     onClick = onClickCreate,
-                    shape = RoundedCornerShape(8),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AngryColor
+                    ),
+                    elevation = ButtonDefaults.elevatedButtonElevation(5.dp)
                 ) {
                     Text(
                         modifier = Modifier

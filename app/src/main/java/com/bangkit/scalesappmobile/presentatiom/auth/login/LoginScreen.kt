@@ -17,10 +17,13 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -50,6 +53,7 @@ import com.bangkit.scalesappmobile.presentatiom.auth.state.LoginState
 import com.bangkit.scalesappmobile.presentatiom.auth.state.PasswordTextFieldState
 import com.bangkit.scalesappmobile.presentatiom.auth.state.TextFieldState
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
+import com.bangkit.scalesappmobile.ui.theme.AngryColor
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.bangkit.scalesappmobile.util.UiEvents
 import com.ramcosta.composedestinations.annotation.Destination
@@ -117,6 +121,7 @@ fun LoginScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SignInScreenContent(
     snackbarHostState: SnackbarHostState,
@@ -131,6 +136,11 @@ private fun SignInScreenContent(
     onConfirmPasswordToggle: (Boolean) -> Unit,
     onClickNavigateBack: () -> Unit,
 ) {
+
+    val colors = OutlinedTextFieldDefaults.colors(
+        unfocusedBorderColor = AngryColor,
+        focusedBorderColor = AngryColor
+    )
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
@@ -171,6 +181,7 @@ private fun SignInScreenContent(
                         label = {
                             Text(text = "Email")
                         },
+                        colors = colors,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text
                         ),
@@ -191,7 +202,6 @@ private fun SignInScreenContent(
 
             item {
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Column {
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
@@ -202,6 +212,7 @@ private fun SignInScreenContent(
                         label = {
                             Text(text = "Password")
                         },
+                        colors = colors,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password
                         ),
@@ -266,13 +277,18 @@ private fun SignInScreenContent(
 
                 Button(
                     onClick = onClickSignIn,
-                    shape = RoundedCornerShape(8)
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(5.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AngryColor
+                    )
                 ) {
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
                         text = "Masuk",
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
                         textAlign = TextAlign.Center
                     )
                 }

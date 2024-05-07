@@ -13,10 +13,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class DataStoreModule {
 
-//    @Binds
-//    @Singleton
-//    abstract fun bindDataStoreRepository(dataStoreRepositoryImpl: DataStoreRepositoryImpl): DataStoreRepository
-
     @Provides
     @Singleton
     fun provideDataStoreRepository(application: Application): DataStoreRepository {

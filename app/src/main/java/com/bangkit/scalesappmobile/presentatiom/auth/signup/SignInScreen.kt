@@ -18,10 +18,12 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -51,6 +53,7 @@ import com.bangkit.scalesappmobile.presentatiom.auth.state.PasswordTextFieldStat
 import com.bangkit.scalesappmobile.presentatiom.auth.state.RegisterState
 import com.bangkit.scalesappmobile.presentatiom.auth.state.TextFieldState
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
+import com.bangkit.scalesappmobile.ui.theme.AngryColor
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.bangkit.scalesappmobile.util.UiEvents
 import com.ramcosta.composedestinations.annotation.Destination
@@ -142,6 +145,11 @@ private fun SignUpScreenContent(
     onClickNavigateToBack: () -> Unit,
 ) {
 
+    val colors = OutlinedTextFieldDefaults.colors(
+        unfocusedBorderColor = AngryColor,
+        focusedBorderColor = AngryColor
+    )
+
     Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) }, topBar = {
         IconButton(
             onClick = onClickNavigateToBack
@@ -179,6 +187,7 @@ private fun SignUpScreenContent(
                             text = "Name"
                         )
                     },
+                    colors = colors,
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words,
                         keyboardType = KeyboardType.Email,
@@ -197,6 +206,7 @@ private fun SignUpScreenContent(
                             text = "Email"
                         )
                     },
+                    colors = colors,
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.None,
                         keyboardType = KeyboardType.Email,
@@ -214,6 +224,7 @@ private fun SignUpScreenContent(
                             text = "Password"
                         )
                     },
+                    colors = colors,
                     keyboardOptions = KeyboardOptions(
                         autoCorrect = true, keyboardType = KeyboardType.Password
                     ),
@@ -249,6 +260,7 @@ private fun SignUpScreenContent(
                             text = "Confirm Password"
                         )
                     },
+                    colors = colors,
                     keyboardOptions = KeyboardOptions(
                         autoCorrect = true, keyboardType = KeyboardType.Password
                     ),
@@ -276,12 +288,19 @@ private fun SignUpScreenContent(
             }
             item {
                 Spacer(modifier = Modifier.height(32.dp))
-                Button(onClick = onClickSignUp, shape = RoundedCornerShape(8)) {
+                Button(
+                    onClick = onClickSignUp,
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AngryColor
+                    )
+                ) {
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
                         text = "Daftar Sekarang",
+                        fontSize = MaterialTheme.typography.titleMedium.fontSize,
                         textAlign = TextAlign.Center
                     )
                 }

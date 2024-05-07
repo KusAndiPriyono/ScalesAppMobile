@@ -43,7 +43,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideAuthInterceptor(
-        dataStoreRepository: DataStoreRepository
+        dataStoreRepository: DataStoreRepository,
     ): AuthInterceptor {
         return AuthInterceptor(dataStoreRepository)
     }
@@ -53,7 +53,7 @@ object NetworkModule {
     fun provideOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
         chuckerInterceptor: ChuckerInterceptor,
-        authInterceptor: AuthInterceptor
+        authInterceptor: AuthInterceptor,
     ): OkHttpClient {
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
@@ -82,27 +82,4 @@ object NetworkModule {
     fun provideScalesDbApi(retrofit: Retrofit): ScalesApiService {
         return retrofit.create()
     }
-
-//    @Provides
-//    @Singleton
-//    fun provideOkHttpClient(): OkHttpClient {
-//        return OkHttpClient.Builder()
-//            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-//            .connectTimeout(150, TimeUnit.SECONDS)
-//            .readTimeout(150, TimeUnit.SECONDS)
-//            .build()
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
-//        .baseUrl(BASE_URL)
-//        .addConverterFactory(GsonConverterFactory.create())
-//        .client(client)
-//        .build()
-//
-//    @Provides
-//    @Singleton
-//    fun provideScalesApiService(retrofit: Retrofit): ScalesApiService =
-//        retrofit.create(ScalesApiService::class.java)
 }

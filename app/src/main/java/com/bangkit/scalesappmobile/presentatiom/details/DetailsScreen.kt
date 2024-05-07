@@ -48,6 +48,7 @@ import com.bangkit.scalesappmobile.presentatiom.common.EmptyStateComponent
 import com.bangkit.scalesappmobile.presentatiom.common.ErrorStateComponent
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
 import com.bangkit.scalesappmobile.presentatiom.home.HomeNavigator
+import com.bangkit.scalesappmobile.ui.theme.SurprisedColor
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.ramcosta.composedestinations.annotation.Destination
 import me.onebone.toolbar.CollapsingToolbarScaffold
@@ -340,7 +341,7 @@ fun ScalesProperty(
             .height(80.dp)
             .width(70.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(color = SurprisedColor)
     ) {
         Column(
             modifier = Modifier
@@ -353,15 +354,16 @@ fun ScalesProperty(
                 modifier = Modifier.size(24.dp),
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = MaterialTheme.colorScheme.onPrimary
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = value,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onPrimary,
                 style = MaterialTheme.typography.labelSmall,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                fontFamily = fontFamily,
             )
         }
     }

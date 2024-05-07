@@ -54,6 +54,7 @@ fun ScalesList(
         LazyVerticalGrid(
             modifier = modifier.fillMaxWidth(),
             columns = GridCells.Fixed(2),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(24.dp),
             contentPadding = PaddingValues(all = 6.dp)
         ) {

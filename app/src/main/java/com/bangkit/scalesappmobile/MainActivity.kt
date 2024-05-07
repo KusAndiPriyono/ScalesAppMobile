@@ -75,9 +75,9 @@ class MainActivity : ComponentActivity() {
                     ) { innerPadding ->
                         Box(modifier = Modifier.padding(innerPadding)) {
                             AppNavigation(
-                                navController = navController, isLoggedIn = isLoggedIn,
-                                modifier = Modifier
-                                    .fillMaxSize(),
+                                navController = navController,
+                                isLoggedIn = isLoggedIn,
+                                modifier = Modifier.fillMaxSize(),
                             )
                         }
                     }

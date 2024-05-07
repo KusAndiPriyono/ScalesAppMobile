@@ -40,6 +40,7 @@ fun ScalesItem(
             .padding(vertical = 5.dp)
             .clickable { onClick?.invoke() },
         shape = MaterialTheme.shapes.large,
+        elevation = CardDefaults.elevatedCardElevation(5.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
         ),
