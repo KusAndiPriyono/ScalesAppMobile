@@ -2,6 +2,7 @@ package com.bangkit.scalesappmobile.presentatiom.createscales
 
 import android.net.Uri
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -85,6 +86,18 @@ class CreateScalesViewModel @Inject constructor(
         )
     }
 
+    private val _scalesCalibrationPeriod = mutableIntStateOf(0)
+    val scalesCalibrationPeriod: State<Int> = _scalesCalibrationPeriod
+    fun setScalesCalibrationPeriod(value: Int) {
+        _scalesCalibrationPeriod.intValue = value
+    }
+
+    private val _scalesRangeCapacity = mutableIntStateOf(0)
+    val scalesRangeCapacity: State<Int> = _scalesRangeCapacity
+    fun setScalesRangeCapacity(value: Int) {
+        _scalesRangeCapacity.intValue = value
+    }
+
     private val _scalesParentMachineOfEquipment = mutableStateOf(TextFieldState())
     val scalesParentMachineOfEquipment: State<TextFieldState> = _scalesParentMachineOfEquipment
     fun setScalesParentMachineOfEquipment(value: String) {
@@ -132,6 +145,20 @@ class CreateScalesViewModel @Inject constructor(
             if (scalesCalibrationDate.value.text.isEmpty()) {
                 _eventFlow.emit(
                     UiEvents.SnackbarEvent(message = "Please fill in the calibration date")
+                )
+                return@launch
+            }
+
+            if (scalesCalibrationPeriod.value == 0) {
+                _eventFlow.emit(
+                    UiEvents.SnackbarEvent(message = "Please fill in the calibration period")
+                )
+                return@launch
+            }
+
+            if (scalesRangeCapacity.value == 0) {
+                _eventFlow.emit(
+                    UiEvents.SnackbarEvent(message = "Please fill in the range capacity")
                 )
                 return@launch
             }
@@ -191,7 +218,7 @@ class CreateScalesViewModel @Inject constructor(
                 val result = createNewScalesUseCase(
                     brand = scalesBrand.value.text,
                     calibrationDate = scalesCalibrationDate.value.text,
-                    calibrationPeriod = 1,
+                    calibrationPeriod = scalesCalibrationPeriod.value,
                     equipmentDescription = scalesEquipmentDescription.value.text,
                     kindType = scalesKindType.value.text,
                     location = scalesLocation.value.text,
@@ -199,7 +226,7 @@ class CreateScalesViewModel @Inject constructor(
                     name = scalesName.value.text,
                     nextCalibrationDate = scalesNextCalibrationDate.value.text,
                     parentMachineOfEquipment = scalesParentMachineOfEquipment.value.text,
-                    rangeCapacity = 1,
+                    rangeCapacity = scalesRangeCapacity.value,
                     serialNumber = scalesSerialNumber.value.text,
                     unit = scalesUnit.value.text,
                 )

@@ -1,6 +1,7 @@
 package com.bangkit.scalesappmobile.presentatiom.auth.login
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,11 +14,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +49,7 @@ import com.bangkit.scalesappmobile.presentatiom.auth.AuthNavigator
 import com.bangkit.scalesappmobile.presentatiom.auth.state.LoginState
 import com.bangkit.scalesappmobile.presentatiom.auth.state.PasswordTextFieldState
 import com.bangkit.scalesappmobile.presentatiom.auth.state.TextFieldState
+import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.bangkit.scalesappmobile.util.UiEvents
 import com.ramcosta.composedestinations.annotation.Destination
@@ -307,8 +307,10 @@ private fun SignInScreenContent(
             item {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     Spacer(modifier = Modifier.height(16.dp))
-                    if (loginState.isLoading) {
-                        CircularProgressIndicator()
+                    Box {
+                        if (loginState.isLoading) {
+                            LoadingStateComponent()
+                        }
                     }
                 }
             }

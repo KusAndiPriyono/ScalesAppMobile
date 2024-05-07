@@ -1,26 +1,27 @@
 package com.bangkit.scalesappmobile.presentatiom.createscales
 
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -29,31 +30,31 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bangkit.scalesappmobile.presentatiom.auth.state.TextFieldState
+import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
+import com.bangkit.scalesappmobile.presentatiom.createscales.component.BrandScalesTextField
+import com.bangkit.scalesappmobile.presentatiom.createscales.component.CalibrationDateTextField
+import com.bangkit.scalesappmobile.presentatiom.createscales.component.CalibrationPeriodTextField
+import com.bangkit.scalesappmobile.presentatiom.createscales.component.EquipmentDescriptionTextField
+import com.bangkit.scalesappmobile.presentatiom.createscales.component.KindTypeTextField
+import com.bangkit.scalesappmobile.presentatiom.createscales.component.LocationScalesTextField
+import com.bangkit.scalesappmobile.presentatiom.createscales.component.MachineOfEquipmentTextField
+import com.bangkit.scalesappmobile.presentatiom.createscales.component.NameScalesTextField
+import com.bangkit.scalesappmobile.presentatiom.createscales.component.NextCalibrationDateTextField
+import com.bangkit.scalesappmobile.presentatiom.createscales.component.RangeCapacityTextField
+import com.bangkit.scalesappmobile.presentatiom.createscales.component.SerialNumberTextField
+import com.bangkit.scalesappmobile.presentatiom.createscales.component.UnitScalesTextField
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.bangkit.scalesappmobile.util.UiEvents
-import com.bangkit.scalesappmobile.util.formatDate
-import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
-import com.maxkeppeler.sheets.calendar.CalendarDialog
-import com.maxkeppeler.sheets.calendar.models.CalendarConfig
-import com.maxkeppeler.sheets.calendar.models.CalendarSelection
-import com.maxkeppeler.sheets.clock.ClockDialog
-import com.maxkeppeler.sheets.clock.models.ClockSelection
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.flow.collectLatest
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Destination
 @Composable
 fun CreateScalesScreen(
@@ -63,6 +64,8 @@ fun CreateScalesScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val brand by viewModel.scalesBrand
     val calibrationDate by viewModel.scalesCalibrationDate
+    val calibrationPeriod by viewModel.scalesCalibrationPeriod
+    val rangeCapacity by viewModel.scalesRangeCapacity
     val equipmentDescription by viewModel.scalesEquipmentDescription
     val kindType by viewModel.scalesKindType
     val location by viewModel.scalesLocation
@@ -94,7 +97,7 @@ fun CreateScalesScreen(
         snackbarHostState = snackbarHostState,
         brand = brand,
         calibrationDate = calibrationDate,
-        calibrationPeriod = 0,
+        calibrationPeriod = calibrationPeriod,
         equipmentDescription = equipmentDescription,
         kindType = kindType,
         location = location,
@@ -102,7 +105,7 @@ fun CreateScalesScreen(
         name = name,
         nextCalibrationDate = nextCalibrationDate,
         parentMachineOfEquipment = parentMachineOfEquipment,
-        rangeCapacity = 0,
+        rangeCapacity = rangeCapacity,
         serialNumber = serialNumber,
         unit = unit,
         createScalesState = createScalesState,
@@ -113,7 +116,7 @@ fun CreateScalesScreen(
             viewModel.setScalesCalibrationDate(it)
         },
         onCurrentCalibrationPeriodChange = {
-            Int
+            viewModel.setScalesCalibrationPeriod(it)
         },
         onCurrentEquipmentDescriptionChange = {
             viewModel.setScalesEquipmentDescription(it)
@@ -137,7 +140,7 @@ fun CreateScalesScreen(
             viewModel.setScalesParentMachineOfEquipment(it)
         },
         onCurrentRangeCapacityChange = {
-            Int
+            viewModel.setScalesRangeCapacity(it)
         },
         onCurrentSerialNumberChange = {
             viewModel.setScalesSerialNumber(it)
@@ -155,8 +158,6 @@ fun CreateScalesScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun CreateScreenContent(
     snackbarHostState: SnackbarHostState,
@@ -190,17 +191,6 @@ private fun CreateScreenContent(
     onClickNavigateBack: () -> Unit,
     onClickCreate: () -> Unit,
 ) {
-    var currentDate by remember {
-        mutableStateOf(LocalDate.now())
-    }
-    var currentTime by remember {
-        mutableStateOf(LocalTime.now())
-    }
-    val dateDialog = rememberUseCaseState()
-    val timeDialog = rememberUseCaseState()
-    var dateTimeUpdated by remember { mutableStateOf(false) }
-    val formattedCalibrationDate = formatDate(LocalDate.parse(calibrationDate.text))
-
 
     Scaffold(snackbarHost = {
         SnackbarHost(hostState = snackbarHostState)
@@ -236,75 +226,114 @@ private fun CreateScreenContent(
             item {
                 Spacer(modifier = Modifier.padding(16.dp))
                 Card(
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    ),
                     elevation = CardDefaults.elevatedCardElevation(4.dp)
                 ) {
-                    OutlinedTextField(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                        value = calibrationDate.text,
-                        onValueChange = { onCurrentCalibrationDateChange(it) },
-                        label = {
-                            Text(text = "Tanggal Kalibrasi")
-                        },
-                        trailingIcon = {
-                            if (dateTimeUpdated) {
-                                IconButton(
-                                    onClick = {
-                                        currentDate = LocalDate.now()
-                                        currentTime = LocalTime.now()
-                                        dateTimeUpdated = false
-                                        onCurrentCalibrationDateChange(
-                                            ZonedDateTime.of(
-                                                currentDate,
-                                                currentTime,
-                                                ZoneId.systemDefault()
-                                            ).toString()
-                                        )
-                                    }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Close,
-                                        contentDescription = "CLose Icon",
-                                        tint = MaterialTheme.colorScheme.onSurface
-                                    )
-                                }
-                            } else {
-                                IconButton(
-                                    onClick = {
-                                        dateDialog.show()
-                                    }) {
-                                    Icon(
-                                        imageVector = Icons.Default.DateRange,
-                                        contentDescription = "Date Range Icon",
-                                        tint = MaterialTheme.colorScheme.onSurface
-                                    )
-                                }
-                            }
-                        }
-                    )
-                    CalendarDialog(
-                        state = dateDialog,
-                        selection = CalendarSelection.Date { localDate ->
-                            currentDate = localDate
-                            timeDialog.show()
-                        },
-                        config = CalendarConfig(monthSelection = true, yearSelection = true)
+                    NameScalesTextField(name = name.text, onCurrentNameChange = onCurrentNameChange)
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        BrandScalesTextField(
+                            modifier = Modifier.width(190.dp),
+                            brand = brand.text,
+                            onCurrentBrandChange = onCurrentBrandChange,
+                        )
+                        KindTypeTextField(
+                            modifier = Modifier.width(190.dp),
+                            kindType = kindType.text,
+                            onCurrentKindTypeChange = onCurrentKindTypeChange
+                        )
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        RangeCapacityTextField(
+                            modifier = Modifier.width(180.dp),
+                            rangeCapacity = rangeCapacity,
+                            onCurrentRangeCapacityChange = onCurrentRangeCapacityChange
+                        )
+                        UnitScalesTextField(
+                            modifier = Modifier.width(200.dp),
+                            unit = unit.text,
+                            onCurrentUnitChange = onCurrentUnitChange,
+                        )
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        CalibrationPeriodTextField(
+                            modifier = Modifier.width(190.dp),
+                            calibrationPeriod = calibrationPeriod,
+                            onCurrentCalibrationPeriodChange = onCurrentCalibrationPeriodChange
+                        )
+                        SerialNumberTextField(
+                            modifier = Modifier.width(190.dp),
+                            serialNumber = serialNumber.text,
+                            onCurrentSerialNumberChange = onCurrentSerialNumberChange,
+                        )
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        CalibrationDateTextField(
+                            modifier = Modifier.width(190.dp),
+                            calibrationDate = calibrationDate,
+                            onCurrentCalibrationDateChange = onCurrentCalibrationDateChange
+                        )
+                        NextCalibrationDateTextField(
+                            modifier = Modifier.width(190.dp),
+                            nextCalibrationDate = nextCalibrationDate,
+                            onCurrentNextCalibrationDateChange = onCurrentNextCalibrationDateChange
+                        )
+                    }
+
+                    EquipmentDescriptionTextField(
+                        equipmentDescription = equipmentDescription.text,
+                        onCurrentEquipmentDescriptionChange = onCurrentEquipmentDescriptionChange
                     )
 
-                    ClockDialog(
-                        state = timeDialog,
-                        selection = ClockSelection.HoursMinutes { hours, minutes ->
-                            currentTime = LocalTime.of(hours, minutes)
-                            dateTimeUpdated = true
-                            onCurrentCalibrationDateChange(
-                                ZonedDateTime.of(
-                                    currentDate,
-                                    currentTime,
-                                    ZoneId.systemDefault()
-                                ).toString()
-                            )
-                        }
+                    LocationScalesTextField(
+                        location = location.text,
+                        onCurrentLocationChange = onCurrentLocationChange
                     )
+                    MachineOfEquipmentTextField(
+                        parentMachineOfEquipment = parentMachineOfEquipment.text,
+                        onCurrentParentMachineOfEquipmentChange = onCurrentParentMachineOfEquipmentChange
+                    )
+
+
+                }
+            }
+            item {
+                Spacer(modifier = Modifier.height(32.dp))
+                Button(
+                    onClick = onClickCreate,
+                    shape = RoundedCornerShape(8),
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        text = "Buat Data Scales",
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+            item {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Box {
+                        if (createScalesState.isLoading) {
+                            LoadingStateComponent()
+                        }
+                    }
                 }
             }
         }

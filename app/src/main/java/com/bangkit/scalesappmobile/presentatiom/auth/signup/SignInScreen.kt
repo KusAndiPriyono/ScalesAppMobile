@@ -304,7 +304,6 @@ private fun SignUpScreenContent(
                 ) {
                     Box {
                         if (registerState.isLoading) {
-                            Spacer(modifier = Modifier.height(16.dp))
                             LoadingStateComponent()
                         }
                     }
