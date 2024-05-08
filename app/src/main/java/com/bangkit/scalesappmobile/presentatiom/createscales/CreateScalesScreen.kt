@@ -51,6 +51,7 @@ import com.bangkit.scalesappmobile.presentatiom.createscales.component.NextCalib
 import com.bangkit.scalesappmobile.presentatiom.createscales.component.RangeCapacityTextField
 import com.bangkit.scalesappmobile.presentatiom.createscales.component.SerialNumberTextField
 import com.bangkit.scalesappmobile.presentatiom.createscales.component.UnitScalesTextField
+import com.bangkit.scalesappmobile.presentatiom.createscales.state.CreateScalesState
 import com.bangkit.scalesappmobile.ui.theme.AngryColor
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.bangkit.scalesappmobile.util.UiEvents

@@ -1,4 +1,4 @@
-package com.bangkit.scalesappmobile.presentatiom.createscales
+package com.bangkit.scalesappmobile.presentatiom.createscales.state
 
 import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
 

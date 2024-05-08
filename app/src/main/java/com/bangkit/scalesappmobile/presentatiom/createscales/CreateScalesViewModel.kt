@@ -1,6 +1,5 @@
 package com.bangkit.scalesappmobile.presentatiom.createscales
 
-import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -8,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bangkit.scalesappmobile.domain.usecase.scales.CreateNewScalesUseCase
 import com.bangkit.scalesappmobile.presentatiom.auth.state.TextFieldState
+import com.bangkit.scalesappmobile.presentatiom.createscales.state.CreateScalesState
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
 import com.bangkit.scalesappmobile.util.Resource
 import com.bangkit.scalesappmobile.util.UiEvents
@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,11 +25,11 @@ class CreateScalesViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvents>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private val _scalesImageCover = mutableStateOf<Uri?>(null)
-    val scalesImageCover: State<Uri?> = _scalesImageCover
-    fun setScalesImageCover(value: Uri?) {
-        _scalesImageCover.value = value
-    }
+//    private val _scalesImageCover = mutableStateOf<Uri?>(null)
+//    val scalesImageCover: State<Uri?> = _scalesImageCover
+//    fun setScalesImageCover(value: Uri?) {
+//        _scalesImageCover.value = value
+//    }
 
     private val _scalesName = mutableStateOf(TextFieldState())
     val scalesName: State<TextFieldState> = _scalesName
@@ -122,12 +123,25 @@ class CreateScalesViewModel @Inject constructor(
         )
     }
 
+    private val _scalesUploadImageCover = mutableStateOf<MultipartBody.Part?>(null)
+    val scalesUploadImageCover: State<MultipartBody.Part?> = _scalesUploadImageCover
+    fun setScalesUploadImageCover(value: MultipartBody.Part?) {
+        _scalesUploadImageCover.value = value
+    }
+
     private val _createScaleState = mutableStateOf(CreateScalesState())
     val createScaleState: State<CreateScalesState> = _createScaleState
 
 
     fun createScales() {
         viewModelScope.launch {
+            if (scalesUploadImageCover.value == null) {
+                _eventFlow.emit(
+                    UiEvents.SnackbarEvent(message = "Please upload the image cover")
+                )
+                return@launch
+            }
+
             if (scalesName.value.text.isEmpty()) {
                 _eventFlow.emit(
                     UiEvents.SnackbarEvent(message = "Please fill in the scales name")
@@ -222,7 +236,7 @@ class CreateScalesViewModel @Inject constructor(
                     equipmentDescription = scalesEquipmentDescription.value.text,
                     kindType = scalesKindType.value.text,
                     location = scalesLocation.value.text,
-                    imageCover = scalesImageCover.value.toString(),
+                    imageCover = scalesUploadImageCover.value!!,
                     name = scalesName.value.text,
                     nextCalibrationDate = scalesNextCalibrationDate.value.text,
                     parentMachineOfEquipment = scalesParentMachineOfEquipment.value.text,

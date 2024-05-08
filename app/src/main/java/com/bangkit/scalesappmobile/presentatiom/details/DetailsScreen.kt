@@ -87,7 +87,9 @@ fun DetailsScreen(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreenContent(
-    scalesState: DetailState, state: CollapsingToolbarScaffoldState, navigateToBack: () -> Unit,
+    scalesState: DetailState,
+    state: CollapsingToolbarScaffoldState,
+    navigateToBack: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (!scalesState.isLoading && scalesState.scalesDetails != null) {
