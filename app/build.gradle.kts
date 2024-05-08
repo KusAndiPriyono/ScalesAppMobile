@@ -130,6 +130,9 @@ dependencies {
 
     //Collapsing Toolbar
     implementation(libs.toolbar.compose)
+
+    //ImageCropper
+    implementation(libs.easycrop)
 }
 
 kotlin {

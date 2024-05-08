@@ -1,7 +1,7 @@
 package com.bangkit.scalesappmobile.data.repository
 
 import com.bangkit.scalesappmobile.data.remote.ScalesApiService
-import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
+import com.bangkit.scalesappmobile.data.remote.scales.ErrorResponse
 import com.bangkit.scalesappmobile.domain.model.CreateScalesRequest
 import com.bangkit.scalesappmobile.domain.repository.CreateScalesRepository
 import com.bangkit.scalesappmobile.domain.repository.ScalesRepository
@@ -23,7 +23,7 @@ class CreateScalesRepositoryImpl @Inject constructor(
         calibrationDate: String,
         calibrationPeriod: Int,
         equipmentDescription: String,
-        imageCover: MultipartBody.Part,
+        imageCover: String,
         kindType: String,
         location: String,
         name: String,
@@ -32,40 +32,34 @@ class CreateScalesRepositoryImpl @Inject constructor(
         rangeCapacity: Int,
         serialNumber: String,
         unit: String,
-    ): Resource<CreateScalesResponse> {
-//        val outputStream = ByteArrayOutputStream()
-//        val bitmap = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888)
-//        bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
-//        val imageBytes = outputStream.toByteArray()
-//        val requestFile = imageBytes.toRequestBody("image/*".toMediaTypeOrNull(), 0)
-//        val imageCoverPart =
-//            MultipartBody.Part.createFormData("imageCover", "imageCover", requestFile)
+    ): Resource<ErrorResponse> {
+        return safeApiCall(Dispatchers.IO) {
+            val request = CreateScalesRequest(
+                brand = brand,
+                calibrationDate = calibrationDate,
+                calibrationPeriod = calibrationPeriod,
+                equipmentDescription = equipmentDescription,
+                imageCover = imageCover,
+                kindType = kindType,
+                location = location,
+                name = name,
+                nextCalibrationDate = nextCalibrationDate,
+                parentMachineOfEquipment = parentMachineOfEquipment,
+                rangeCapacity = rangeCapacity,
+                serialNumber = serialNumber,
+                unit = unit,
+                id = scalesRepository.getScales().first().toString()
+            )
+            scalesApiService.createNewScales(request)
+        }
+    }
+
+    override suspend fun uploadImage(imageCover: MultipartBody.Part): Resource<ErrorResponse> {
         return safeApiCall(Dispatchers.IO) {
             val requestBody = "imageCover".toRequestBody("multipart/form-data".toMediaTypeOrNull())
-            scalesApiService.createNewScales(
+            scalesApiService.uploadImageScales(
                 imageCover = imageCover,
-                requestBody = requestBody,
-                createScalesRequest = CreateScalesRequest(
-                    brand = brand,
-                    calibrationDate = calibrationDate,
-                    calibrationPeriod = calibrationPeriod,
-                    equipmentDescription = equipmentDescription,
-                    imageCover = MultipartBody.Part.createFormData(
-                        "imageCover",
-                        "imageCover",
-                        requestBody
-                    )
-                        .toString(),
-                    kindType = kindType,
-                    location = location,
-                    name = name,
-                    nextCalibrationDate = nextCalibrationDate,
-                    parentMachineOfEquipment = parentMachineOfEquipment,
-                    rangeCapacity = rangeCapacity,
-                    serialNumber = serialNumber,
-                    unit = unit,
-                    id = scalesRepository.getScales().first().toString()
-                )
+                requestBody = requestBody
             )
         }
     }

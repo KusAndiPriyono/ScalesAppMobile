@@ -1,7 +1,6 @@
 package com.bangkit.scalesappmobile.domain.usecase.scales
 
 import com.bangkit.scalesappmobile.domain.repository.CreateScalesRepository
-import okhttp3.MultipartBody
 import javax.inject.Inject
 
 class CreateNewScalesUseCase @Inject constructor(
@@ -12,9 +11,9 @@ class CreateNewScalesUseCase @Inject constructor(
         calibrationDate: String,
         calibrationPeriod: Int,
         equipmentDescription: String,
+        imageCover: String,
         kindType: String,
         location: String,
-        imageCover: MultipartBody.Part,
         name: String,
         nextCalibrationDate: String,
         parentMachineOfEquipment: String,
@@ -22,18 +21,31 @@ class CreateNewScalesUseCase @Inject constructor(
         serialNumber: String,
         unit: String,
     ) = createScalesRepository.createNewScales(
-        brand = brand,
-        calibrationDate = calibrationDate,
-        calibrationPeriod = calibrationPeriod,
-        equipmentDescription = equipmentDescription,
-        kindType = kindType,
-        location = location,
-        imageCover = imageCover,
-        name = name,
-        nextCalibrationDate = nextCalibrationDate,
-        parentMachineOfEquipment = parentMachineOfEquipment,
-        rangeCapacity = rangeCapacity,
-        serialNumber = serialNumber,
-        unit = unit,
+        brand,
+        calibrationDate,
+        calibrationPeriod,
+        equipmentDescription,
+        imageCover,
+        kindType,
+        location,
+        name,
+        nextCalibrationDate,
+        parentMachineOfEquipment,
+        rangeCapacity,
+        serialNumber,
+        unit,
+//        brand = brand,
+//        calibrationDate = calibrationDate,
+//        calibrationPeriod = calibrationPeriod,
+//        equipmentDescription = equipmentDescription,
+//        imageCover = imageCover,
+//        kindType = kindType,
+//        location = location,
+//        name = name,
+//        nextCalibrationDate = nextCalibrationDate,
+//        parentMachineOfEquipment = parentMachineOfEquipment,
+//        rangeCapacity = rangeCapacity,
+//        serialNumber = serialNumber,
+//        unit = unit,
     )
 }

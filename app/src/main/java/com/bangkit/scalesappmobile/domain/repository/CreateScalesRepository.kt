@@ -1,6 +1,6 @@
 package com.bangkit.scalesappmobile.domain.repository
 
-import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
+import com.bangkit.scalesappmobile.data.remote.scales.ErrorResponse
 import com.bangkit.scalesappmobile.util.Resource
 import okhttp3.MultipartBody
 
@@ -11,7 +11,7 @@ interface CreateScalesRepository {
         calibrationDate: String,
         calibrationPeriod: Int,
         equipmentDescription: String,
-        imageCover: MultipartBody.Part,
+        imageCover: String,
         kindType: String,
         location: String,
         name: String,
@@ -20,5 +20,9 @@ interface CreateScalesRepository {
         rangeCapacity: Int,
         serialNumber: String,
         unit: String,
-    ): Resource<CreateScalesResponse>
+    ): Resource<ErrorResponse>
+
+    suspend fun uploadImage(
+        imageCover: MultipartBody.Part,
+    ): Resource<ErrorResponse>
 }
