@@ -2,7 +2,6 @@ package com.bangkit.scalesappmobile.presentatiom.createscales
 
 import android.net.Uri
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -98,16 +97,22 @@ class CreateScalesViewModel @Inject constructor(
         )
     }
 
-    private val _scalesCalibrationPeriod = mutableIntStateOf(0)
-    val scalesCalibrationPeriod: State<Int> = _scalesCalibrationPeriod
-    fun setScalesCalibrationPeriod(value: Int) {
-        _scalesCalibrationPeriod.intValue = value
+    private val _scalesCalibrationPeriod = mutableStateOf(TextFieldState())
+    val scalesCalibrationPeriod: State<TextFieldState> = _scalesCalibrationPeriod
+    fun setScalesCalibrationPeriod(value: Int = 0, error: String? = null) {
+        _scalesCalibrationPeriod.value = scalesCalibrationPeriod.value.copy(
+            int = value,
+            error = error
+        )
     }
 
-    private val _scalesRangeCapacity = mutableIntStateOf(0)
-    val scalesRangeCapacity: State<Int> = _scalesRangeCapacity
-    fun setScalesRangeCapacity(value: Int) {
-        _scalesRangeCapacity.intValue = value
+    private val _scalesRangeCapacity = mutableStateOf(TextFieldState())
+    val scalesRangeCapacity: State<TextFieldState> = _scalesRangeCapacity
+    fun setScalesRangeCapacity(value: Int = 0, error: String? = null) {
+        _scalesRangeCapacity.value = scalesRangeCapacity.value.copy(
+            int = value,
+            error = error
+        )
     }
 
     private val _scalesParentMachineOfEquipment = mutableStateOf(TextFieldState())
@@ -265,140 +270,55 @@ class CreateScalesViewModel @Inject constructor(
         }
     }
 
-//    fun createScales() {
-//        viewModelScope.launch {
-//            if (scalesName.value.text.isEmpty()) {
-//                _eventFlow.emit(
-//                    UiEvents.SnackbarEvent(message = "Please fill in the scales name")
-//                )
-//                return@launch
-//            }
-//
-//            if (scalesBrand.value.text.isEmpty()) {
-//                _eventFlow.emit(
-//                    UiEvents.SnackbarEvent(message = "Please fill in the scales brand")
-//                )
-//                return@launch
-//            }
-//
-//            if (scalesCalibrationDate.value.text.isEmpty()) {
-//                _eventFlow.emit(
-//                    UiEvents.SnackbarEvent(message = "Please fill in the calibration date")
-//                )
-//                return@launch
-//            }
-//
-//            if (scalesCalibrationPeriod.value == 0) {
-//                _eventFlow.emit(
-//                    UiEvents.SnackbarEvent(message = "Please fill in the calibration period")
-//                )
-//                return@launch
-//            }
-//
-//            if (scalesRangeCapacity.value == 0) {
-//                _eventFlow.emit(
-//                    UiEvents.SnackbarEvent(message = "Please fill in the range capacity")
-//                )
-//                return@launch
-//            }
-//
-//            if (scalesEquipmentDescription.value.text.isEmpty()) {
-//                _eventFlow.emit(
-//                    UiEvents.SnackbarEvent(message = "Please fill in the equipment description")
-//                )
-//                return@launch
-//            }
-//
-//            if (scalesKindType.value.text.isEmpty()) {
-//                _eventFlow.emit(
-//                    UiEvents.SnackbarEvent(message = "Please fill in the kind type")
-//                )
-//                return@launch
-//            }
-//
-//            if (scalesLocation.value.text.isEmpty()) {
-//                _eventFlow.emit(
-//                    UiEvents.SnackbarEvent(message = "Please fill in the location")
-//                )
-//                return@launch
-//            }
-//
-//            if (scalesNextCalibrationDate.value.text.isEmpty()) {
-//                _eventFlow.emit(
-//                    UiEvents.SnackbarEvent(message = "Please fill in the next calibration date")
-//                )
-//                return@launch
-//            }
-//
-//            if (scalesParentMachineOfEquipment.value.text.isEmpty()) {
-//                _eventFlow.emit(
-//                    UiEvents.SnackbarEvent(message = "Please fill in the parent machine of equipment")
-//                )
-//                return@launch
-//            }
-//
-//            if (scalesSerialNumber.value.text.isEmpty()) {
-//                _eventFlow.emit(
-//                    UiEvents.SnackbarEvent(message = "Please fill in the serial number")
-//                )
-//                return@launch
-//            }
-//
-//            if (scalesUnit.value.text.isEmpty()) {
-//                _eventFlow.emit(
-//                    UiEvents.SnackbarEvent(message = "Please fill in the unit")
-//                )
-//                return@launch
-//            }
-//
-//            _createScaleState.value = CreateScalesState(isLoading = true)
-//
-//            when (
-//                val result = createNewScalesUseCase(
-//                    brand = scalesBrand.value.text,
-//                    calibrationDate = scalesCalibrationDate.value.text,
-//                    calibrationPeriod = scalesCalibrationPeriod.value,
-//                    equipmentDescription = scalesEquipmentDescription.value.text,
-//                    imageCover = "",
-//                    kindType = scalesKindType.value.text,
-//                    location = scalesLocation.value.text,
-//                    name = scalesName.value.text,
-//                    nextCalibrationDate = scalesNextCalibrationDate.value.text,
-//                    parentMachineOfEquipment = scalesParentMachineOfEquipment.value.text,
-//                    rangeCapacity = scalesRangeCapacity.value,
-//                    serialNumber = scalesSerialNumber.value.text,
-//                    unit = scalesUnit.value.text,
-//                )
-//            ) {
-//                is Resource.Error -> {
-//                    _createScaleState.value = CreateScalesState(
-//                        isLoading = false,
-//                        error = result.message ?: "An unknown error occurred"
-//                    )
-//                    _eventFlow.emit(
-//                        UiEvents.SnackbarEvent(
-//                            message = result.message ?: "An unknown error occurred"
-//                        )
-//                    )
-//                }
-//
-//                is Resource.Success -> {
-//                    _createScaleState.value = _createScaleState.value.copy(
-//                        isLoading = false,
-//                        scalesIsSaved = result.data ?: error("Data is null")
-//                    )
-//                    _eventFlow.emit(
-//                        UiEvents.SnackbarEvent(
-//                            message = "Scales created successfully"
-//                        )
-//                    )
-//                    _eventFlow.emit(UiEvents.NavigationEvent(HomeScreenDestination.route))
-//                }
-//
-//                else -> {
-//                    createScaleState
-//                }
-//            }
-//        }
-//    }
+    val scalesNames = listOf(
+        "Timbangan Digital",
+        "T,C,Digital",
+        "Pressure Gauge",
+        "Box Compression Test",
+        "Thickness",
+        "Jangka Sorong",
+        "Timbangan Besar",
+        "Timbangan Kecil",
+        "Metal Detektor"
+    ).sorted()
+
+    val brands = listOf(
+        "AND",
+        "SIEMENS",
+        "ACIS",
+        "YAMATO",
+        "NAGATA",
+        "JADEVER",
+        "VIBRA",
+        "T-SCALE",
+        "FUJITSU",
+        "DS-FOX",
+        "DHS",
+        "THERMOMETER",
+        "EUROSICMA",
+        "BOSCH",
+        "REXROTH",
+        "TWC",
+        "KAWASHIMA",
+        "OMRON",
+        "TAM",
+        "TWA",
+        "WIKA",
+        "MC",
+        "ASHCROF",
+        "SCHAUMBER",
+        "SCHUH",
+        "STEIN",
+        "BROTO THERM",
+    ).sorted()
+
+    val units = listOf(
+        "kg",
+        "g",
+        "°C/%",
+        "°C",
+        "Bar",
+        "Mpa"
+    )
+
 }

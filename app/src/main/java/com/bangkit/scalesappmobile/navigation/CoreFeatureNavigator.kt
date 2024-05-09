@@ -1,5 +1,6 @@
 package com.bangkit.scalesappmobile.navigation
 
+import android.net.Uri
 import androidx.navigation.NavController
 import com.bangkit.scalesappmobile.presentatiom.auth.AuthNavigator
 import com.bangkit.scalesappmobile.presentatiom.createscales.CreateScalesNavigator
@@ -9,6 +10,7 @@ import com.bangkit.scalesappmobile.presentatiom.destinations.ForgotPasswordScree
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LandingPageScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LoginScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.NextCreateScalesScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.home.HomeNavigator
 import com.bangkit.scalesappmobile.presentatiom.onboarding.AppNavigator
@@ -37,6 +39,31 @@ class CoreFeatureNavigator(
         navController.navigate(LoginScreenDestination within NavGraphs.auth)
     }
 
+
+    override fun openNextCreateScalesScreen(
+        imageCover: Uri,
+        name: String,
+        brand: String,
+        kindType: String,
+        serialNumber: String,
+        location: String,
+        rangeCapacity: Int,
+        unit: String
+    ) {
+        navController.navigate(
+            NextCreateScalesScreenDestination(
+                imageCover = imageCover,
+                name = name,
+                brand = brand,
+                kindType = kindType,
+                serialNumber = serialNumber,
+                location = location,
+                rangeCapacity = rangeCapacity,
+                unit = unit
+            ) within NavGraphs.home
+        )
+    }
+
     override fun popBackStack() {
         navController.popBackStack()
     }
@@ -46,7 +73,8 @@ class CoreFeatureNavigator(
     }
 
     override fun navigateBackToHome() {
-        TODO("Not yet implemented")
+        navController.navigate(HomeScreenDestination within NavGraphs.home)
+        navController.clearBackStack("home")
     }
 
     override fun openHome() {
