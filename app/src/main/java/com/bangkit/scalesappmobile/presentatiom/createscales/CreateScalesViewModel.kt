@@ -2,6 +2,7 @@ package com.bangkit.scalesappmobile.presentatiom.createscales
 
 import android.net.Uri
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -36,109 +37,94 @@ class CreateScalesViewModel @Inject constructor(
 
     private val _scalesName = mutableStateOf(TextFieldState())
     val scalesName: State<TextFieldState> = _scalesName
-    fun setScalesName(value: String = "", error: String? = null) {
+    fun setScalesName(value: String) {
         _scalesName.value = scalesName.value.copy(
             text = value,
-            error = error
         )
     }
 
     private val _scalesBrand = mutableStateOf(TextFieldState())
     val scalesBrand: State<TextFieldState> = _scalesBrand
-    fun setScalesBrand(value: String = "", error: String? = null) {
+    fun setScalesBrand(value: String) {
         _scalesBrand.value = scalesBrand.value.copy(
             text = value,
-            error = error
         )
     }
 
     private val _scalesCalibrationDate = mutableStateOf(TextFieldState())
     val scalesCalibrationDate: State<TextFieldState> = _scalesCalibrationDate
-    fun setScalesCalibrationDate(value: String = "", error: String? = null) {
+    fun setScalesCalibrationDate(value: String) {
         _scalesCalibrationDate.value = scalesCalibrationDate.value.copy(
-            text = value,
-            error = error
+            text = value
         )
     }
 
     private val _scalesEquipmentDescription = mutableStateOf(TextFieldState())
     val scalesEquipmentDescription: State<TextFieldState> = _scalesEquipmentDescription
-    fun setScalesEquipmentDescription(value: String = "", error: String? = null) {
+    fun setScalesEquipmentDescription(value: String) {
         _scalesEquipmentDescription.value = scalesEquipmentDescription.value.copy(
             text = value,
-            error = error
         )
     }
 
     private val _scalesKindType = mutableStateOf(TextFieldState())
     val scalesKindType: State<TextFieldState> = _scalesKindType
-    fun setScalesKindType(value: String = "", error: String? = null) {
+    fun setScalesKindType(value: String) {
         _scalesKindType.value = scalesKindType.value.copy(
-            text = value,
-            error = error
+            text = value
         )
     }
 
     private val _scalesLocation = mutableStateOf(TextFieldState())
     val scalesLocation: State<TextFieldState> = _scalesLocation
-    fun setScalesLocation(value: String = "", error: String? = null) {
+    fun setScalesLocation(value: String) {
         _scalesLocation.value = scalesLocation.value.copy(
-            text = value,
-            error = error
+            text = value
         )
     }
 
     private val _scalesNextCalibrationDate = mutableStateOf(TextFieldState())
     val scalesNextCalibrationDate: State<TextFieldState> = _scalesNextCalibrationDate
-    fun setScalesNextCalibrationDate(value: String = "", error: String? = null) {
+    fun setScalesNextCalibrationDate(value: String) {
         _scalesNextCalibrationDate.value = scalesNextCalibrationDate.value.copy(
-            text = value,
-            error = error
+            text = value
         )
     }
 
-    private val _scalesCalibrationPeriod = mutableStateOf(TextFieldState())
-    val scalesCalibrationPeriod: State<TextFieldState> = _scalesCalibrationPeriod
-    fun setScalesCalibrationPeriod(value: Int = 0, error: String? = null) {
-        _scalesCalibrationPeriod.value = scalesCalibrationPeriod.value.copy(
-            int = value,
-            error = error
-        )
+
+    private val _scalesCalibrationPeriod = mutableIntStateOf(0)
+    val scalesCalibrationPeriod: State<Int> = _scalesCalibrationPeriod
+    fun setScalesCalibrationPeriod(value: Int) {
+        _scalesCalibrationPeriod.intValue = value
     }
 
-    private val _scalesRangeCapacity = mutableStateOf(TextFieldState())
-    val scalesRangeCapacity: State<TextFieldState> = _scalesRangeCapacity
-    fun setScalesRangeCapacity(value: Int = 0, error: String? = null) {
-        _scalesRangeCapacity.value = scalesRangeCapacity.value.copy(
-            int = value,
-            error = error
-        )
+    private val _scalesRangeCapacity = mutableIntStateOf(0)
+    val scalesRangeCapacity: State<Int> = _scalesRangeCapacity
+    fun setScalesRangeCapacity(value: Int) {
+        _scalesRangeCapacity.intValue = value
     }
 
     private val _scalesParentMachineOfEquipment = mutableStateOf(TextFieldState())
     val scalesParentMachineOfEquipment: State<TextFieldState> = _scalesParentMachineOfEquipment
-    fun setScalesParentMachineOfEquipment(value: String = "", error: String? = null) {
+    fun setScalesParentMachineOfEquipment(value: String) {
         _scalesParentMachineOfEquipment.value = scalesParentMachineOfEquipment.value.copy(
-            text = value,
-            error = error
+            text = value
         )
     }
 
     private val _scalesSerialNumber = mutableStateOf(TextFieldState())
     val scalesSerialNumber: State<TextFieldState> = _scalesSerialNumber
-    fun setScalesSerialNumber(value: String = "", error: String? = null) {
+    fun setScalesSerialNumber(value: String) {
         _scalesSerialNumber.value = scalesSerialNumber.value.copy(
-            text = value,
-            error = error
+            text = value
         )
     }
 
     private val _scalesUnit = mutableStateOf(TextFieldState())
     val scalesUnit: State<TextFieldState> = _scalesUnit
-    fun setScalesUnit(value: String = "", error: String? = null) {
+    fun setScalesUnit(value: String) {
         _scalesUnit.value = scalesUnit.value.copy(
-            text = value,
-            error = error
+            text = value
         )
     }
 
@@ -200,7 +186,9 @@ class CreateScalesViewModel @Inject constructor(
                     )
                 }
 
-                else -> {}
+                else -> {
+                    createNewScales
+                }
             }
         }
     }
@@ -249,7 +237,7 @@ class CreateScalesViewModel @Inject constructor(
                 is Resource.Success -> {
                     _createNewScales.value = createNewScales.value.copy(
                         isLoading = false,
-                        scalesIsSaved = result.data ?: error("Data is null")
+                        scalesIsSaved = result.data
                     )
 
                     _eventFlow.emit(

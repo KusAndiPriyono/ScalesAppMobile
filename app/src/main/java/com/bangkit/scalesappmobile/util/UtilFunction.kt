@@ -18,6 +18,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.BufferedOutputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -85,24 +86,62 @@ private fun convertStringErrorResponseToJsonObject(jsonString: String): ErrorRes
     return gson.fromJson(jsonString, ErrorResponse::class.java)
 }
 
-fun createMultipartBody(uri: Uri, multipartName: String): MultipartBody.Part {
-    val documentImage = BitmapFactory.decodeFile(uri.path!!)
+fun Date.toFormattedString(): String {
+    val simpleDateFormat = SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault())
+    return simpleDateFormat.format(this)
+}
+
+fun createMultipartBody(context: Context, uri: Uri, multipartName: String): MultipartBody.Part {
+    val documentImage = context.imageUriToImageBitmap(uri)
     val file = File(uri.path!!)
     val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
-    documentImage.compress(Bitmap.CompressFormat.PNG, 100, os)
+    documentImage.compress(Bitmap.CompressFormat.JPEG, 100, os)
     os.close()
     val requestBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
     return MultipartBody.Part.createFormData(name = multipartName, file.name, requestBody)
 }
 
+fun compressImage(bitmap: Bitmap): Bitmap {
+    val outputStream = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
+    val byteArray = outputStream.toByteArray()
+    return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+}
+
+@Throws(IOException::class)
+fun saveImage(context: Context, bitmap: Bitmap): Uri? {
+    val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+    val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    val imageFile = File.createTempFile(
+        "JPEG_${timestamp}_",
+        ".jpg",
+        storageDir
+    )
+
+    return try {
+        imageFile.outputStream().use { outputStream ->
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
+        }
+        Uri.fromFile(imageFile)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+
+lateinit var currentPhotoPath: String
 fun createImageFile(context: Context): File? {
     val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
     val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
     return File.createTempFile(
-        "PNG_${timeStamp}_",
-        ".png",
+        "JPEG_${timeStamp}_",
+        ".jpg",
         storageDir
-    )
+    ).apply {
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = absolutePath
+    }
 }
 
 @Suppress("DEPRECATION")

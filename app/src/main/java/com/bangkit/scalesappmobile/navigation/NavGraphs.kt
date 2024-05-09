@@ -6,6 +6,7 @@ import com.bangkit.scalesappmobile.presentatiom.destinations.ForgotPasswordScree
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LandingPageScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LoginScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.NextCreateScalesScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.OnBoardingScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
@@ -49,7 +50,8 @@ object NavGraphs {
             DetailsScreenDestination,
             CreateScalesScreenDestination,
             LandingPageScreenDestination,
-            SettingsScreenDestination
+            SettingsScreenDestination,
+            NextCreateScalesScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 
