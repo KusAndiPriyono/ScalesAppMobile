@@ -2,6 +2,7 @@ package com.bangkit.scalesappmobile.data.remote
 
 import com.bangkit.scalesappmobile.data.remote.scales.AuthResponse
 import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
+import com.bangkit.scalesappmobile.data.remote.scales.ErrorResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetAllScalesResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesDetailResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesUpdateResponse
@@ -43,9 +44,9 @@ interface ScalesApiService {
     @Multipart
     @POST("api/v1/scales")
     suspend fun uploadImageScales(
-        @Part imageCover: MultipartBody.Part,
-        @Part("imageCover") requestBody: RequestBody,
-    ): CreateScalesResponse
+        @Part image: MultipartBody.Part,
+        @Part("imageCover") imageCover: RequestBody,
+    ): ErrorResponse
 
     @PATCH("api/v1/scales/{id}")
     suspend fun updateScales(

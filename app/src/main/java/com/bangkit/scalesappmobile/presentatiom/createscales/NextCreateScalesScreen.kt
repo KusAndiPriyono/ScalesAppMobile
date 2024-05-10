@@ -22,7 +22,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -39,7 +38,6 @@ import com.bangkit.scalesappmobile.presentatiom.createscales.component.NextCalib
 import com.bangkit.scalesappmobile.presentatiom.home.component.StandardToolbar
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.bangkit.scalesappmobile.util.UiEvents
-import com.bangkit.scalesappmobile.util.createMultipartBody
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.flow.collectLatest
 
@@ -62,11 +60,11 @@ fun NextCreateScalesScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val scaffoldState = rememberBottomSheetScaffoldState()
 
-    val calibrationDate by viewModel.scalesCalibrationDate
-    val calibrationPeriod by viewModel.scalesCalibrationPeriod
-    val equipmentDescription by viewModel.scalesEquipmentDescription
-    val nextCalibrationDate by viewModel.scalesNextCalibrationDate
-    val parentMachineOfEquipment by viewModel.scalesParentMachineOfEquipment
+    val calibrationDate = viewModel.scalesCalibrationDate.value
+    val calibrationPeriod = viewModel.scalesCalibrationPeriod.value
+    val equipmentDescription = viewModel.scalesEquipmentDescription.value
+    val nextCalibrationDate = viewModel.scalesNextCalibrationDate.value
+    val parentMachineOfEquipment = viewModel.scalesParentMachineOfEquipment.value
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -96,13 +94,23 @@ fun NextCreateScalesScreen(
                     Text(text = "Create Scales", fontSize = 18.sp)
                     SaveTextButtonContent(isLoading = viewModel.createNewScales.value.isLoading,
                         onClick = {
+                            if (calibrationDate.text.isEmpty()) {
+                                viewModel.setScalesCalibrationDate(error = "Tanggal Kalibrasi tidak boleh kosong")
+                                return@SaveTextButtonContent
+                            } else if (nextCalibrationDate.text.isEmpty()) {
+                                viewModel.setScalesNextCalibrationDate(error = "Tanggal Kalibrasi tidak boleh kosong")
+                                return@SaveTextButtonContent
+                            } else if (equipmentDescription.text.isEmpty()) {
+                                viewModel.setScalesEquipmentDescription(error = "Deskripsi Alat tidak boleh kosong")
+                                return@SaveTextButtonContent
+                            } else if (parentMachineOfEquipment.text.isEmpty()) {
+                                viewModel.setScalesParentMachineOfEquipment(error = "Mesin Induk Alat tidak boleh kosong")
+                                return@SaveTextButtonContent
+                            }
+
                             keyboardController?.hide()
                             viewModel.createNewScales(
-                                imageCover = createMultipartBody(
-                                    context = context,
-                                    uri = imageCover,
-                                    multipartName = "imageCover"
-                                ),
+                                imageCover = imageCover.path.toString(),
                                 brand = brand,
                                 kindType = kindType,
                                 serialNumber = serialNumber,
@@ -111,10 +119,10 @@ fun NextCreateScalesScreen(
                                 unit = unit,
                                 name = name,
                                 calibrationPeriod = calibrationPeriod,
-                                calibrationDate = calibrationDate.toString(),
-                                equipmentDescription = equipmentDescription.toString(),
-                                nextCalibrationDate = nextCalibrationDate.toString(),
-                                parentMachineOfEquipment = parentMachineOfEquipment.toString(),
+                                calibrationDate = calibrationDate.text,
+                                equipmentDescription = equipmentDescription.text,
+                                nextCalibrationDate = nextCalibrationDate.text,
+                                parentMachineOfEquipment = parentMachineOfEquipment.text,
                             )
                         }
                     )
@@ -180,7 +188,7 @@ fun NextCreateScalesScreen(
                     )
                     if (calibrationDate.error != null) {
                         Text(
-                            text = calibrationDate.error.toString(),
+                            text = calibrationDate.error ?: "",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.End,
@@ -197,7 +205,7 @@ fun NextCreateScalesScreen(
                     )
                     if (nextCalibrationDate.error != null) {
                         Text(
-                            text = nextCalibrationDate.error.toString(),
+                            text = nextCalibrationDate.error ?: "",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.End,
@@ -239,7 +247,7 @@ fun NextCreateScalesScreen(
 
                     if (equipmentDescription.error != null) {
                         Text(
-                            text = equipmentDescription.error.toString(),
+                            text = equipmentDescription.error ?: "",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.End,
@@ -280,7 +288,7 @@ fun NextCreateScalesScreen(
 
                     if (parentMachineOfEquipment.error != null) {
                         Text(
-                            text = parentMachineOfEquipment.error.toString(),
+                            text = parentMachineOfEquipment.error ?: "",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.End,

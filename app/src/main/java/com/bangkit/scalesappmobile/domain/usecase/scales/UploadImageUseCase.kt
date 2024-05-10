@@ -8,8 +8,8 @@ class UploadImageUseCase @Inject constructor(
     private val createScalesRepository: CreateScalesRepository,
 ) {
     suspend operator fun invoke(
-        imageCover: MultipartBody.Part,
+        image: MultipartBody.Part,
     ) = createScalesRepository.uploadImage(
-        imageCover
+        image = image,
     )
 }

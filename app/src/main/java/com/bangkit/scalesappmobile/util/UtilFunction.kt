@@ -17,12 +17,9 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
 import timber.log.Timber
-import java.io.BufferedOutputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -91,14 +88,29 @@ fun Date.toFormattedString(): String {
     return simpleDateFormat.format(this)
 }
 
+//fun createMultipartBody(context: Context, uri: Uri, multipartName: String): MultipartBody.Part {
+//    val documentImage = context.imageUriToImageBitmap(uri)
+//    val file = File(uri.path!!)
+//    val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
+//    documentImage.compress(Bitmap.CompressFormat.JPEG, 100, os)
+//    os.close()
+//    val requestBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+//    return MultipartBody.Part.createFormData(name = multipartName, file.name, requestBody)
+//}
+
 fun createMultipartBody(context: Context, uri: Uri, multipartName: String): MultipartBody.Part {
     val documentImage = context.imageUriToImageBitmap(uri)
-    val file = File(uri.path!!)
-    val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
-    documentImage.compress(Bitmap.CompressFormat.JPEG, 100, os)
-    os.close()
-    val requestBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-    return MultipartBody.Part.createFormData(name = multipartName, file.name, requestBody)
+    val compressedImage = compressImage(documentImage)
+    val bitmapPath = saveImage(context, compressedImage)
+    val filename = File(bitmapPath?.path!!)
+//    val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
+//    documentImage.compress(Bitmap.CompressFormat.JPEG, 100, os)
+//    os.close()
+//    val requestBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+//    return MultipartBody.Part.createFormData(name = multipartName, file.name, requestBody)
+    // Create the request body from the saved image file
+    val requestBody = filename.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+    return MultipartBody.Part.createFormData(multipartName, filename.name, requestBody)
 }
 
 fun compressImage(bitmap: Bitmap): Bitmap {
@@ -113,8 +125,8 @@ fun saveImage(context: Context, bitmap: Bitmap): Uri? {
     val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
     val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
     val imageFile = File.createTempFile(
-        "JPEG_${timestamp}_",
-        ".jpg",
+        "PNG_${timestamp}_",
+        ".png",
         storageDir
     )
 
@@ -135,8 +147,8 @@ fun createImageFile(context: Context): File? {
     val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
     val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
     return File.createTempFile(
-        "JPEG_${timeStamp}_",
-        ".jpg",
+        "PNG_${timeStamp}_",
+        ".png",
         storageDir
     ).apply {
         // Save a file: path for use with ACTION_VIEW intents

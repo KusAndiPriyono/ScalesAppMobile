@@ -2,6 +2,7 @@ package com.bangkit.scalesappmobile.data.repository
 
 import com.bangkit.scalesappmobile.data.remote.ScalesApiService
 import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
+import com.bangkit.scalesappmobile.data.remote.scales.ErrorResponse
 import com.bangkit.scalesappmobile.domain.model.CreateScalesRequest
 import com.bangkit.scalesappmobile.domain.repository.CreateScalesRepository
 import com.bangkit.scalesappmobile.domain.repository.ScalesRepository
@@ -55,12 +56,12 @@ class CreateScalesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun uploadImage(imageCover: MultipartBody.Part): Resource<CreateScalesResponse> {
+    override suspend fun uploadImage(image: MultipartBody.Part): Resource<ErrorResponse> {
         return safeApiCall(Dispatchers.IO) {
             val requestBody = "imageCover".toRequestBody("multipart/form-data".toMediaTypeOrNull())
             scalesApiService.uploadImageScales(
-                imageCover = imageCover,
-                requestBody = requestBody
+                image = image,
+                imageCover = requestBody
             )
         }
     }

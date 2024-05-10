@@ -48,7 +48,7 @@ class CoreFeatureNavigator(
         serialNumber: String,
         location: String,
         rangeCapacity: Int,
-        unit: String
+        unit: String,
     ) {
         navController.navigate(
             NextCreateScalesScreenDestination(
