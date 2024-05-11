@@ -38,6 +38,7 @@ import com.bangkit.scalesappmobile.presentatiom.createscales.component.NextCalib
 import com.bangkit.scalesappmobile.presentatiom.home.component.StandardToolbar
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.bangkit.scalesappmobile.util.UiEvents
+import com.bangkit.scalesappmobile.util.createMultipartBody
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.flow.collectLatest
 
@@ -110,7 +111,11 @@ fun NextCreateScalesScreen(
 
                             keyboardController?.hide()
                             viewModel.createNewScales(
-                                imageCover = imageCover.path.toString(),
+                                imageCover = createMultipartBody(
+                                    context = context,
+                                    uri = imageCover,
+                                    multipartName = "imageCover"
+                                ),
                                 brand = brand,
                                 kindType = kindType,
                                 serialNumber = serialNumber,

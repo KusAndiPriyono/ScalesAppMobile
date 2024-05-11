@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bangkit.scalesappmobile.domain.usecase.scales.CreateNewScalesUseCase
-import com.bangkit.scalesappmobile.domain.usecase.scales.UploadImageUseCase
 import com.bangkit.scalesappmobile.presentatiom.auth.state.TextFieldState
 import com.bangkit.scalesappmobile.presentatiom.createscales.state.CreateScalesState
 import com.bangkit.scalesappmobile.util.Resource
@@ -16,12 +15,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateScalesViewModel @Inject constructor(
     private val createNewScalesUseCase: CreateNewScalesUseCase,
-    private val uploadImageUseCase: UploadImageUseCase,
+//    private val uploadImageUseCase: UploadImageUseCase,
 ) : ViewModel() {
     private val _eventFlow = MutableSharedFlow<UiEvents>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -141,7 +141,7 @@ class CreateScalesViewModel @Inject constructor(
     val createNewScales: State<CreateScalesState> = _createNewScales
 
     fun createNewScales(
-        imageCover: String,
+        imageCover: MultipartBody.Part,
         brand: String,
         calibrationDate: String,
         calibrationPeriod: Int,
@@ -161,12 +161,12 @@ class CreateScalesViewModel @Inject constructor(
             )
 
             when (
-                val uploadResult = createNewScalesUseCase(
+                val result = createNewScalesUseCase(
                     brand = brand,
                     calibrationDate = calibrationDate,
                     calibrationPeriod = calibrationPeriod,
                     equipmentDescription = equipmentDescription,
-                    imageCover = imageCover,
+                    imageCover = imageCover.toString(),
                     kindType = kindType,
                     location = location,
                     name = name,
@@ -175,17 +175,16 @@ class CreateScalesViewModel @Inject constructor(
                     rangeCapacity = rangeCapacity,
                     serialNumber = serialNumber,
                     unit = unit,
-
-                    )
+                )
             ) {
                 is Resource.Error -> {
                     _createNewScales.value = createNewScales.value.copy(
                         isLoading = false,
-                        error = uploadResult.message
+                        error = result.message
                     )
                     _eventFlow.emit(
                         UiEvents.SnackbarEvent(
-                            message = uploadResult.message ?: "An unknown error occurred"
+                            message = result.message ?: "An unknown error occurred"
                         )
                     )
                 }
@@ -197,7 +196,7 @@ class CreateScalesViewModel @Inject constructor(
                     )
                     _eventFlow.emit(
                         UiEvents.SnackbarEvent(
-                            message = "create new scales successfully"
+                            message = "Scales created successfully"
                         )
                     )
                     _eventFlow.emit(
@@ -213,6 +212,7 @@ class CreateScalesViewModel @Inject constructor(
             }
         }
     }
+
 
     val scalesNames = listOf(
         "Timbangan Digital",

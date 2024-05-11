@@ -90,9 +90,9 @@ fun Date.toFormattedString(): String {
 
 //fun createMultipartBody(context: Context, uri: Uri, multipartName: String): MultipartBody.Part {
 //    val documentImage = context.imageUriToImageBitmap(uri)
-//    val file = File(uri.path!!)
+//    val file = File(context.cacheDir, "temp.png")
 //    val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
-//    documentImage.compress(Bitmap.CompressFormat.JPEG, 100, os)
+//    documentImage.compress(Bitmap.CompressFormat.PNG, 100, os)
 //    os.close()
 //    val requestBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
 //    return MultipartBody.Part.createFormData(name = multipartName, file.name, requestBody)
@@ -110,7 +110,7 @@ fun createMultipartBody(context: Context, uri: Uri, multipartName: String): Mult
 //    return MultipartBody.Part.createFormData(name = multipartName, file.name, requestBody)
     // Create the request body from the saved image file
     val requestBody = filename.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-    return MultipartBody.Part.createFormData(multipartName, filename.name, requestBody)
+    return MultipartBody.Part.createFormData(name = multipartName, filename.name, requestBody)
 }
 
 fun compressImage(bitmap: Bitmap): Bitmap {

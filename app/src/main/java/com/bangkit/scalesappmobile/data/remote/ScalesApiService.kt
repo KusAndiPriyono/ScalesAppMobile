@@ -2,11 +2,9 @@ package com.bangkit.scalesappmobile.data.remote
 
 import com.bangkit.scalesappmobile.data.remote.scales.AuthResponse
 import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
-import com.bangkit.scalesappmobile.data.remote.scales.ErrorResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetAllScalesResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesDetailResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesUpdateResponse
-import com.bangkit.scalesappmobile.domain.model.CreateScalesRequest
 import com.bangkit.scalesappmobile.domain.model.ForgotPasswordRequest
 import com.bangkit.scalesappmobile.domain.model.LoginRequest
 import com.bangkit.scalesappmobile.domain.model.RefreshTokenRequest
@@ -36,17 +34,31 @@ interface ScalesApiService {
         @Path("id") id: String,
     ): GetScalesDetailResponse
 
-    @POST("api/v1/scales")
-    suspend fun createNewScales(
-        @Body createScalesRequest: CreateScalesRequest,
-    ): CreateScalesResponse
-
     @Multipart
     @POST("api/v1/scales")
-    suspend fun uploadImageScales(
+    suspend fun createNewScales(
+        @Part("brand") brand: RequestBody,
+        @Part("calibrationDate") calibrationDate: RequestBody,
+        @Part("calibrationPeriod") calibrationPeriod: RequestBody,
+        @Part("equipmentDescription") equipmentDescription: RequestBody,
+        @Part("kindType") kindType: RequestBody,
+        @Part("location") location: RequestBody,
+        @Part("name") name: RequestBody,
+        @Part("nextCalibrationDate") nextCalibrationDate: RequestBody,
+        @Part("parentMachineOfEquipment") parentMachineOfEquipment: RequestBody,
+        @Part("rangeCapacity") rangeCapacity: RequestBody,
+        @Part("serialNumber") serialNumber: RequestBody,
+        @Part("unit") unit: RequestBody,
         @Part image: MultipartBody.Part,
-        @Part("imageCover") imageCover: RequestBody,
-    ): ErrorResponse
+        @Part("imageCover") requestBody: RequestBody,
+    ): CreateScalesResponse
+
+//    @Multipart
+//    @POST("api/v1/scales")
+//    suspend fun uploadImageScales(
+//        @Part image: MultipartBody.Part,
+//        @Part("imageCover") imageCover: RequestBody,
+//    ): ErrorResponse
 
     @PATCH("api/v1/scales/{id}")
     suspend fun updateScales(
