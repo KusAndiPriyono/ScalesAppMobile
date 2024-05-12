@@ -1,6 +1,7 @@
 package com.bangkit.scalesappmobile.domain.usecase.scales
 
 import com.bangkit.scalesappmobile.domain.repository.CreateScalesRepository
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 class CreateNewScalesUseCase @Inject constructor(
@@ -11,7 +12,7 @@ class CreateNewScalesUseCase @Inject constructor(
         calibrationDate: String,
         calibrationPeriod: Int,
         equipmentDescription: String,
-        imageCover: String,
+        imageCover: MultipartBody.Part,
         kindType: String,
         location: String,
         name: String,

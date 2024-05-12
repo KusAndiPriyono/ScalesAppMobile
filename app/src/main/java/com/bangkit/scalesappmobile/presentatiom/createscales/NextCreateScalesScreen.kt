@@ -1,6 +1,8 @@
 package com.bangkit.scalesappmobile.presentatiom.createscales
 
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,7 +15,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -22,6 +28,11 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,15 +44,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
-import com.bangkit.scalesappmobile.presentatiom.createscales.component.CalibrationDateTextField
-import com.bangkit.scalesappmobile.presentatiom.createscales.component.NextCalibrationDateTextField
+import com.bangkit.scalesappmobile.presentatiom.createscales.state.DateType
 import com.bangkit.scalesappmobile.presentatiom.home.component.StandardToolbar
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.bangkit.scalesappmobile.util.UiEvents
-import com.bangkit.scalesappmobile.util.createMultipartBody
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
@@ -67,6 +84,32 @@ fun NextCreateScalesScreen(
     val nextCalibrationDate = viewModel.scalesNextCalibrationDate.value
     val parentMachineOfEquipment = viewModel.scalesParentMachineOfEquipment.value
 
+    var pickedCalibrationDate by remember {
+        mutableStateOf(LocalDate.now())
+    }
+    var pickedNextCalibrationDate by remember {
+        mutableStateOf(LocalDate.now())
+    }
+    val formattedCalibrationDate by remember {
+        derivedStateOf {
+            DateTimeFormatter.ofPattern("dd MMM yyyy").format(pickedCalibrationDate)
+        }
+    }
+    val formattedNextCalibrationDate by remember {
+        derivedStateOf {
+            DateTimeFormatter.ofPattern("dd MMM yyyy").format(pickedNextCalibrationDate)
+        }
+    }
+
+    var selectedDateType by remember {
+        mutableStateOf(DateType.CALIBRATION_DATE)
+    }
+
+
+    val dateDialog = rememberUseCaseState()
+
+    Timber.d("NextCreateScalesScreen: $imageCover")
+
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
@@ -81,19 +124,20 @@ fun NextCreateScalesScreen(
         }
     }
 
-    Scaffold(
-        Modifier.fillMaxSize(),
-        topBar = {
-            StandardToolbar(navigate = {
+    Scaffold(Modifier.fillMaxSize(), topBar = {
+        StandardToolbar(
+            navigate = {
                 navigator.popBackStack()
-            }, title = {
+            },
+            title = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(text = "Create Scales", fontSize = 18.sp)
-                    SaveTextButtonContent(isLoading = viewModel.createNewScales.value.isLoading,
+                    SaveTextButtonContent(
+                        isLoading = viewModel.createNewScales.value.isLoading,
                         onClick = {
                             if (calibrationDate.text.isEmpty()) {
                                 viewModel.setScalesCalibrationDate(error = "Tanggal Kalibrasi tidak boleh kosong")
@@ -111,11 +155,7 @@ fun NextCreateScalesScreen(
 
                             keyboardController?.hide()
                             viewModel.createNewScales(
-                                imageCover = createMultipartBody(
-                                    context = context,
-                                    uri = imageCover,
-                                    multipartName = "imageCover"
-                                ),
+                                imageCover = imageCover.toString(),
                                 brand = brand,
                                 kindType = kindType,
                                 serialNumber = serialNumber,
@@ -133,10 +173,9 @@ fun NextCreateScalesScreen(
                     )
                 }
             },
-                showBackArrow = true
-            )
-        }
-    ) { paddingValues ->
+            showBackArrow = true
+        )
+    }) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -184,39 +223,109 @@ fun NextCreateScalesScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    CalibrationDateTextField(
-                        calibrationDate = calibrationDate,
-                        setScalesCalibrationDate = {
-                            viewModel.setScalesCalibrationDate(it)
-                        },
-                        isError = calibrationDate.error != null
-                    )
-                    if (calibrationDate.error != null) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(.5f),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         Text(
-                            text = calibrationDate.error ?: "",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth()
+                            text = "Tanggal Kalibrasi", style = MaterialTheme.typography.labelMedium
                         )
+
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = formattedCalibrationDate,
+                            onValueChange = {
+                                viewModel.setScalesCalibrationDate(formattedCalibrationDate)
+                            },
+                            colors = TextFieldDefaults.colors(),
+                            trailingIcon = {
+                                IconButton(onClick = {
+                                    selectedDateType = DateType.CALIBRATION_DATE
+                                    dateDialog.show()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.DateRange,
+                                        contentDescription = "Date Range Icon",
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            },
+                            isError = calibrationDate.error != null
+                        )
+
+                        if (calibrationDate.error != null) {
+                            Text(
+                                text = calibrationDate.error,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
 
-                    NextCalibrationDateTextField(
-                        nextCalibrationDate = nextCalibrationDate,
-                        setScalesNextCalibrationDate = {
-                            viewModel.setScalesNextCalibrationDate(it)
-                        },
-                        isError = nextCalibrationDate.error != null
-                    )
-                    if (nextCalibrationDate.error != null) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         Text(
-                            text = nextCalibrationDate.error ?: "",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth()
+                            text = "Tgl Kalibrasi Selanjutnya",
+                            style = MaterialTheme.typography.labelMedium
                         )
+
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = formattedNextCalibrationDate,
+                            onValueChange = {
+                                viewModel.setScalesNextCalibrationDate(formattedNextCalibrationDate)
+                            },
+                            colors = TextFieldDefaults.colors(),
+                            trailingIcon = {
+                                IconButton(onClick = {
+                                    selectedDateType = DateType.NEXT_CALIBRATION_DATE
+                                    dateDialog.show()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.DateRange,
+                                        contentDescription = "Date Range Icon",
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            },
+                            isError = calibrationDate.error != null
+                        )
+
+                        if (calibrationDate.error != null) {
+                            Text(
+                                text = calibrationDate.error,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
+
+                    CalendarDialog(
+                        state = dateDialog,
+                        selection = CalendarSelection.Date { date ->
+                            when (selectedDateType) {
+                                DateType.CALIBRATION_DATE -> {
+                                    pickedCalibrationDate = date
+                                    viewModel.setScalesCalibrationDate(date.toString())
+                                }
+
+                                DateType.NEXT_CALIBRATION_DATE -> {
+                                    pickedNextCalibrationDate = date
+                                    viewModel.setScalesNextCalibrationDate(date.toString())
+                                }
+                            }
+                        },
+                        config = CalendarConfig(
+                            monthSelection = true,
+                            yearSelection = true
+                        )
+                    )
                 }
             }
 
@@ -227,8 +336,7 @@ fun NextCreateScalesScreen(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "Deskripsi Alat",
-                        style = MaterialTheme.typography.labelMedium
+                        text = "Deskripsi Alat", style = MaterialTheme.typography.labelMedium
                     )
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
@@ -252,7 +360,7 @@ fun NextCreateScalesScreen(
 
                     if (equipmentDescription.error != null) {
                         Text(
-                            text = equipmentDescription.error ?: "",
+                            text = equipmentDescription.error,
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.End,
@@ -268,8 +376,7 @@ fun NextCreateScalesScreen(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "Mesin Induk Alat",
-                        style = MaterialTheme.typography.labelMedium
+                        text = "Mesin Induk Alat", style = MaterialTheme.typography.labelMedium
                     )
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
@@ -293,7 +400,7 @@ fun NextCreateScalesScreen(
 
                     if (parentMachineOfEquipment.error != null) {
                         Text(
-                            text = parentMachineOfEquipment.error ?: "",
+                            text = parentMachineOfEquipment.error,
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.End,

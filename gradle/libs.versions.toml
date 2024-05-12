@@ -1,10 +1,12 @@
 [versions]
 accompanistSwiperefresh = "0.32.0"
 agp = "8.3.2"
+calendar = "1.2.1"
 coilCompose = "2.6.0"
 converterGson = "2.9.0"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.0"
+desugar_jdk_libs = "2.0.4"
 easycrop = "0.1.1"
 hiltAndroid = "2.50"
 hiltAndroidCompiler = "2.50"
@@ -42,8 +44,10 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingRuntimeKtx" }
 androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
 androidx-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
+calendar = { module = "com.maxkeppeler.sheets-compose-dialogs:calendar", version.ref = "calendar" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 easycrop = { module = "io.github.mr0xf00:easycrop", version.ref = "easycrop" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }

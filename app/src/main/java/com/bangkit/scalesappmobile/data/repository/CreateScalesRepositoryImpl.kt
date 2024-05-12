@@ -7,7 +7,6 @@ import com.bangkit.scalesappmobile.domain.repository.DataStoreRepository
 import com.bangkit.scalesappmobile.util.Resource
 import com.bangkit.scalesappmobile.util.safeApiCall
 import kotlinx.coroutines.Dispatchers
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
@@ -21,7 +20,7 @@ class CreateScalesRepositoryImpl @Inject constructor(
         calibrationDate: String,
         calibrationPeriod: Int,
         equipmentDescription: String,
-        imageCover: String,
+        imageCover: MultipartBody.Part,
         kindType: String,
         location: String,
         name: String,
@@ -32,9 +31,7 @@ class CreateScalesRepositoryImpl @Inject constructor(
         unit: String,
     ): Resource<CreateScalesResponse> {
         return safeApiCall(Dispatchers.IO) {
-            val requestBody = "imageCover".toRequestBody("multipart/form-data".toMediaTypeOrNull())
             scalesApiService.createNewScales(
-                image = MultipartBody.Part.createFormData("imageCover", imageCover),
                 brand = brand.toRequestBody(),
                 calibrationDate = calibrationDate.toRequestBody(),
                 calibrationPeriod = calibrationPeriod.toString().toRequestBody(),
@@ -47,7 +44,7 @@ class CreateScalesRepositoryImpl @Inject constructor(
                 rangeCapacity = rangeCapacity.toString().toRequestBody(),
                 serialNumber = serialNumber.toRequestBody(),
                 unit = unit.toRequestBody(),
-                requestBody = requestBody
+                imageCover = imageCover
             )
         }
     }

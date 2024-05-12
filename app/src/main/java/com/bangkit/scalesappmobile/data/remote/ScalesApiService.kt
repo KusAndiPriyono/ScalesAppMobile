@@ -49,8 +49,7 @@ interface ScalesApiService {
         @Part("rangeCapacity") rangeCapacity: RequestBody,
         @Part("serialNumber") serialNumber: RequestBody,
         @Part("unit") unit: RequestBody,
-        @Part image: MultipartBody.Part,
-        @Part("imageCover") requestBody: RequestBody,
+        @Part imageCover: MultipartBody.Part,
     ): CreateScalesResponse
 
 //    @Multipart

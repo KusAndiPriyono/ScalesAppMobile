@@ -133,6 +133,15 @@ dependencies {
 
     //ImageCropper
     implementation(libs.easycrop)
+
+    // Desugar JDK
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // CALENDAR
+    implementation(libs.calendar)
+
+//    // CLOCK
+//    implementation("com.maxkeppeler.sheets-compose-dialogs:clock:1.2.1")
 }
 
 kotlin {

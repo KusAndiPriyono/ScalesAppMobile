@@ -2,6 +2,7 @@ package com.bangkit.scalesappmobile.domain.repository
 
 import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
 import com.bangkit.scalesappmobile.util.Resource
+import okhttp3.MultipartBody
 
 interface CreateScalesRepository {
 
@@ -10,7 +11,7 @@ interface CreateScalesRepository {
         calibrationDate: String,
         calibrationPeriod: Int,
         equipmentDescription: String,
-        imageCover: String,
+        imageCover: MultipartBody.Part,
         kindType: String,
         location: String,
         name: String,

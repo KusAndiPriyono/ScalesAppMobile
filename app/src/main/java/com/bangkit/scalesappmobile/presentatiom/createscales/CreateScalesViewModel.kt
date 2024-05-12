@@ -141,7 +141,7 @@ class CreateScalesViewModel @Inject constructor(
     val createNewScales: State<CreateScalesState> = _createNewScales
 
     fun createNewScales(
-        imageCover: MultipartBody.Part,
+        imageCover: String,
         brand: String,
         calibrationDate: String,
         calibrationPeriod: Int,
@@ -166,7 +166,10 @@ class CreateScalesViewModel @Inject constructor(
                     calibrationDate = calibrationDate,
                     calibrationPeriod = calibrationPeriod,
                     equipmentDescription = equipmentDescription,
-                    imageCover = imageCover.toString(),
+                    imageCover = MultipartBody.Part.createFormData(
+                        "imageCover",
+                        imageCover
+                    ),
                     kindType = kindType,
                     location = location,
                     name = name,
@@ -192,7 +195,7 @@ class CreateScalesViewModel @Inject constructor(
                 is Resource.Success -> {
                     _createNewScales.value = createNewScales.value.copy(
                         isLoading = false,
-                        createNewScales = true
+                        uploadResponse = true
                     )
                     _eventFlow.emit(
                         UiEvents.SnackbarEvent(
