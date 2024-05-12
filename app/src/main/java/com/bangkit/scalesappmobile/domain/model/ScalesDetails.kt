@@ -1,7 +1,10 @@
 package com.bangkit.scalesappmobile.domain.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class ScalesDetails(
     @SerializedName("brand")
     val brand: String,
@@ -10,12 +13,12 @@ data class ScalesDetails(
     @SerializedName("calibrationPeriod")
     val calibrationPeriod: Int,
     @SerializedName("calibrationPeriodInYears")
-    val calibrationPeriodInYears: Int,
+    val calibrationPeriodInYears: Double,
     @SerializedName("equipmentDescription")
     val equipmentDescription: String,
     @SerializedName("forms")
     val forms: List<Form>,
-    @SerializedName("_id")
+    @SerializedName("id")
     val id: String,
     @SerializedName("imageCover")
     val imageCover: String,
@@ -34,7 +37,7 @@ data class ScalesDetails(
     @SerializedName("rangeCapacity")
     val rangeCapacity: Int,
     @SerializedName("ratingsAverage")
-    val ratingsAverage: Int,
+    val ratingsAverage: Double,
     @SerializedName("ratingsQuantity")
     val ratingsQuantity: Int,
     @SerializedName("reviews")
@@ -47,6 +50,4 @@ data class ScalesDetails(
     val status: String,
     @SerializedName("unit")
     val unit: String,
-    @SerializedName("__v")
-    val v: Int,
-)
+) : Parcelable

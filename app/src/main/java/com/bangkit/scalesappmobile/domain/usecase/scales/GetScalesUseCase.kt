@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetScalesUseCase @Inject constructor(
-    private val scalesRepository: ScalesRepository
+    private val scalesRepository: ScalesRepository,
 ) {
-    operator fun invoke(): Flow<PagingData<Scales>> {
-        return scalesRepository.getScales()
+    operator fun invoke(location: String?): Flow<PagingData<Scales>> {
+        return scalesRepository.getScales(location)
     }
 }

@@ -43,11 +43,19 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.12"
+        kotlinCompilerExtensionVersion = "1.5.13"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
+    applicationVariants.all {
+        kotlin.sourceSets {
+            getByName(name) {
+                kotlin.srcDir("build/generated/ksp/$name/kotlin")
+            }
         }
     }
 }
@@ -72,6 +80,9 @@ dependencies {
 
     //Splash API
     implementation(libs.androidx.core.splashscreen)
+
+    //Material Icon
+    implementation(libs.androidx.material.icons.extended)
 
     //Google Fonts
     implementation(libs.androidx.ui.text.google.fonts)
@@ -107,4 +118,48 @@ dependencies {
 
     //Timber
     implementation(libs.timber)
+
+    //Chucker
+    debugImplementation(libs.library)
+    releaseImplementation(libs.library.no.op)
+
+    //Destination
+    implementation(libs.compose.destinations.animations)
+    implementation(libs.compose.destinations.core)
+    ksp(libs.compose.destinations.ksp)
+
+    //Collapsing Toolbar
+    implementation(libs.toolbar.compose)
+
+    //ImageCropper
+    implementation(libs.easycrop)
+
+    // Desugar JDK
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // CALENDAR
+    implementation(libs.calendar)
+
+//    // CLOCK
+//    implementation("com.maxkeppeler.sheets-compose-dialogs:clock:1.2.1")
+}
+
+kotlin {
+    sourceSets {
+        debug {
+            kotlin.srcDir("build/generated/ksp/debug/kotlin")
+        }
+        release {
+            kotlin.srcDir("build/generated/ksp/release/kotlin")
+        }
+    }
+}
+
+ksp {
+    arg("compose-destinations.mode", "destinations")
+    arg("compose-destinations.moduleName", "auth")
+}
+ksp {
+    arg("compose-destinations.mode", "destinations")
+    arg("compose-destinations.moduleName", "appScales")
 }

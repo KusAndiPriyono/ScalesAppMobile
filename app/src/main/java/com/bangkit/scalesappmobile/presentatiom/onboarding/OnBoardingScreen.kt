@@ -18,18 +18,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bangkit.scalesappmobile.presentatiom.common.ScalesButton
 import com.bangkit.scalesappmobile.presentatiom.common.ScalesTextButton
 import com.bangkit.scalesappmobile.presentatiom.onboarding.components.OnBoardingPage
 import com.bangkit.scalesappmobile.presentatiom.onboarding.components.PageIndicator
+import com.bangkit.scalesappmobile.presentatiom.onboarding.components.onBoardingPages
+import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
+
+@Destination
 @Composable
 fun OnBoardingScreen(
-    event: (OnBoardingEvent) -> Unit,
+    navigator: AppNavigator,
+    viewModel: OnBoardingViewModel = hiltViewModel()
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -81,7 +86,8 @@ fun OnBoardingScreen(
                 ScalesButton(text = buttonState.value[1], onClick = {
                     scope.launch {
                         if (pagerState.currentPage == 2) {
-                            event(OnBoardingEvent.SaveOnBoarding)
+                            viewModel.onEvent(OnBoardingEvent.SaveOnBoarding)
+                            navigator.openLandingPage()
                         } else {
                             pagerState.animateScrollToPage(page = pagerState.currentPage + 1)
                         }
@@ -91,10 +97,4 @@ fun OnBoardingScreen(
         }
         Spacer(modifier = Modifier.weight(0.5f))
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun OnBoardingScreenPreview() {
-    OnBoardingScreen(event = {})
 }

@@ -1,7 +1,8 @@
 package com.bangkit.scalesappmobile.data.repository
 
 import com.bangkit.scalesappmobile.data.remote.ScalesApiService
-import com.bangkit.scalesappmobile.domain.model.AuthResponse
+import com.bangkit.scalesappmobile.data.remote.scales.AuthResponse
+import com.bangkit.scalesappmobile.domain.model.ForgotPasswordRequest
 import com.bangkit.scalesappmobile.domain.model.LoginRequest
 import com.bangkit.scalesappmobile.domain.model.RegisterRequest
 import com.bangkit.scalesappmobile.domain.repository.AuthRepository
@@ -13,13 +14,13 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val scalesApiService: ScalesApiService,
-    private val dataStoreRepository: DataStoreRepository
+    private val dataStoreRepository: DataStoreRepository,
 ) : AuthRepository {
     override suspend fun registerUser(
         name: String,
         email: String,
         password: String,
-        passwordConfirm: String
+        passwordConfirm: String,
     ): Resource<AuthResponse> {
         return safeApiCall(Dispatchers.IO) {
             scalesApiService.registerUser(
@@ -44,9 +45,9 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun forgotPassword(email: String): Resource<Any> {
+    override suspend fun forgotPassword(email: String): Resource<ForgotPasswordRequest> {
         return safeApiCall(Dispatchers.IO) {
-            scalesApiService.forgotPassword(email = email)
+            scalesApiService.forgotPassword(ForgotPasswordRequest(email))
         }
     }
 
@@ -54,11 +55,11 @@ class AuthRepositoryImpl @Inject constructor(
         dataStoreRepository.clear()
     }
 
-    override suspend fun saveAccessToken(accessToken: String) {
-        dataStoreRepository.saveAccessToken(accessToken)
+    override suspend fun saveAccessToken(token: String) {
+        dataStoreRepository.saveAccessToken(token)
     }
 
-    override suspend fun saveUserId(userId: String) {
-        dataStoreRepository.saveUserId(userId)
+    override suspend fun saveUserId(id: String) {
+        dataStoreRepository.saveUserId(id)
     }
 }

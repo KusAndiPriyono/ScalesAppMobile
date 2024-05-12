@@ -17,6 +17,4 @@ data class User(
     val photo: String,
     @SerializedName("role")
     val role: String,
-    @SerializedName("__v")
-    val v: Int
 ) : Parcelable

@@ -1,4 +1,4 @@
-package com.bangkit.scalesappmobile.presentatiom.onboarding
+package com.bangkit.scalesappmobile.presentatiom.onboarding.components
 
 import androidx.annotation.DrawableRes
 import com.bangkit.scalesappmobile.R

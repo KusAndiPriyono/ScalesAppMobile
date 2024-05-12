@@ -1,36 +1,38 @@
 package com.bangkit.scalesappmobile.presentatiom.common
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.bangkit.scalesappmobile.domain.model.Scales
+import com.bangkit.scalesappmobile.presentatiom.home.component.ScalesCardShimmerEffect
 import com.bangkit.scalesappmobile.presentatiom.home.component.ScalesItem
 
 @Composable
 fun ScalesList(
-    modifier: Modifier = Modifier,
-    scales: List<Scales>,
-    onClick: (Scales) -> Unit
+    modifier: Modifier = Modifier, scales: List<Scales>, onClick: (Scales) -> Unit,
 ) {
     if (scales.isEmpty()) {
 
     }
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
+    LazyVerticalGrid(
+        modifier = modifier.fillMaxWidth(),
+        columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(24.dp),
         contentPadding = PaddingValues(all = 6.dp)
     ) {
         items(
             count = scales.size,
         ) {
-            scales[it]?.let { scales ->
+            scales[it].let { scales ->
                 ScalesItem(scales = scales, onClick = { onClick(scales) })
             }
         }
@@ -42,16 +44,18 @@ fun ScalesList(
 fun ScalesList(
     modifier: Modifier = Modifier,
     scales: LazyPagingItems<Scales>,
-    onClick: (Scales) -> Unit
+    onClick: (Scales) -> Unit,
 ) {
 
     val handlePagingResult = handlePagingResult(scales)
 
 
     if (handlePagingResult) {
-        LazyColumn(
-            modifier = modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+        LazyVerticalGrid(
+            modifier = modifier.fillMaxWidth(),
+            columns = GridCells.Fixed(2),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
             contentPadding = PaddingValues(all = 6.dp)
         ) {
             items(
@@ -82,7 +86,7 @@ fun handlePagingResult(scales: LazyPagingItems<Scales>): Boolean {
         }
 
         error != null -> {
-//            EmptyScreen(error = error)
+            EmptyContent()
             false
         }
 
@@ -94,11 +98,23 @@ fun handlePagingResult(scales: LazyPagingItems<Scales>): Boolean {
 
 @Composable
 fun ShimmerEffect() {
-    Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
-        repeat(10) {
-//            ArticleCardShimmerEffect(
-//                modifier = Modifier.padding(horizontal = MediumPadding1)
-//            )
+    LazyVerticalGrid(
+        modifier = Modifier.fillMaxWidth(),
+        columns = GridCells.Fixed(2),
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        contentPadding = PaddingValues(all = 24.dp)
+    ) {
+        repeat(6) {
+            item {
+                ScalesCardShimmerEffect()
+            }
         }
+    }
+}
+
+@Composable
+fun EmptyContent() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        ErrorStateComponent(errorMessage = "No data found.")
     }
 }

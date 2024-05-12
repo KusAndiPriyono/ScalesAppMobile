@@ -1,4 +1,4 @@
-package com.bangkit.scalesappmobile.domain.model
+package com.bangkit.scalesappmobile.data.remote.scales
 
 import com.google.gson.annotations.SerializedName
 
