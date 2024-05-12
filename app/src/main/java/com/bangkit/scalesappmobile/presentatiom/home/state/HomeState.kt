@@ -1,6 +1,4 @@
-package com.bangkit.scalesappmobile.presentatiom.home
-
-import com.bangkit.scalesappmobile.data.remote.scales.AuthResponse
+package com.bangkit.scalesappmobile.presentatiom.home.state
 
 data class HomeState(
     val isLoading: Boolean = false,

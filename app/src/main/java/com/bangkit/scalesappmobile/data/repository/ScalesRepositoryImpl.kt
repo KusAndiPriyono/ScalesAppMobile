@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.bangkit.scalesappmobile.data.remote.ScalesApiService
 import com.bangkit.scalesappmobile.data.remote.ScalesPagingSource
+import com.bangkit.scalesappmobile.domain.model.Location
 import com.bangkit.scalesappmobile.domain.model.Scales
 import com.bangkit.scalesappmobile.domain.model.ScalesDetails
 import com.bangkit.scalesappmobile.domain.repository.ScalesRepository
@@ -15,9 +16,9 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ScalesRepositoryImpl @Inject constructor(
-    private val scalesApiService: ScalesApiService
+    private val scalesApiService: ScalesApiService,
 ) : ScalesRepository {
-    override fun getScales(): Flow<PagingData<Scales>> {
+    override fun getScales(location: String?): Flow<PagingData<Scales>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
             pagingSourceFactory = {
@@ -36,6 +37,13 @@ class ScalesRepositoryImpl @Inject constructor(
     override suspend fun getScalesUpdate(token: String, id: String): Resource<ScalesDetails> {
         return safeApiCall(Dispatchers.IO) {
             val response = scalesApiService.updateScales(token = "Bearer $token", id = id)
+            response.data
+        }
+    }
+
+    override suspend fun getScalesLocations(): Resource<List<Location>> {
+        return safeApiCall(Dispatchers.IO) {
+            val response = scalesApiService.getLocations()
             response.data
         }
     }
