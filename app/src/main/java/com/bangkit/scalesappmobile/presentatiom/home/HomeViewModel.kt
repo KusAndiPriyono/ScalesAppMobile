@@ -4,10 +4,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import com.bangkit.scalesappmobile.domain.model.Location
-import com.bangkit.scalesappmobile.domain.model.Scales
 import com.bangkit.scalesappmobile.domain.usecase.scales.GetLocationUseCase
 import com.bangkit.scalesappmobile.domain.usecase.scales.GetScalesUseCase
 import com.bangkit.scalesappmobile.presentatiom.home.state.HomeState
@@ -15,7 +11,6 @@ import com.bangkit.scalesappmobile.presentatiom.home.state.LocationsState
 import com.bangkit.scalesappmobile.util.Resource
 import com.bangkit.scalesappmobile.util.UiEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -43,6 +38,9 @@ class HomeViewModel @Inject constructor(
     private val _locations = mutableStateOf(LocationsState())
     val locations: State<LocationsState> = _locations
 
+    private val _scalesState = mutableStateOf(HomeState())
+    val scalesState: State<HomeState> = _scalesState
+
     init {
         getLocations()
         getScales(location = selectedLocation.value)
@@ -65,12 +63,13 @@ class HomeViewModel @Inject constructor(
                 is Resource.Success -> {
                     _locations.value = locations.value.copy(
                         isLoading = false,
-                        locations = listOf(
-                            Location(
-                                id = "1",
-                                location = "All",
-                            )
-                        ) + (result.data ?: emptyList())
+                        locations = result.data ?: emptyList()
+//                        locations = listOf(
+//                            Location(
+//                                id = "id",
+//                                location = "All",
+//                            )
+//                        ) + (result.data ?: emptyList())
                     )
                 }
 
@@ -82,8 +81,36 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getScales(location: String): Flow<PagingData<Scales>> =
-        getScalesUseCase.invoke(location).cachedIn(viewModelScope)
+//    fun getScales(location: String): Flow<PagingData<Scales>> =
+//        getScalesUseCase.invoke(location).cachedIn(viewModelScope)
+
+    fun getScales(location: String) {
+        _scalesState.value = scalesState.value.copy(isLoading = true)
+
+        viewModelScope.launch {
+            when (val result = getScalesUseCase(location = location)) {
+                is Resource.Error -> {
+                    _scalesState.value = scalesState.value.copy(
+                        isLoading = false,
+                        error = result.message,
+                        scales = result.data ?: emptyList()
+                    )
+                    _eventsFlow.emit(UiEvents.SnackbarEvent(result.message ?: "An error occurred"))
+                }
+
+                is Resource.Success -> {
+                    _scalesState.value = scalesState.value.copy(
+                        isLoading = false,
+                        scales = result.data ?: emptyList()
+                    )
+                }
+
+                else -> {
+                    scalesState
+                }
+            }
+        }
+    }
 
     fun onEvent(event: HomeEvent) {
         when (event) {

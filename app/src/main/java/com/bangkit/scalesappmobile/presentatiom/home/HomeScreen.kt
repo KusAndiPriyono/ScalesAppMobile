@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -43,21 +44,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.bangkit.scalesappmobile.domain.model.Location
 import com.bangkit.scalesappmobile.domain.model.Scales
-import com.bangkit.scalesappmobile.presentatiom.common.handlePagingResult
+import com.bangkit.scalesappmobile.presentatiom.common.EmptyStateComponent
+import com.bangkit.scalesappmobile.presentatiom.common.ErrorStateComponent
 import com.bangkit.scalesappmobile.presentatiom.home.component.ScalesItem
 import com.bangkit.scalesappmobile.presentatiom.home.component.SearchBox
 import com.bangkit.scalesappmobile.presentatiom.home.component.StandardToolbar
+import com.bangkit.scalesappmobile.presentatiom.home.component.SwiperRefreshData
 import com.bangkit.scalesappmobile.presentatiom.home.state.HomeState
 import com.bangkit.scalesappmobile.presentatiom.home.state.LocationsState
 import com.bangkit.scalesappmobile.ui.theme.AngryColor
@@ -72,7 +68,8 @@ fun HomeScreen(
     navigator: HomeNavigator,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val scales = viewModel.getScales(location = String()).collectAsLazyPagingItems()
+
+    val scales = viewModel.scalesState.value
     val event = viewModel::onEvent
     val state = viewModel.state.value
     val locationsState = viewModel.locations.value
@@ -83,7 +80,7 @@ fun HomeScreen(
     HomeScreenContent(
         locationsState = locationsState,
         selectedLocation = selectedLocation,
-        scales = scales,
+        scalesState = scales,
         state = state,
         snackbarHostState = snackbarHostState,
         lazyVerticalGridState = lazyVerticalGridState,
@@ -100,6 +97,9 @@ fun HomeScreen(
         onSelectedLocation = { locationName ->
             viewModel.setSelectedLocation(locationName)
             viewModel.getScales(viewModel.selectedLocation.value)
+        },
+        onRefreshData = {
+            viewModel.getScales(viewModel.selectedLocation.value)
         }
     )
 }
@@ -109,7 +109,7 @@ fun HomeScreen(
 private fun HomeScreenContent(
     locationsState: LocationsState,
     selectedLocation: String,
-    scales: LazyPagingItems<Scales>,
+    scalesState: HomeState,
     state: HomeState,
     snackbarHostState: SnackbarHostState,
     lazyVerticalGridState: LazyGridState,
@@ -118,6 +118,7 @@ private fun HomeScreenContent(
     navigateToDetails: (Scales) -> Unit,
     onClickSearch: () -> Unit,
     onClickAddScales: () -> Unit,
+    onRefreshData: () -> Unit,
 ) {
 
     Scaffold(
@@ -161,43 +162,41 @@ private fun HomeScreenContent(
         }, snackbarHost = {
             SnackbarHost(snackbarHostState)
         }) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
+        SwiperRefreshData(
+            isRefreshingState = scalesState.isLoading,
+            onRefreshData = { onRefreshData() }
         ) {
-            val scrollState = rememberScrollState(initial = state.scrollValue)
+            Box(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+            ) {
+                val scrollState = rememberScrollState(initial = state.scrollValue)
 
-//            LaunchedEffect(selectedLocation) {
-//                scales.refresh()
-//            }
-
-            // Update the maxScrollingValue
-            LaunchedEffect(key1 = scrollState.maxValue) {
-                event(HomeEvent.UpdateMaxScrollingValue(scrollState.maxValue))
-            }
-            // Save the state of the scrolling position
-            LaunchedEffect(key1 = scrollState.value) {
-                event(HomeEvent.UpdateScrollValue(scrollState.value))
-            }
-            // Animate the scrolling
-            LaunchedEffect(key1 = state.maxScrollingValue) {
-                delay(500)
-                if (state.maxScrollingValue > 0) {
-                    scrollState.animateScrollTo(
-                        value = state.maxScrollingValue, animationSpec = infiniteRepeatable(
-                            tween(
-                                durationMillis = (state.maxScrollingValue - state.scrollValue) * 50_000 / state.maxScrollingValue,
-                                easing = LinearEasing,
-                                delayMillis = 1000
+                // Update the maxScrollingValue
+                LaunchedEffect(key1 = scrollState.maxValue) {
+                    event(HomeEvent.UpdateMaxScrollingValue(scrollState.maxValue))
+                }
+                // Save the state of the scrolling position
+                LaunchedEffect(key1 = scrollState.value) {
+                    event(HomeEvent.UpdateScrollValue(scrollState.value))
+                }
+                // Animate the scrolling
+                LaunchedEffect(key1 = state.maxScrollingValue) {
+                    delay(500)
+                    if (state.maxScrollingValue > 0) {
+                        scrollState.animateScrollTo(
+                            value = state.maxScrollingValue, animationSpec = infiniteRepeatable(
+                                tween(
+                                    durationMillis = (state.maxScrollingValue - state.scrollValue) * 50_000 / state.maxScrollingValue,
+                                    easing = LinearEasing,
+                                    delayMillis = 1000
+                                )
                             )
                         )
-                    )
+                    }
                 }
-            }
-            val handlePagingResult = handlePagingResult(scales = scales)
 
-            if (handlePagingResult) {
                 LazyVerticalGrid(
                     state = lazyVerticalGridState,
                     contentPadding = PaddingValues(16.dp),
@@ -221,11 +220,21 @@ private fun HomeScreenContent(
                         Spacer(modifier = Modifier.height(24.dp))
                     }
 
-                    items(scales.itemCount) {
-                        scales[it]?.let { scales ->
-                            ScalesItem(scales = scales, onClick = { navigateToDetails(scales) })
-                        }
+                    items(scalesState.scales) { scales ->
+                        ScalesItem(
+                            scales = scales,
+                            onClick = {
+                                navigateToDetails(scales)
+                            }
+                        )
                     }
+                }
+
+                if (!scalesState.isLoading && scalesState.error != null && scalesState.scales.isEmpty()) {
+                    ErrorStateComponent(errorMessage = scalesState.error)
+                }
+                if (!scalesState.isLoading && scalesState.error == null && scalesState.scales.isEmpty()) {
+                    EmptyStateComponent()
                 }
             }
         }
@@ -239,17 +248,20 @@ fun LocationSelection(
     selectedLocation: String,
 ) {
     Timber.tag("LocationSelection").d("LocationSelection: %s", state.locations.size)
+
+    val uniqueLocations = state.locations.distinctBy { it.location }
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        items(state.locations) { location ->
+        items(uniqueLocations) { location ->
             Timber.tag("LocationSelection").d("LocationSelection: %s", location.location)
             LocationItem(
                 location = location,
                 onClick = {
                     onClick(location.location)
-                }, selectedLocation = selectedLocation
+                },
+                selectedLocation = selectedLocation
             )
         }
     }
@@ -299,65 +311,4 @@ fun LocationItem(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    val lazyPagingItems: LazyPagingItems<Scales> = Pager(
-        config = PagingConfig(pageSize = 10),
-        pagingSourceFactory = {
-            object : PagingSource<Int, Scales>() {
-                override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Scales> {
-                    return LoadResult.Page(
-                        data = listOf(
-                            Scales(
-                                id = "1",
-                                name = "Scale 1",
-                                brand = "Brand 1",
-                                kindType = "Kind 1",
-                                location = "Location 1",
-                                status = "Status 1",
-                                imageCover = "Image 1",
-                                slug = "Slug 1",
-                                v = 1,
-                                unit = "Unit 1",
-                                serialNumber = "Serial 1",
-                                ratingsQuantity = 1,
-                                ratingsAverage = 1.0,
-                                rangeCapacity = 1,
-                                parentMachineOfEquipment = "Parent 1",
-                                nextCalibrationDate = "Next 1",
-                                measuringEquipmentIdNumber = "Measuring 1",
-                                equipmentDescription = "Equipment 1",
-                                calibrationPeriodInYears = 1.0,
-                                calibrationPeriod = 1,
-                                calibrationDate = "Calibration 1"
-                            ),
-                        ),
-                        prevKey = null,
-                        nextKey = null
-                    )
-                }
-
-                override fun getRefreshKey(state: PagingState<Int, Scales>): Int? {
-                    return null
-                }
-            }
-        }
-    ).flow.collectAsLazyPagingItems()
-
-    HomeScreenContent(
-        scales = lazyPagingItems,
-        state = HomeState(),
-        snackbarHostState = SnackbarHostState(),
-        event = {},
-        navigateToDetails = {},
-        onClickSearch = {},
-        onClickAddScales = {},
-        lazyVerticalGridState = rememberLazyGridState(),
-        locationsState = LocationsState(),
-        selectedLocation = "",
-        onSelectedLocation = { }
-    )
 }
