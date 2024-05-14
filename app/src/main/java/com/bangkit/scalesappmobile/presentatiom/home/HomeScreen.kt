@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -183,6 +184,8 @@ private fun HomeScreenContent(
                 }
             }
             val handlePagingResult = handlePagingResult(scales)
+            val filteredScales =
+                scales.itemSnapshotList.filter { selectedLocation == null || it!!.location == selectedLocation }
 
             if (handlePagingResult) {
                 LazyVerticalGrid(
@@ -209,12 +212,12 @@ private fun HomeScreenContent(
                         Spacer(modifier = Modifier.height(24.dp))
                     }
 
-                    items(scales.itemCount) {
-                        scales[it]?.let { scales ->
-//                            ScalesItem(scales = scales, onClick = { navigateToDetails(scales) })
-                            if (selectedLocation == null || scales.location == selectedLocation) {
-                                ScalesItem(scales = scales, onClick = { navigateToDetails(scales) })
-                            }
+                    items(filteredScales) { scales ->
+                        scales?.let {
+                            ScalesItem(scales = it, onClick = { navigateToDetails(scales) })
+//                            if (selectedLocation == null || scales.location == selectedLocation) {
+//                                ScalesItem(scales = scales, onClick = { navigateToDetails(scales) })
+//                            }
                         }
                     }
                 }
