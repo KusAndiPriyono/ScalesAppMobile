@@ -22,7 +22,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -39,6 +38,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,20 +46,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bangkit.scalesappmobile.domain.model.Location
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.bangkit.scalesappmobile.domain.model.Scales
-import com.bangkit.scalesappmobile.presentatiom.common.EmptyStateComponent
-import com.bangkit.scalesappmobile.presentatiom.common.ErrorStateComponent
+import com.bangkit.scalesappmobile.presentatiom.common.handlePagingResult
 import com.bangkit.scalesappmobile.presentatiom.home.component.ScalesItem
 import com.bangkit.scalesappmobile.presentatiom.home.component.SearchBox
 import com.bangkit.scalesappmobile.presentatiom.home.component.StandardToolbar
-import com.bangkit.scalesappmobile.presentatiom.home.component.SwiperRefreshData
 import com.bangkit.scalesappmobile.presentatiom.home.state.HomeState
-import com.bangkit.scalesappmobile.presentatiom.home.state.LocationsState
 import com.bangkit.scalesappmobile.ui.theme.AngryColor
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
-import timber.log.Timber
 
 
 @Destination
@@ -68,19 +65,17 @@ fun HomeScreen(
     navigator: HomeNavigator,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
-
-    val scales = viewModel.scalesState.value
+    val scales = viewModel.getScales().collectAsLazyPagingItems()
     val event = viewModel::onEvent
     val state = viewModel.state.value
-    val locationsState = viewModel.locations.value
     val snackbarHostState = remember { SnackbarHostState() }
     val lazyVerticalGridState = rememberLazyGridState()
-    val selectedLocation = viewModel.selectedLocation.value
+    val selectedLocation = viewModel.selectedLocation.collectAsState().value
+
 
     HomeScreenContent(
-        locationsState = locationsState,
         selectedLocation = selectedLocation,
-        scalesState = scales,
+        scales = scales,
         state = state,
         snackbarHostState = snackbarHostState,
         lazyVerticalGridState = lazyVerticalGridState,
@@ -96,20 +91,17 @@ fun HomeScreen(
         },
         onSelectedLocation = { locationName ->
             viewModel.setSelectedLocation(locationName)
-            viewModel.getScales(viewModel.selectedLocation.value)
+//            viewModel.getScales()
         },
-        onRefreshData = {
-            viewModel.getScales(viewModel.selectedLocation.value)
-        }
     )
 }
 
 
 @Composable
 private fun HomeScreenContent(
-    locationsState: LocationsState,
-    selectedLocation: String,
-    scalesState: HomeState,
+    selectedLocation: String?,
+//    uniqueLocations: List<String>,
+    scales: LazyPagingItems<Scales>,
     state: HomeState,
     snackbarHostState: SnackbarHostState,
     lazyVerticalGridState: LazyGridState,
@@ -118,9 +110,7 @@ private fun HomeScreenContent(
     navigateToDetails: (Scales) -> Unit,
     onClickSearch: () -> Unit,
     onClickAddScales: () -> Unit,
-    onRefreshData: () -> Unit,
 ) {
-
     Scaffold(
         topBar = {
             StandardToolbar(
@@ -162,41 +152,39 @@ private fun HomeScreenContent(
         }, snackbarHost = {
             SnackbarHost(snackbarHostState)
         }) { paddingValues ->
-        SwiperRefreshData(
-            isRefreshingState = scalesState.isLoading,
-            onRefreshData = { onRefreshData() }
+        Box(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
         ) {
-            Box(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-            ) {
-                val scrollState = rememberScrollState(initial = state.scrollValue)
+            val scrollState = rememberScrollState(initial = state.scrollValue)
 
-                // Update the maxScrollingValue
-                LaunchedEffect(key1 = scrollState.maxValue) {
-                    event(HomeEvent.UpdateMaxScrollingValue(scrollState.maxValue))
-                }
-                // Save the state of the scrolling position
-                LaunchedEffect(key1 = scrollState.value) {
-                    event(HomeEvent.UpdateScrollValue(scrollState.value))
-                }
-                // Animate the scrolling
-                LaunchedEffect(key1 = state.maxScrollingValue) {
-                    delay(500)
-                    if (state.maxScrollingValue > 0) {
-                        scrollState.animateScrollTo(
-                            value = state.maxScrollingValue, animationSpec = infiniteRepeatable(
-                                tween(
-                                    durationMillis = (state.maxScrollingValue - state.scrollValue) * 50_000 / state.maxScrollingValue,
-                                    easing = LinearEasing,
-                                    delayMillis = 1000
-                                )
+            // Update the maxScrollingValue
+            LaunchedEffect(key1 = scrollState.maxValue) {
+                event(HomeEvent.UpdateMaxScrollingValue(scrollState.maxValue))
+            }
+            // Save the state of the scrolling position
+            LaunchedEffect(key1 = scrollState.value) {
+                event(HomeEvent.UpdateScrollValue(scrollState.value))
+            }
+            // Animate the scrolling
+            LaunchedEffect(key1 = state.maxScrollingValue) {
+                delay(500)
+                if (state.maxScrollingValue > 0) {
+                    scrollState.animateScrollTo(
+                        value = state.maxScrollingValue, animationSpec = infiniteRepeatable(
+                            tween(
+                                durationMillis = (state.maxScrollingValue - state.scrollValue) * 50_000 / state.maxScrollingValue,
+                                easing = LinearEasing,
+                                delayMillis = 1000
                             )
                         )
-                    }
+                    )
                 }
+            }
+            val handlePagingResult = handlePagingResult(scales)
 
+            if (handlePagingResult) {
                 LazyVerticalGrid(
                     state = lazyVerticalGridState,
                     contentPadding = PaddingValues(16.dp),
@@ -208,11 +196,12 @@ private fun HomeScreenContent(
                     }
                     item(span = { GridItemSpan(2) }) {
                         LocationSelection(
-                            state = locationsState,
+                            scales = scales,
+//                            uniqueLocations = uniqueLocations,
                             onClick = { locationName ->
                                 onSelectedLocation(locationName)
                             },
-                            selectedLocation = selectedLocation
+                            selectedLocation = selectedLocation.toString()
                         )
                     }
 
@@ -220,21 +209,14 @@ private fun HomeScreenContent(
                         Spacer(modifier = Modifier.height(24.dp))
                     }
 
-                    items(scalesState.scales) { scales ->
-                        ScalesItem(
-                            scales = scales,
-                            onClick = {
-                                navigateToDetails(scales)
+                    items(scales.itemCount) {
+                        scales[it]?.let { scales ->
+//                            ScalesItem(scales = scales, onClick = { navigateToDetails(scales) })
+                            if (selectedLocation == null || scales.location == selectedLocation) {
+                                ScalesItem(scales = scales, onClick = { navigateToDetails(scales) })
                             }
-                        )
+                        }
                     }
-                }
-
-                if (!scalesState.isLoading && scalesState.error != null && scalesState.scales.isEmpty()) {
-                    ErrorStateComponent(errorMessage = scalesState.error)
-                }
-                if (!scalesState.isLoading && scalesState.error == null && scalesState.scales.isEmpty()) {
-                    EmptyStateComponent()
                 }
             }
         }
@@ -243,25 +225,22 @@ private fun HomeScreenContent(
 
 @Composable
 fun LocationSelection(
-    state: LocationsState,
+//    uniqueLocations: List<String>,
+    scales: LazyPagingItems<Scales>,
     onClick: (String) -> Unit,
     selectedLocation: String,
 ) {
-    Timber.tag("LocationSelection").d("LocationSelection: %s", state.locations.size)
-
-    val uniqueLocations = state.locations.distinctBy { it.location }
+    val uniqueLocations = scales.itemSnapshotList.map { it!!.location }.distinct()
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         items(uniqueLocations) { location ->
-            Timber.tag("LocationSelection").d("LocationSelection: %s", location.location)
             LocationItem(
                 location = location,
                 onClick = {
-                    onClick(location.location)
-                },
-                selectedLocation = selectedLocation
+                    onClick(location)
+                }, selectedLocation = selectedLocation
             )
         }
     }
@@ -269,11 +248,11 @@ fun LocationSelection(
 
 @Composable
 fun LocationItem(
-    location: Location,
+    location: String,
     selectedLocation: String,
     onClick: () -> Unit,
 ) {
-    val selected = selectedLocation == location.location
+    val selected = location == selectedLocation
     Card(
         modifier = Modifier
             .width(100.dp)
@@ -298,7 +277,7 @@ fun LocationItem(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = location.location,
+                text = location,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.labelMedium,
                 maxLines = 1,
