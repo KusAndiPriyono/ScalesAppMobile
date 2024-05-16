@@ -30,7 +30,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,8 +37,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -53,10 +50,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bangkit.scalesappmobile.domain.model.Scales
-import com.bangkit.scalesappmobile.presentatiom.common.LargeToolbar
 import com.bangkit.scalesappmobile.presentatiom.common.handlePagingResult
+import com.bangkit.scalesappmobile.presentatiom.home.component.Banner
 import com.bangkit.scalesappmobile.presentatiom.home.component.ScalesItem
-import com.bangkit.scalesappmobile.presentatiom.home.component.SearchBox
 import com.bangkit.scalesappmobile.presentatiom.home.state.HomeState
 import com.bangkit.scalesappmobile.ui.theme.AngryColor
 import com.ramcosta.composedestinations.annotation.Destination
@@ -99,8 +95,6 @@ fun HomeScreen(
     )
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreenContent(
     selectedLocation: String?,
@@ -117,19 +111,14 @@ private fun HomeScreenContent(
 
     Scaffold(
         topBar = {
-            LargeToolbar(
-                navigate = {},
-                title = {
-                    SearchBox(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 16.dp, top = 16.dp),
-                        onClick = onClickSearch
-                    )
-                },
-                showBackArrow = false,
-                navActions = {},
-            )
+            Column {
+                Spacer(modifier = Modifier.height(8.dp))
+                Banner(
+                    onClick = {
+                        onClickSearch()
+                    }
+                )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -191,7 +180,7 @@ private fun HomeScreenContent(
             }
             val handlePagingResult = handlePagingResult(scales)
             val filteredScales =
-                scales.itemSnapshotList.filter { selectedLocation == null || it!!.location == selectedLocation }
+                scales.itemSnapshotList.filter { selectedLocation == "All" || it!!.location == selectedLocation }
 
             if (handlePagingResult) {
                 LazyVerticalGrid(
@@ -241,7 +230,7 @@ fun LocationSelection(
     onClick: (String) -> Unit,
     selectedLocation: String,
 ) {
-    val uniqueLocations = scales.itemSnapshotList.map { it!!.location }.distinct()
+    val uniqueLocations = listOf("All") + scales.itemSnapshotList.map { it!!.location }.distinct()
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(4.dp),

@@ -25,9 +25,14 @@ class HomeViewModel @Inject constructor(
     private val _eventsFlow = MutableSharedFlow<UiEvents>()
     val eventsFlow = _eventsFlow.asSharedFlow()
 
-    private val _selectedLocation = MutableStateFlow<String?>(null)
+    private val _selectedLocation = MutableStateFlow("All")
     val selectedLocation: StateFlow<String?> = _selectedLocation
 
+//    init {
+//        viewModelScope.launch {
+//            getScalesUseCase.invoke().cachedIn(viewModelScope).collectLatest {}
+//        }
+//    }
 
     fun setSelectedLocation(location: String) {
         _selectedLocation.value = location
