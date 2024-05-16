@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +38,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,10 +53,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bangkit.scalesappmobile.domain.model.Scales
+import com.bangkit.scalesappmobile.presentatiom.common.LargeToolbar
 import com.bangkit.scalesappmobile.presentatiom.common.handlePagingResult
 import com.bangkit.scalesappmobile.presentatiom.home.component.ScalesItem
 import com.bangkit.scalesappmobile.presentatiom.home.component.SearchBox
-import com.bangkit.scalesappmobile.presentatiom.home.component.StandardToolbar
 import com.bangkit.scalesappmobile.presentatiom.home.state.HomeState
 import com.bangkit.scalesappmobile.ui.theme.AngryColor
 import com.ramcosta.composedestinations.annotation.Destination
@@ -85,23 +88,22 @@ fun HomeScreen(
             navigator.openScalesDetails(id = id.id)
         },
         onClickSearch = {
-
+            navigator.onSearchClick()
         },
         onClickAddScales = {
             navigator.openCreateScales()
         },
         onSelectedLocation = { locationName ->
             viewModel.setSelectedLocation(locationName)
-//            viewModel.getScales()
         },
     )
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreenContent(
     selectedLocation: String?,
-//    uniqueLocations: List<String>,
     scales: LazyPagingItems<Scales>,
     state: HomeState,
     snackbarHostState: SnackbarHostState,
@@ -112,9 +114,10 @@ private fun HomeScreenContent(
     onClickSearch: () -> Unit,
     onClickAddScales: () -> Unit,
 ) {
+
     Scaffold(
         topBar = {
-            StandardToolbar(
+            LargeToolbar(
                 navigate = {},
                 title = {
                     SearchBox(
@@ -123,7 +126,10 @@ private fun HomeScreenContent(
                             .padding(end = 16.dp, top = 16.dp),
                         onClick = onClickSearch
                     )
-                }, showBackArrow = false, navActions = {})
+                },
+                showBackArrow = false,
+                navActions = {},
+            )
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -198,6 +204,12 @@ private fun HomeScreenContent(
                         Spacer(modifier = Modifier.height(12.dp))
                     }
                     item(span = { GridItemSpan(2) }) {
+                        Text(text = "Kategori Lokasi", style = MaterialTheme.typography.titleLarge)
+                    }
+                    item(span = { GridItemSpan(2) }) {
+                        Spacer(modifier = Modifier.height(6.dp))
+                    }
+                    item(span = { GridItemSpan(2) }) {
                         LocationSelection(
                             scales = scales,
 //                            uniqueLocations = uniqueLocations,
@@ -215,9 +227,6 @@ private fun HomeScreenContent(
                     items(filteredScales) { scales ->
                         scales?.let {
                             ScalesItem(scales = it, onClick = { navigateToDetails(scales) })
-//                            if (selectedLocation == null || scales.location == selectedLocation) {
-//                                ScalesItem(scales = scales, onClick = { navigateToDetails(scales) })
-//                            }
                         }
                     }
                 }
@@ -228,7 +237,6 @@ private fun HomeScreenContent(
 
 @Composable
 fun LocationSelection(
-//    uniqueLocations: List<String>,
     scales: LazyPagingItems<Scales>,
     onClick: (String) -> Unit,
     selectedLocation: String,

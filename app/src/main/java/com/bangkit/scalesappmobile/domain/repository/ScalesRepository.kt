@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface ScalesRepository {
 
     fun getScales(): Flow<PagingData<Scales>>
+    suspend fun searchScales(brand: List<String>): Resource<Flow<PagingData<Scales>>>
 
     suspend fun getScalesDetail(id: String): Resource<ScalesDetails>
 
