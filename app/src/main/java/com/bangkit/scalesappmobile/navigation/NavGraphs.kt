@@ -8,6 +8,7 @@ import com.bangkit.scalesappmobile.presentatiom.destinations.LandingPageScreenDe
 import com.bangkit.scalesappmobile.presentatiom.destinations.LoginScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.NextCreateScalesScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.OnBoardingScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.SearchScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
 import com.ramcosta.composedestinations.dynamic.routedIn
@@ -50,6 +51,7 @@ object NavGraphs {
             DetailsScreenDestination,
             CreateScalesScreenDestination,
             LandingPageScreenDestination,
+            SearchScreenDestination,
             SettingsScreenDestination,
             NextCreateScalesScreenDestination
         ).routedIn(this).associateBy { it.route }

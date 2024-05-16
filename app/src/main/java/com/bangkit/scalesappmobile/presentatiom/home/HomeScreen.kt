@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -38,32 +39,24 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.bangkit.scalesappmobile.domain.model.Location
 import com.bangkit.scalesappmobile.domain.model.Scales
 import com.bangkit.scalesappmobile.presentatiom.common.handlePagingResult
+import com.bangkit.scalesappmobile.presentatiom.home.component.Banner
 import com.bangkit.scalesappmobile.presentatiom.home.component.ScalesItem
-import com.bangkit.scalesappmobile.presentatiom.home.component.SearchBox
-import com.bangkit.scalesappmobile.presentatiom.home.component.StandardToolbar
 import com.bangkit.scalesappmobile.presentatiom.home.state.HomeState
-import com.bangkit.scalesappmobile.presentatiom.home.state.LocationsState
 import com.bangkit.scalesappmobile.ui.theme.AngryColor
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
-import timber.log.Timber
 
 
 @Destination
@@ -72,16 +65,15 @@ fun HomeScreen(
     navigator: HomeNavigator,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val scales = viewModel.getScales(location = String()).collectAsLazyPagingItems()
+    val scales = viewModel.getScales().collectAsLazyPagingItems()
     val event = viewModel::onEvent
     val state = viewModel.state.value
-    val locationsState = viewModel.locations.value
     val snackbarHostState = remember { SnackbarHostState() }
     val lazyVerticalGridState = rememberLazyGridState()
-    val selectedLocation = viewModel.selectedLocation.value
+    val selectedLocation = viewModel.selectedLocation.collectAsState().value
+
 
     HomeScreenContent(
-        locationsState = locationsState,
         selectedLocation = selectedLocation,
         scales = scales,
         state = state,
@@ -92,23 +84,20 @@ fun HomeScreen(
             navigator.openScalesDetails(id = id.id)
         },
         onClickSearch = {
-
+            navigator.onSearchClick()
         },
         onClickAddScales = {
             navigator.openCreateScales()
         },
         onSelectedLocation = { locationName ->
             viewModel.setSelectedLocation(locationName)
-            viewModel.getScales(viewModel.selectedLocation.value)
-        }
+        },
     )
 }
 
-
 @Composable
 private fun HomeScreenContent(
-    locationsState: LocationsState,
-    selectedLocation: String,
+    selectedLocation: String?,
     scales: LazyPagingItems<Scales>,
     state: HomeState,
     snackbarHostState: SnackbarHostState,
@@ -122,16 +111,14 @@ private fun HomeScreenContent(
 
     Scaffold(
         topBar = {
-            StandardToolbar(
-                navigate = {},
-                title = {
-                    SearchBox(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 16.dp, top = 16.dp),
-                        onClick = onClickSearch
-                    )
-                }, showBackArrow = false, navActions = {})
+            Column {
+                Spacer(modifier = Modifier.height(8.dp))
+                Banner(
+                    onClick = {
+                        onClickSearch()
+                    }
+                )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -168,10 +155,6 @@ private fun HomeScreenContent(
         ) {
             val scrollState = rememberScrollState(initial = state.scrollValue)
 
-//            LaunchedEffect(selectedLocation) {
-//                scales.refresh()
-//            }
-
             // Update the maxScrollingValue
             LaunchedEffect(key1 = scrollState.maxValue) {
                 event(HomeEvent.UpdateMaxScrollingValue(scrollState.maxValue))
@@ -195,7 +178,9 @@ private fun HomeScreenContent(
                     )
                 }
             }
-            val handlePagingResult = handlePagingResult(scales = scales)
+            val handlePagingResult = handlePagingResult(scales)
+            val filteredScales =
+                scales.itemSnapshotList.filter { selectedLocation == "All" || it!!.location == selectedLocation }
 
             if (handlePagingResult) {
                 LazyVerticalGrid(
@@ -208,12 +193,19 @@ private fun HomeScreenContent(
                         Spacer(modifier = Modifier.height(12.dp))
                     }
                     item(span = { GridItemSpan(2) }) {
+                        Text(text = "Kategori Lokasi", style = MaterialTheme.typography.titleLarge)
+                    }
+                    item(span = { GridItemSpan(2) }) {
+                        Spacer(modifier = Modifier.height(6.dp))
+                    }
+                    item(span = { GridItemSpan(2) }) {
                         LocationSelection(
-                            state = locationsState,
+                            scales = scales,
+//                            uniqueLocations = uniqueLocations,
                             onClick = { locationName ->
                                 onSelectedLocation(locationName)
                             },
-                            selectedLocation = selectedLocation
+                            selectedLocation = selectedLocation.toString()
                         )
                     }
 
@@ -221,9 +213,9 @@ private fun HomeScreenContent(
                         Spacer(modifier = Modifier.height(24.dp))
                     }
 
-                    items(scales.itemCount) {
-                        scales[it]?.let { scales ->
-                            ScalesItem(scales = scales, onClick = { navigateToDetails(scales) })
+                    items(filteredScales) { scales ->
+                        scales?.let {
+                            ScalesItem(scales = it, onClick = { navigateToDetails(scales) })
                         }
                     }
                 }
@@ -234,21 +226,20 @@ private fun HomeScreenContent(
 
 @Composable
 fun LocationSelection(
-    state: LocationsState,
+    scales: LazyPagingItems<Scales>,
     onClick: (String) -> Unit,
     selectedLocation: String,
 ) {
-    Timber.tag("LocationSelection").d("LocationSelection: %s", state.locations.size)
+    val uniqueLocations = listOf("All") + scales.itemSnapshotList.map { it!!.location }.distinct()
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        items(state.locations) { location ->
-            Timber.tag("LocationSelection").d("LocationSelection: %s", location.location)
+        items(uniqueLocations) { location ->
             LocationItem(
                 location = location,
                 onClick = {
-                    onClick(location.location)
+                    onClick(location)
                 }, selectedLocation = selectedLocation
             )
         }
@@ -257,11 +248,11 @@ fun LocationSelection(
 
 @Composable
 fun LocationItem(
-    location: Location,
+    location: String,
     selectedLocation: String,
     onClick: () -> Unit,
 ) {
-    val selected = selectedLocation == location.location
+    val selected = location == selectedLocation
     Card(
         modifier = Modifier
             .width(100.dp)
@@ -286,7 +277,7 @@ fun LocationItem(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = location.location,
+                text = location,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.labelMedium,
                 maxLines = 1,
@@ -299,65 +290,4 @@ fun LocationItem(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    val lazyPagingItems: LazyPagingItems<Scales> = Pager(
-        config = PagingConfig(pageSize = 10),
-        pagingSourceFactory = {
-            object : PagingSource<Int, Scales>() {
-                override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Scales> {
-                    return LoadResult.Page(
-                        data = listOf(
-                            Scales(
-                                id = "1",
-                                name = "Scale 1",
-                                brand = "Brand 1",
-                                kindType = "Kind 1",
-                                location = "Location 1",
-                                status = "Status 1",
-                                imageCover = "Image 1",
-                                slug = "Slug 1",
-                                v = 1,
-                                unit = "Unit 1",
-                                serialNumber = "Serial 1",
-                                ratingsQuantity = 1,
-                                ratingsAverage = 1.0,
-                                rangeCapacity = 1,
-                                parentMachineOfEquipment = "Parent 1",
-                                nextCalibrationDate = "Next 1",
-                                measuringEquipmentIdNumber = "Measuring 1",
-                                equipmentDescription = "Equipment 1",
-                                calibrationPeriodInYears = 1.0,
-                                calibrationPeriod = 1,
-                                calibrationDate = "Calibration 1"
-                            ),
-                        ),
-                        prevKey = null,
-                        nextKey = null
-                    )
-                }
-
-                override fun getRefreshKey(state: PagingState<Int, Scales>): Int? {
-                    return null
-                }
-            }
-        }
-    ).flow.collectAsLazyPagingItems()
-
-    HomeScreenContent(
-        scales = lazyPagingItems,
-        state = HomeState(),
-        snackbarHostState = SnackbarHostState(),
-        event = {},
-        navigateToDetails = {},
-        onClickSearch = {},
-        onClickAddScales = {},
-        lazyVerticalGridState = rememberLazyGridState(),
-        locationsState = LocationsState(),
-        selectedLocation = "",
-        onSelectedLocation = { }
-    )
 }

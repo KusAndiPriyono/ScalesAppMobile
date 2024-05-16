@@ -4,4 +4,5 @@
     <string name="Status">Status: </string>
     <string name="end_date">Tanggal Kalibrasi</string>
     <string name="next_calibration_date">Kalibrasi Selanjutnya</string>
+    <string name="banner_image_description">gambar banner</string>
 </resources>

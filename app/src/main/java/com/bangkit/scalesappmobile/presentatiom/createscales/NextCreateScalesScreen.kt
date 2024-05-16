@@ -35,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -74,7 +73,7 @@ fun NextCreateScalesScreen(
     navigator: CreateScalesNavigator,
     viewModel: CreateScalesViewModel = hiltViewModel(),
 ) {
-    val context = LocalContext.current
+//    val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val scaffoldState = rememberBottomSheetScaffoldState()
 

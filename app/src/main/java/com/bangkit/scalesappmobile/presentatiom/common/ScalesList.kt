@@ -115,6 +115,6 @@ fun ShimmerEffect() {
 @Composable
 fun EmptyContent() {
     Box(modifier = Modifier.fillMaxSize()) {
-        ErrorStateComponent(errorMessage = "No data found.")
+        ErrorStateComponent(errorMessage = "Terlalu banyak request dari IP Anda, coba lagi dalam satu jam!")
     }
 }

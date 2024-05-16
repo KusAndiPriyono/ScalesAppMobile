@@ -18,14 +18,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bangkit.scalesappmobile.domain.repository.DataStoreRepository
+import com.bangkit.scalesappmobile.domain.usecase.onboarding.SaveOnBoarding
 import com.bangkit.scalesappmobile.presentatiom.common.ScalesButton
 import com.bangkit.scalesappmobile.presentatiom.common.ScalesTextButton
 import com.bangkit.scalesappmobile.presentatiom.onboarding.components.OnBoardingPage
 import com.bangkit.scalesappmobile.presentatiom.onboarding.components.PageIndicator
 import com.bangkit.scalesappmobile.presentatiom.onboarding.components.onBoardingPages
 import com.ramcosta.composedestinations.annotation.Destination
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -97,4 +101,53 @@ fun OnBoardingScreen(
         }
         Spacer(modifier = Modifier.weight(0.5f))
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OnBoardingScreenPreview() {
+    val onBoardingViewModel = OnBoardingViewModel(
+        saveOnBoarding = SaveOnBoarding(
+            dataStoreRepository = object : DataStoreRepository {
+                override suspend fun saveOnBoarding() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun getOnBoarding(): Flow<Boolean> {
+                    TODO("Not yet implemented")
+                }
+
+                override fun getAccessToken(): Flow<String?> {
+                    TODO("Not yet implemented")
+                }
+
+                override suspend fun saveAccessToken(token: String) {
+                    TODO("Not yet implemented")
+                }
+
+                override suspend fun deleteAccessToken() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun getUserId(): Flow<String?> {
+                    TODO("Not yet implemented")
+                }
+
+                override suspend fun saveUserId(id: String) {
+                    TODO("Not yet implemented")
+                }
+
+                override suspend fun clear() {
+                    TODO("Not yet implemented")
+                }
+            }
+        )
+    )
+    OnBoardingScreen(
+        navigator = object : AppNavigator {
+            override fun openLandingPage() {
+
+            }
+        }, viewModel = onBoardingViewModel
+    )
 }

@@ -5,7 +5,6 @@ import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetAllScalesResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesDetailResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesUpdateResponse
-import com.bangkit.scalesappmobile.data.remote.scales.LocationsResponse
 import com.bangkit.scalesappmobile.domain.model.ForgotPasswordRequest
 import com.bangkit.scalesappmobile.domain.model.LoginRequest
 import com.bangkit.scalesappmobile.domain.model.RefreshTokenRequest
@@ -26,7 +25,10 @@ import retrofit2.http.Query
 interface ScalesApiService {
 
     @GET("api/v1/scales")
-    suspend fun getLocations(): LocationsResponse
+    suspend fun searchScales(
+        @Query("brand") brand: String,
+        @Query("page") page: Int,
+    ): GetAllScalesResponse
 
     @GET("api/v1/scales")
     suspend fun getAllScales(
