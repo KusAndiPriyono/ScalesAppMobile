@@ -2,6 +2,7 @@ package com.bangkit.scalesappmobile.navigation
 
 import android.net.Uri
 import androidx.navigation.NavController
+import com.bangkit.scalesappmobile.domain.model.ScalesDetails
 import com.bangkit.scalesappmobile.presentatiom.auth.AuthNavigator
 import com.bangkit.scalesappmobile.presentatiom.createscales.CreateScalesNavigator
 import com.bangkit.scalesappmobile.presentatiom.destinations.CreateScalesScreenDestination
@@ -101,11 +102,15 @@ class CoreFeatureNavigator(
         )
     }
 
-    override fun openUpdateScales(id: String?) {
+    override fun openUpdateScales(id: String?, scalesDetails: ScalesDetails?) {
         navController.navigate(
-            UpdateScalesScreenDestination(id = id) within NavGraphs.home
+            UpdateScalesScreenDestination(
+                id = id,
+                scalesDetails = scalesDetails
+            ) within NavGraphs.home
         )
     }
+
 
     override fun logout() {
         navController.navigate(NavGraphs.auth) {

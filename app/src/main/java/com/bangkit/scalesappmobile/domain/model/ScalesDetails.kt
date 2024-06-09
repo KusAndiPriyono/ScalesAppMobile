@@ -44,8 +44,6 @@ data class ScalesDetails(
     val reviews: List<Review>,
     @SerializedName("serialNumber")
     val serialNumber: String,
-    @SerializedName("slug")
-    val slug: String,
     @SerializedName("status")
     val status: String,
     @SerializedName("unit")

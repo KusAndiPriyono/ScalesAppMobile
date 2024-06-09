@@ -15,58 +15,6 @@ import androidx.paging.compose.LazyPagingItems
 import com.bangkit.scalesappmobile.domain.model.Scales
 import com.bangkit.scalesappmobile.presentatiom.home.component.ScalesCardShimmerEffect
 
-//@Composable
-//fun ScalesList(
-//    modifier: Modifier = Modifier, scales: List<Scales>, onClick: (Scales) -> Unit,
-//) {
-//    if (scales.isEmpty()) {
-//
-//    }
-//    LazyVerticalGrid(
-//        modifier = modifier.fillMaxWidth(),
-//        columns = GridCells.Fixed(2),
-//        verticalArrangement = Arrangement.spacedBy(24.dp),
-//        contentPadding = PaddingValues(all = 6.dp)
-//    ) {
-//        items(
-//            count = scales.size,
-//        ) {
-//            scales[it].let { scales ->
-//                ScalesItem(scales = scales, onClick = { onClick(scales) })
-//            }
-//        }
-//    }
-//
-//}
-//
-//@Composable
-//fun ScalesList(
-//    modifier: Modifier = Modifier,
-//    scales: LazyPagingItems<Scales>,
-//    onClick: (Scales) -> Unit,
-//) {
-//
-//    val handlePagingResult = handlePagingResult(scales)
-//
-//
-//    if (handlePagingResult) {
-//        LazyVerticalGrid(
-//            modifier = modifier.fillMaxWidth(),
-//            columns = GridCells.Fixed(2),
-//            verticalArrangement = Arrangement.spacedBy(12.dp),
-//            horizontalArrangement = Arrangement.spacedBy(24.dp),
-//            contentPadding = PaddingValues(all = 6.dp)
-//        ) {
-//            items(
-//                count = scales.itemCount,
-//            ) {
-//                scales[it]?.let { scales ->
-//                    ScalesItem(scales = scales, onClick = { onClick(scales) })
-//                }
-//            }
-//        }
-//    }
-//}
 
 @Composable
 fun handlePagingResult(scales: LazyPagingItems<Scales>): Boolean {

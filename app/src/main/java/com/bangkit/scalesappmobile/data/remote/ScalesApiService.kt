@@ -9,13 +9,12 @@ import com.bangkit.scalesappmobile.domain.model.ForgotPasswordRequest
 import com.bangkit.scalesappmobile.domain.model.LoginRequest
 import com.bangkit.scalesappmobile.domain.model.RefreshTokenRequest
 import com.bangkit.scalesappmobile.domain.model.RegisterRequest
-import com.bangkit.scalesappmobile.domain.model.UpdateRequest
+import com.bangkit.scalesappmobile.domain.model.ScalesDetails
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -27,7 +26,7 @@ interface ScalesApiService {
 
     @GET("api/v1/scales")
     suspend fun searchScales(
-        @Query("brand") brand: String,
+        @Query("slug") slug: String,
         @Query("page") page: Int,
     ): GetAllScalesResponse
 
@@ -70,12 +69,12 @@ interface ScalesApiService {
     suspend fun updateScales(
 //        @Header("Authorization") token: String,
         @Path("id") id: String,
-        @Body updateRequest: UpdateRequest,
+        @Body scalesDetails: ScalesDetails,
     ): GetScalesUpdateResponse
 
     @DELETE("api/v1/scales/{id}")
     suspend fun deleteScales(
-        @Header("Authorization") token: String,
+//        @Header("Authorization") token: String,
         @Path("id") id: String,
     )
 

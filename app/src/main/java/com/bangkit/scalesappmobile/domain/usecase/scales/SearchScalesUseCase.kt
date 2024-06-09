@@ -10,6 +10,6 @@ import javax.inject.Inject
 class SearchScalesUseCase @Inject constructor(
     private val scalesRepository: ScalesRepository,
 ) {
-    suspend operator fun invoke(brand: List<String>): Resource<Flow<PagingData<Scales>>> =
-        scalesRepository.searchScales(brand)
+    suspend operator fun invoke(slug: List<String>): Resource<Flow<PagingData<Scales>>> =
+        scalesRepository.searchScales(slug)
 }

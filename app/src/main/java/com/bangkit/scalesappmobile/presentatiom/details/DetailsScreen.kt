@@ -31,6 +31,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +51,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.bangkit.scalesappmobile.R
 import com.bangkit.scalesappmobile.domain.model.ScalesDetails
+import com.bangkit.scalesappmobile.presentatiom.common.DisplayAlertDialog
 import com.bangkit.scalesappmobile.presentatiom.common.EmptyStateComponent
 import com.bangkit.scalesappmobile.presentatiom.common.ErrorStateComponent
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
@@ -82,12 +87,14 @@ fun DetailsScreen(
         scalesState = scalesState,
         state = state,
         navigateToBack = {
-            navigator.popBackStack()
+            navigator.navigateBackToHome()
         },
-        onClickEditScales = {
-            navigator.openUpdateScales(id)
+        onClickEditScales = { scalesDetails ->
+            navigator.openUpdateScales(id, scalesDetails)
         },
-        onClickDeleteScales = {}
+        onClickDeleteScales = {
+            viewModel.deleteScales(scalesState.scalesDetails?.id ?: "")
+        }
     )
 }
 
@@ -98,8 +105,12 @@ fun DetailScreenContent(
     state: CollapsingToolbarScaffoldState,
     navigateToBack: () -> Unit,
     onClickEditScales: (ScalesDetails) -> Unit,
-    onClickDeleteScales: () -> Unit
+    onClickDeleteScales: () -> Unit,
 ) {
+    var isDialogOpened by remember {
+        mutableStateOf(false)
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         if (!scalesState.isLoading && scalesState.scalesDetails != null) {
             val scale = scalesState.scalesDetails
@@ -308,7 +319,9 @@ fun DetailScreenContent(
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.Center
                                 ) {
-                                    IconButton(onClick = { onClickEditScales(scale) }) {
+                                    IconButton(onClick = {
+                                        onClickEditScales(scalesState.scalesDetails)
+                                    }) {
                                         Icon(
                                             imageVector = Icons.Default.Edit,
                                             contentDescription = "Edit",
@@ -364,10 +377,10 @@ fun DetailScreenContent(
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.Center
                                 ) {
-                                    IconButton(onClick = { onClickDeleteScales() }) {
+                                    IconButton(onClick = { isDialogOpened = true }) {
                                         Icon(
                                             imageVector = Icons.Default.Delete,
-                                            contentDescription = "Edit",
+                                            contentDescription = "Delete",
                                             tint = MaterialTheme.colorScheme.onBackground
                                         )
                                     }
@@ -396,6 +409,19 @@ fun DetailScreenContent(
             EmptyStateComponent()
         }
     }
+
+    DisplayAlertDialog(
+        title = "Hapus Timbangan",
+        message = "Apakah Anda yakin ingin menghapus timbangan ini?",
+        dialogOpened = isDialogOpened,
+        onDialogClosed = {
+            isDialogOpened = false
+        },
+        onYesClicked = {
+            onClickDeleteScales()
+            isDialogOpened = false
+        }
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -505,7 +531,6 @@ val sampleScalesDetails = ScalesDetails(
     ratingsQuantity = 1,
     reviews = emptyList(),
     serialNumber = "1",
-    slug = "scales-1",
     status = "Status 1",
     unit = "Unit 1",
 )

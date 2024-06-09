@@ -34,9 +34,9 @@ class SearchViewModel @Inject constructor(
         _searchState.value = searchState.value.copy(error = null, searchData = emptyFlow())
     }
 
-    fun search(brand: String) {
+    fun search(slug: String) {
         viewModelScope.launch {
-            if (brand.isBlank()) {
+            if (slug.isBlank()) {
                 Timber.d("String Pencarian Kosong")
                 _eventFlow.emit(UiEvents.SnackbarEvent(message = "Mohon isi kolom pencarian"))
                 return@launch
@@ -45,7 +45,7 @@ class SearchViewModel @Inject constructor(
 
             when (
                 val result = searchScalesUseCase(
-                    brand = listOf(brand),
+                    slug = listOf(slug),
                 )
             ) {
                 is Resource.Success -> {
