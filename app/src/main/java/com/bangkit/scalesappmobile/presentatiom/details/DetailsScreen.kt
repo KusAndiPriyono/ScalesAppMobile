@@ -432,7 +432,7 @@ fun FormatStringToDate(
     dateString: String,
 ) {
     val date = ZonedDateTime.parse(dateString)
-    val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss")
+    val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
     val formattedDate = date.format(formatter)
     Text(
         modifier = modifier.padding(4.dp),
