@@ -50,10 +50,10 @@ class ScalesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteScales(id: String): Resource<Unit> {
+    override suspend fun deleteScales(id: String): Resource<Boolean> {
         return safeApiCall(Dispatchers.IO) {
             val response = scalesApiService.deleteScales(id = id)
-            response.toString()
+            response.toString().isNotEmpty()
         }
     }
 }

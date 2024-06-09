@@ -58,13 +58,6 @@ interface ScalesApiService {
         @Part imageCover: MultipartBody.Part,
     ): CreateScalesResponse
 
-//    @Multipart
-//    @POST("api/v1/scales")
-//    suspend fun uploadImageScales(
-//        @Part image: MultipartBody.Part,
-//        @Part("imageCover") imageCover: RequestBody,
-//    ): ErrorResponse
-
     @PATCH("api/v1/scales/{id}")
     suspend fun updateScales(
 //        @Header("Authorization") token: String,

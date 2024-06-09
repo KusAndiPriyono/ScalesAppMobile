@@ -1,6 +1,7 @@
 package com.bangkit.scalesappmobile.presentatiom.update
 
 import android.net.Uri
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +37,24 @@ class UpdateViewModel @Inject constructor(
     val scalesName: State<TextFieldState> = _scalesName
     fun setScalesName(value: String = "", error: String? = null) {
         _scalesName.value = scalesName.value.copy(
+            text = value,
+            error = error
+        )
+    }
+
+    private val _scalesDocNumber = mutableStateOf(TextFieldState())
+    val scalesDocNumber: State<TextFieldState> = _scalesDocNumber
+    fun setScalesDocNumber(value: String = "", error: String? = null) {
+        _scalesDocNumber.value = scalesDocNumber.value.copy(
+            text = value,
+            error = error
+        )
+    }
+
+    private val _statusScales = mutableStateOf(TextFieldState())
+    val statusScales: State<TextFieldState> = _statusScales
+    fun setScalesStatus(value: String = "", error: String? = null) {
+        _statusScales.value = statusScales.value.copy(
             text = value,
             error = error
         )
@@ -108,6 +127,24 @@ class UpdateViewModel @Inject constructor(
         _scalesRangeCapacity.intValue = value
     }
 
+    private val _scalesCalibrationPeriodInYears = mutableIntStateOf(0)
+    val scalesCalibrationPeriodInYears: MutableIntState = _scalesCalibrationPeriodInYears
+    fun setScalesCalibrationPeriodInYears(value: Double) {
+        _scalesCalibrationPeriodInYears.intValue = value.toInt()
+    }
+
+    private val _scalesRatingAverage = mutableIntStateOf(0)
+    val scalesRatingAverage: MutableIntState = _scalesRatingAverage
+    fun setScalesRatingAverage(value: Double) {
+        _scalesRatingAverage.intValue = value.toInt()
+    }
+
+    private val _scalesRatingQuantity = mutableIntStateOf(0)
+    val scalesRatingQuantity: State<Int> = _scalesRatingQuantity
+    fun setScalesRatingQuantity(value: Int) {
+        _scalesRatingQuantity.intValue = value
+    }
+
     private val _scalesParentMachineOfEquipment = mutableStateOf(TextFieldState())
     val scalesParentMachineOfEquipment: State<TextFieldState> = _scalesParentMachineOfEquipment
     fun setScalesParentMachineOfEquipment(value: String = "", error: String? = null) {
@@ -152,6 +189,12 @@ class UpdateViewModel @Inject constructor(
         setScalesParentMachineOfEquipment(scalesDetails.parentMachineOfEquipment)
         setScalesSerialNumber(scalesDetails.serialNumber)
         setScalesUnit(scalesDetails.unit)
+        setScalesDocNumber(scalesDetails.measuringEquipmentIdNumber)
+        setScalesStatus(scalesDetails.status)
+        setScalesImageCover(Uri.parse(scalesDetails.imageCover))
+        setScalesCalibrationPeriodInYears(scalesDetails.calibrationPeriodInYears)
+        setScalesRatingAverage(scalesDetails.ratingsAverage)
+        setScalesRatingQuantity(scalesDetails.ratingsQuantity)
     }
 
     // Function to handle the update logic
@@ -172,12 +215,12 @@ class UpdateViewModel @Inject constructor(
             imageCover = scalesImageCover.value.toString(),
             reviews = emptyList(),
             id = id,
-            calibrationPeriodInYears = 0.0,
+            calibrationPeriodInYears = scalesCalibrationPeriodInYears.intValue.toDouble(),
             forms = emptyList(),
-            measuringEquipmentIdNumber = "",
-            ratingsAverage = 5.0,
-            ratingsQuantity = 5,
-            status = "aktif"
+            measuringEquipmentIdNumber = scalesDocNumber.value.text,
+            ratingsAverage = scalesRatingAverage.intValue.toDouble(),
+            ratingsQuantity = scalesRatingQuantity.value,
+            status = statusScales.value.text
         )
         updateScales(id, scalesDetails)
     }
@@ -220,4 +263,60 @@ class UpdateViewModel @Inject constructor(
             }
         }
     }
+
+    val scalesNames = listOf(
+        "Timbangan Digital",
+        "T,C,Digital",
+        "Pressure Gauge",
+        "Box Compression Test",
+        "Thickness",
+        "Jangka Sorong",
+        "Timbangan Besar",
+        "Timbangan Kecil",
+        "Metal Detektor"
+    ).sorted()
+
+    val brands = listOf(
+        "AND",
+        "SIEMENS",
+        "ACIS",
+        "YAMATO",
+        "NAGATA",
+        "JADEVER",
+        "VIBRA",
+        "T-SCALE",
+        "FUJITSU",
+        "DS-FOX",
+        "DHS",
+        "THERMOMETER",
+        "EUROSICMA",
+        "BOSCH",
+        "REXROTH",
+        "TWC",
+        "KAWASHIMA",
+        "OMRON",
+        "TAM",
+        "TWA",
+        "WIKA",
+        "MC",
+        "ASHCROF",
+        "SCHAUMBER",
+        "SCHUH",
+        "STEIN",
+        "BROTO THERM",
+    ).sorted()
+
+    val units = listOf(
+        "kg",
+        "g",
+        "°C/%",
+        "°C",
+        "Bar",
+        "Mpa"
+    )
+
+    val scalesStatus = listOf(
+        "aktif",
+        "tidak aktif"
+    )
 }

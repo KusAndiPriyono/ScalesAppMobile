@@ -94,6 +94,7 @@ fun DetailsScreen(
         },
         onClickDeleteScales = {
             viewModel.deleteScales(scalesState.scalesDetails?.id ?: "")
+            navigator.navigateBackToHome()
         }
     )
 }
@@ -527,7 +528,7 @@ val sampleScalesDetails = ScalesDetails(
     nextCalibrationDate = "2022-01-01",
     parentMachineOfEquipment = "Parent Machine Of Equipment 1",
     rangeCapacity = 1,
-    ratingsAverage = 1.3,
+    ratingsAverage = 1.1,
     ratingsQuantity = 1,
     reviews = emptyList(),
     serialNumber = "1",

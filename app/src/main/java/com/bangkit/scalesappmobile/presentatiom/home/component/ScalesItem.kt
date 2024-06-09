@@ -130,7 +130,7 @@ fun ScalesItemPreview() {
             nextCalibrationDate = "nextCalibrationDate",
             parentMachineOfEquipment = "parentMachineOfEquipment",
             rangeCapacity = 1,
-            ratingsAverage = 1.4,
+            ratingsAverage = 1.1,
             ratingsQuantity = 1,
             serialNumber = "serialNumber",
             slug = "slug",
