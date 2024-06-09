@@ -12,6 +12,4 @@ interface ScalesRepository {
     suspend fun searchScales(brand: List<String>): Resource<Flow<PagingData<Scales>>>
 
     suspend fun getScalesDetail(id: String): Resource<ScalesDetails>
-
-    suspend fun getScalesUpdate(token: String, id: String): Resource<ScalesDetails>
 }

@@ -22,6 +22,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CreateNewFolder
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -81,6 +84,10 @@ fun DetailsScreen(
         navigateToBack = {
             navigator.popBackStack()
         },
+        onClickEditScales = {
+            navigator.openUpdateScales(id)
+        },
+        onClickDeleteScales = {}
     )
 }
 
@@ -90,6 +97,8 @@ fun DetailScreenContent(
     scalesState: DetailState,
     state: CollapsingToolbarScaffoldState,
     navigateToBack: () -> Unit,
+    onClickEditScales: (ScalesDetails) -> Unit,
+    onClickDeleteScales: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (!scalesState.isLoading && scalesState.scalesDetails != null) {
@@ -279,6 +288,98 @@ fun DetailScreenContent(
                             )
                         }
                     }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            modifier = Modifier.padding(start = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .height(80.dp)
+                                    .width(70.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(color = SurprisedColor)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    IconButton(onClick = { onClickEditScales(scale) }) {
+                                        Icon(
+                                            imageVector = Icons.Default.Edit,
+                                            contentDescription = "Edit",
+                                            tint = MaterialTheme.colorScheme.onBackground
+                                        )
+                                    }
+                                    Text(
+                                        text = "Edit",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontFamily = fontFamily
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Box(
+                                modifier = Modifier
+                                    .height(80.dp)
+                                    .width(150.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(color = SurprisedColor)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    IconButton(onClick = { /*TODO*/ }) {
+                                        Icon(
+                                            imageVector = Icons.Default.CreateNewFolder,
+                                            contentDescription = "Create",
+                                            tint = MaterialTheme.colorScheme.onBackground
+                                        )
+                                    }
+                                    Text(
+                                        text = "Buat Dokumen",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontFamily = fontFamily
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Box(
+                                modifier = Modifier
+                                    .height(80.dp)
+                                    .width(70.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(color = SurprisedColor)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    IconButton(onClick = { onClickDeleteScales() }) {
+                                        Icon(
+                                            imageVector = Icons.Default.Delete,
+                                            contentDescription = "Edit",
+                                            tint = MaterialTheme.colorScheme.onBackground
+                                        )
+                                    }
+                                    Text(
+                                        text = "Delete",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontFamily = fontFamily
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -377,7 +478,11 @@ fun ScalesProperty(
 fun PreviewDetailsScreen() {
     DetailScreenContent(scalesState = DetailState(
         isLoading = false, scalesDetails = sampleScalesDetails
-    ), state = rememberCollapsingToolbarScaffoldState(), navigateToBack = {})
+    ),
+        state = rememberCollapsingToolbarScaffoldState(),
+        navigateToBack = {},
+        onClickEditScales = {},
+        onClickDeleteScales = {})
 }
 
 val sampleScalesDetails = ScalesDetails(

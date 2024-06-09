@@ -49,11 +49,4 @@ class ScalesRepositoryImpl @Inject constructor(
             response.data
         }
     }
-
-    override suspend fun getScalesUpdate(token: String, id: String): Resource<ScalesDetails> {
-        return safeApiCall(Dispatchers.IO) {
-            val response = scalesApiService.updateScales(token = "Bearer $token", id = id)
-            response.data
-        }
-    }
 }

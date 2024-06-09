@@ -9,6 +9,7 @@ import com.bangkit.scalesappmobile.domain.model.ForgotPasswordRequest
 import com.bangkit.scalesappmobile.domain.model.LoginRequest
 import com.bangkit.scalesappmobile.domain.model.RefreshTokenRequest
 import com.bangkit.scalesappmobile.domain.model.RegisterRequest
+import com.bangkit.scalesappmobile.domain.model.UpdateRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -67,8 +68,9 @@ interface ScalesApiService {
 
     @PATCH("api/v1/scales/{id}")
     suspend fun updateScales(
-        @Header("Authorization") token: String,
+//        @Header("Authorization") token: String,
         @Path("id") id: String,
+        @Body updateRequest: UpdateRequest,
     ): GetScalesUpdateResponse
 
     @DELETE("api/v1/scales/{id}")

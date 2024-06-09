@@ -31,7 +31,7 @@ class SearchViewModel @Inject constructor(
     val searchString: State<String> = _searchString
     fun setSearchString(value: String) {
         _searchString.value = value
-        _searchState.value = searchState.value.copy(error = null, scales = emptyFlow())
+        _searchState.value = searchState.value.copy(error = null, searchData = emptyFlow())
     }
 
     fun search(brand: String) {
@@ -51,7 +51,7 @@ class SearchViewModel @Inject constructor(
                 is Resource.Success -> {
                     _searchState.value = searchState.value.copy(
                         isLoading = false,
-                        scales = result.data ?: emptyFlow(),
+                        searchData = result.data ?: emptyFlow(),
                     )
                 }
 

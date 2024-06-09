@@ -11,6 +11,7 @@ import com.bangkit.scalesappmobile.presentatiom.destinations.OnBoardingScreenDes
 import com.bangkit.scalesappmobile.presentatiom.destinations.SearchScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.UpdateScalesScreenDestination
 import com.ramcosta.composedestinations.dynamic.routedIn
 import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.NavGraphSpec
@@ -50,6 +51,7 @@ object NavGraphs {
             HomeScreenDestination,
             DetailsScreenDestination,
             CreateScalesScreenDestination,
+            UpdateScalesScreenDestination,
             LandingPageScreenDestination,
             SearchScreenDestination,
             SettingsScreenDestination,

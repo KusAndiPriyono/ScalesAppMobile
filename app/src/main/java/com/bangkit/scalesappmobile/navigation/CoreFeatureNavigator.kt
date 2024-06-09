@@ -14,6 +14,7 @@ import com.bangkit.scalesappmobile.presentatiom.destinations.NextCreateScalesScr
 import com.bangkit.scalesappmobile.presentatiom.destinations.SearchScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.UpdateScalesScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.home.HomeNavigator
 import com.bangkit.scalesappmobile.presentatiom.onboarding.AppNavigator
 import com.bangkit.scalesappmobile.presentatiom.search.SearchNavigator
@@ -97,6 +98,12 @@ class CoreFeatureNavigator(
     override fun openScalesDetails(id: String?) {
         navController.navigate(
             DetailsScreenDestination(id = id) within NavGraphs.home
+        )
+    }
+
+    override fun openUpdateScales(id: String?) {
+        navController.navigate(
+            UpdateScalesScreenDestination(id = id) within NavGraphs.home
         )
     }
 
