@@ -4,10 +4,13 @@ import com.bangkit.scalesappmobile.presentatiom.destinations.CreateScalesScreenD
 import com.bangkit.scalesappmobile.presentatiom.destinations.DetailsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.ForgotPasswordScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.KalibrasiScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LandingPageScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LoginScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.NextCreateScalesScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.NotificationScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.OnBoardingScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.ScheduleScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SearchScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
@@ -54,8 +57,34 @@ object NavGraphs {
             UpdateScalesScreenDestination,
             LandingPageScreenDestination,
             SearchScreenDestination,
+            KalibrasiScreenDestination,
+            NotificationScreenDestination,
             SettingsScreenDestination,
             NextCreateScalesScreenDestination
+        ).routedIn(this).associateBy { it.route }
+    }
+
+    val kalibrasi = object : NavGraphSpec {
+        override val route = "kalibrasi"
+        override val startRoute = KalibrasiScreenDestination routedIn this
+        override val destinationsByRoute = listOf<DestinationSpec<*>>(
+            KalibrasiScreenDestination
+        ).routedIn(this).associateBy { it.route }
+    }
+
+    val schedule = object : NavGraphSpec {
+        override val route = "schedule"
+        override val startRoute = ScheduleScreenDestination routedIn this
+        override val destinationsByRoute = listOf<DestinationSpec<*>>(
+            ScheduleScreenDestination
+        ).routedIn(this).associateBy { it.route }
+    }
+
+    val notifications = object : NavGraphSpec {
+        override val route = "notifications"
+        override val startRoute = NotificationScreenDestination routedIn this
+        override val destinationsByRoute = listOf<DestinationSpec<*>>(
+            NotificationScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 
@@ -76,6 +105,9 @@ object NavGraphs {
             appScales,
             auth,
             home,
+            kalibrasi,
+            schedule,
+            notifications,
             settings
         )
     }

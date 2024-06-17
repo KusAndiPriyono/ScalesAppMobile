@@ -9,9 +9,12 @@ import com.bangkit.scalesappmobile.presentatiom.destinations.CreateScalesScreenD
 import com.bangkit.scalesappmobile.presentatiom.destinations.DetailsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.ForgotPasswordScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.KalibrasiScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LandingPageScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LoginScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.NextCreateScalesScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.NotificationScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.ScheduleScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SearchScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
@@ -34,15 +37,15 @@ class CoreFeatureNavigator(
     }
 
     override fun openForgotPassword() {
-        navController.navigate(ForgotPasswordScreenDestination within NavGraphs.auth)
+        navController.navigate(ForgotPasswordScreenDestination within navGraph)
     }
 
     override fun openSignUp() {
-        navController.navigate(SignInScreenDestination within NavGraphs.auth)
+        navController.navigate(SignInScreenDestination within navGraph)
     }
 
     override fun openSignIn() {
-        navController.navigate(LoginScreenDestination within NavGraphs.auth)
+        navController.navigate(LoginScreenDestination within navGraph)
     }
 
 
@@ -66,7 +69,7 @@ class CoreFeatureNavigator(
                 location = location,
                 rangeCapacity = rangeCapacity,
                 unit = unit
-            ) within NavGraphs.home
+            ) within navGraph
         )
     }
 
@@ -76,29 +79,41 @@ class CoreFeatureNavigator(
     }
 
     override fun openCreateScales() {
-        navController.navigate(CreateScalesScreenDestination within NavGraphs.home)
+        navController.navigate(CreateScalesScreenDestination within navGraph)
     }
 
     override fun onSearchClick() {
-        navController.navigate(SearchScreenDestination within NavGraphs.home)
+        navController.navigate(SearchScreenDestination within navGraph)
+    }
+
+    override fun openKalibrasi() {
+        navController.navigate(KalibrasiScreenDestination within navGraph)
+    }
+
+    override fun openSchedule() {
+        navController.navigate(ScheduleScreenDestination within navGraph)
+    }
+
+    override fun openNotifications() {
+        navController.navigate(NotificationScreenDestination within navGraph)
     }
 
     override fun openSettings() {
-        navController.navigate(SettingsScreenDestination within NavGraphs.home)
+        navController.navigate(SettingsScreenDestination within navGraph)
     }
 
     override fun navigateBackToHome() {
-        navController.navigate(HomeScreenDestination within NavGraphs.home)
+        navController.navigate(HomeScreenDestination within navGraph)
         navController.clearBackStack("home")
     }
 
     override fun openHome() {
-        navController.navigate(HomeScreenDestination within NavGraphs.home)
+        navController.navigate(HomeScreenDestination within navGraph)
     }
 
     override fun openScalesDetails(id: String?) {
         navController.navigate(
-            DetailsScreenDestination(id = id) within NavGraphs.home
+            DetailsScreenDestination(id = id) within navGraph
         )
     }
 
@@ -107,7 +122,7 @@ class CoreFeatureNavigator(
             UpdateScalesScreenDestination(
                 id = id,
                 scalesDetails = scalesDetails
-            ) within NavGraphs.home
+            ) within navGraph
         )
     }
 

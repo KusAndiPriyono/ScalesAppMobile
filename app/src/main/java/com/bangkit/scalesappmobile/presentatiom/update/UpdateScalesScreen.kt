@@ -1,6 +1,7 @@
 package com.bangkit.scalesappmobile.presentatiom.update
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -9,7 +10,9 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,9 +21,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,6 +47,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -72,6 +81,7 @@ import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
@@ -275,7 +285,96 @@ fun UpdateScalesScreen(
             contentPadding = paddingValues,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-
+            //Menampilkan gambar yang dipilih
+//            item {
+//                Box(
+//                    contentAlignment = Alignment.Center,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .clip(RoundedCornerShape(12.dp))
+//                        .background(MaterialTheme.colorScheme.surfaceVariant)
+//                        .height(200.dp)
+//                        .clickable {
+//                            val photoFile = createImageFile(context)
+//
+//                            if (photoFile != null) {
+//                                val photoURI = FileProvider.getUriForFile(
+//                                    context,
+//                                    context.applicationContext.packageName + ".fileprovider",
+//                                    photoFile
+//                                )
+//                                imageUri = photoFile
+//                                photoLauncher.launch(photoURI)
+//                            }
+//                        }
+//                ) {
+//                    if (viewModel.scalesImageCover.value == null) {
+//                        IconButton(onClick = {
+//                            val photoFile = createImageFile(context)
+//
+//                            if (photoFile != null) {
+//                                val photoURI = FileProvider.getUriForFile(
+//                                    context,
+//                                    context.applicationContext.packageName + ".fileprovider",
+//                                    photoFile
+//                                )
+//                                imageUri = photoFile
+//                                photoLauncher.launch(photoURI)
+//                            }
+//                        }) {
+//                            Icon(
+//                                imageVector = Icons.Default.Add,
+//                                contentDescription = null,
+//                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+//                            )
+//                        }
+//                    }
+//                    // Selected Image
+//                    viewModel.scalesImageCover.value?.let { uri ->
+//                        Image(
+//                            modifier = Modifier
+//                                .fillMaxSize(),
+//                            bitmap = context.imageUriToImageBitmap(uri).asImageBitmap(),
+//                            contentDescription = null,
+//                            contentScale = ContentScale.Crop
+//                        )
+//                    }
+//                }
+//            }
+            //Menampilkan tombol untuk menambahkan gambar dari galeri
+            item {
+                Box(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .wrapContentWidth()
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clickable(MutableInteractionSource(), null) {
+                                galleryLauncher.launch("image/*")
+                            },
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "upload gambar",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
             //Nama Timbangan
             item {
                 Column(
@@ -803,6 +902,36 @@ fun UpdateScalesScreen(
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
+                    }
+                }
+            }
+            //Status Timbangan
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = "Status Timbangan",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                    BloomDropDown(
+                        modifier = Modifier.fillMaxWidth(),
+                        options = viewModel.scalesStatus,
+                        selectedOption = viewModel.statusScales.value.text,
+                        onOptionSelected = { item ->
+                            viewModel.setScalesStatus(item)
+                        }
+                    )
+                    if (updateScalesState.error != null) {
+                        Text(
+                            text = updateScalesState.error,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
                 }
             }

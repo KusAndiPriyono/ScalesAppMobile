@@ -10,8 +10,12 @@ interface HomeNavigator {
     fun popBackStack()
     fun openCreateScales()
     fun onSearchClick()
-    fun openSettings()
 
-    //    fun navigateDetails(id: String? = null)
+    fun openKalibrasi()
+
+    fun openSchedule()
+
+    fun openNotifications()
+    fun openSettings()
     fun navigateBackToHome()
 }
