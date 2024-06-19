@@ -10,6 +10,8 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,6 +20,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -49,15 +52,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.bangkit.scalesappmobile.domain.model.ScalesDetails
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
 import com.bangkit.scalesappmobile.presentatiom.createscales.component.BloomDropDown
@@ -67,6 +75,7 @@ import com.bangkit.scalesappmobile.presentatiom.home.component.StandardToolbar
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.bangkit.scalesappmobile.util.UiEvents
 import com.bangkit.scalesappmobile.util.compressImage
+import com.bangkit.scalesappmobile.util.createImageFile
 import com.bangkit.scalesappmobile.util.saveImage
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.mr0xf00.easycrop.CropError
@@ -80,6 +89,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @RequiresApi(Build.VERSION_CODES.O)
@@ -285,62 +295,84 @@ fun UpdateScalesScreen(
             contentPadding = paddingValues,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            //Menampilkan gambar yang dipilih
-//            item {
-//                Box(
-//                    contentAlignment = Alignment.Center,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .clip(RoundedCornerShape(12.dp))
-//                        .background(MaterialTheme.colorScheme.surfaceVariant)
-//                        .height(200.dp)
-//                        .clickable {
-//                            val photoFile = createImageFile(context)
-//
-//                            if (photoFile != null) {
-//                                val photoURI = FileProvider.getUriForFile(
-//                                    context,
-//                                    context.applicationContext.packageName + ".fileprovider",
-//                                    photoFile
-//                                )
-//                                imageUri = photoFile
-//                                photoLauncher.launch(photoURI)
-//                            }
-//                        }
-//                ) {
-//                    if (viewModel.scalesImageCover.value == null) {
-//                        IconButton(onClick = {
-//                            val photoFile = createImageFile(context)
-//
-//                            if (photoFile != null) {
-//                                val photoURI = FileProvider.getUriForFile(
-//                                    context,
-//                                    context.applicationContext.packageName + ".fileprovider",
-//                                    photoFile
-//                                )
-//                                imageUri = photoFile
-//                                photoLauncher.launch(photoURI)
-//                            }
-//                        }) {
-//                            Icon(
-//                                imageVector = Icons.Default.Add,
-//                                contentDescription = null,
-//                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-//                            )
-//                        }
-//                    }
-//                    // Selected Image
-//                    viewModel.scalesImageCover.value?.let { uri ->
-//                        Image(
-//                            modifier = Modifier
-//                                .fillMaxSize(),
-//                            bitmap = context.imageUriToImageBitmap(uri).asImageBitmap(),
-//                            contentDescription = null,
-//                            contentScale = ContentScale.Crop
-//                        )
-//                    }
-//                }
-//            }
+            // Menampilkan gambar dari server atau gambar yang baru diunggah
+            item {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .height(300.dp)
+                        .clickable {
+                            val photoFile = createImageFile(context)
+
+                            if (photoFile != null) {
+                                val photoURI = FileProvider.getUriForFile(
+                                    context,
+                                    context.applicationContext.packageName + ".fileprovider",
+                                    photoFile
+                                )
+                                imageUri = photoFile
+                                photoLauncher.launch(photoURI)
+                            }
+                        }
+                ) {
+                    if (viewModel.scalesImageCover.value == null) {
+                        viewModel.scalesImageCover.value?.let { uri ->
+                            Image(
+                                painter = rememberAsyncImagePainter(
+                                    model = ImageRequest.Builder(context)
+                                        .data(data = uri)
+                                        .apply {
+                                            placeholder(null)
+                                        }
+                                        .build(),
+                                    contentScale = ContentScale.Crop,
+                                ),
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        } ?: IconButton(onClick = {
+                            val photoFile = createImageFile(context)
+
+                            if (photoFile != null) {
+                                val photoURI = FileProvider.getUriForFile(
+                                    context,
+                                    context.applicationContext.packageName + ".fileprovider",
+                                    photoFile
+                                )
+                                imageUri = photoFile
+                                photoLauncher.launch(photoURI)
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    } else {
+                        viewModel.scalesImageCover.value?.let { uri ->
+                            Image(
+                                painter = rememberAsyncImagePainter(
+                                    model = ImageRequest.Builder(context)
+                                        .data(data = uri)
+                                        .apply {
+                                            placeholder(null)
+                                        }
+                                        .build(),
+                                    contentScale = ContentScale.Crop,
+                                ),
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
             //Menampilkan tombol untuk menambahkan gambar dari galeri
             item {
                 Box(
