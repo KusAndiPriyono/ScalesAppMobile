@@ -1,4 +1,4 @@
-package com.bangkit.scalesappmobile.presentatiom.kalibrasi
+package com.bangkit.scalesappmobile.presentatiom.createdocumentkalibrasi
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -6,8 +6,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 
 @Destination
 @Composable
-fun KalibrasiScreen(
+fun CreateDocumentKalibrasiScreen(
 
 ) {
-    Text(text = "KalibrasiScreen")
+    Text(text = "Create Document Kalibrasi Screen")
 }

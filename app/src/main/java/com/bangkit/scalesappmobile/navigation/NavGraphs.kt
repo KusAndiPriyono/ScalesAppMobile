@@ -1,11 +1,12 @@
 package com.bangkit.scalesappmobile.navigation
 
+import com.bangkit.scalesappmobile.presentatiom.destinations.CreateDocumentKalibrasiScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.CreateScalesScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.DetailsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.ForgotPasswordScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
-import com.bangkit.scalesappmobile.presentatiom.destinations.KalibrasiScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LandingPageScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.ListKalibrasiScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LoginScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.NextCreateScalesScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.NotificationScreenDestination
@@ -55,9 +56,10 @@ object NavGraphs {
             DetailsScreenDestination,
             CreateScalesScreenDestination,
             UpdateScalesScreenDestination,
+            CreateDocumentKalibrasiScreenDestination,
             LandingPageScreenDestination,
             SearchScreenDestination,
-            KalibrasiScreenDestination,
+            ListKalibrasiScreenDestination,
             NotificationScreenDestination,
             SettingsScreenDestination,
             NextCreateScalesScreenDestination
@@ -66,9 +68,9 @@ object NavGraphs {
 
     val kalibrasi = object : NavGraphSpec {
         override val route = "kalibrasi"
-        override val startRoute = KalibrasiScreenDestination routedIn this
+        override val startRoute = ListKalibrasiScreenDestination routedIn this
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
-            KalibrasiScreenDestination
+            ListKalibrasiScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 

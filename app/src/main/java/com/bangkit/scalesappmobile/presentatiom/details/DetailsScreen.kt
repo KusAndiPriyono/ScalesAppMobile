@@ -92,6 +92,9 @@ fun DetailsScreen(
         onClickEditScales = { scalesDetails ->
             navigator.openUpdateScales(id, scalesDetails)
         },
+        onClickCreateDocumentKalibrasi = {
+            navigator.openCreateDocumentKalibrasi()
+        },
         onClickDeleteScales = {
             viewModel.deleteScales(scalesState.scalesDetails?.id ?: "")
             navigator.navigateBackToHome()
@@ -106,6 +109,7 @@ fun DetailScreenContent(
     state: CollapsingToolbarScaffoldState,
     navigateToBack: () -> Unit,
     onClickEditScales: (ScalesDetails) -> Unit,
+    onClickCreateDocumentKalibrasi: () -> Unit,
     onClickDeleteScales: () -> Unit,
 ) {
     var isDialogOpened by remember {
@@ -350,7 +354,9 @@ fun DetailScreenContent(
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.Center
                                 ) {
-                                    IconButton(onClick = { /*TODO*/ }) {
+                                    IconButton(onClick = {
+                                        onClickCreateDocumentKalibrasi()
+                                    }) {
                                         Icon(
                                             imageVector = Icons.Default.CreateNewFolder,
                                             contentDescription = "Create",
@@ -509,7 +515,8 @@ fun PreviewDetailsScreen() {
         state = rememberCollapsingToolbarScaffoldState(),
         navigateToBack = {},
         onClickEditScales = {},
-        onClickDeleteScales = {})
+        onClickDeleteScales = {},
+        onClickCreateDocumentKalibrasi = {})
 }
 
 val sampleScalesDetails = ScalesDetails(

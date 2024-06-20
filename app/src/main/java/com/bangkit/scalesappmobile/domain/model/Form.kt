@@ -27,8 +27,18 @@ data class Form(
     val suhu: Int,
     @SerializedName("user")
     val user: User,
-    @SerializedName("__v")
-    val v: Int,
     @SerializedName("validUntil")
-    val validUntil: String
+    val validUntil: String,
+    @SerializedName("readingCenter")
+    val readingCenter: Int,
+    @SerializedName("readingFront")
+    val readingFront: Int,
+    @SerializedName("readingBack")
+    val readingBack: Int,
+    @SerializedName("readingLeft")
+    val readingLeft: Int,
+    @SerializedName("readingRight")
+    val readingRight: Int,
+    @SerializedName("maxTotalReading")
+    val maxTotalReading: Int,
 ) : Parcelable

@@ -18,4 +18,6 @@ interface HomeNavigator {
     fun openNotifications()
     fun openSettings()
     fun navigateBackToHome()
+
+    fun openCreateDocumentKalibrasi()
 }

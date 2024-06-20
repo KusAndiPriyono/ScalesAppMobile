@@ -29,6 +29,10 @@ import com.bangkit.scalesappmobile.navigation.scaleInPopEnterTransition
 import com.bangkit.scalesappmobile.navigation.scaleOutExitTransition
 import com.bangkit.scalesappmobile.navigation.scaleOutPopExitTransition
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.ListKalibrasiScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.NotificationScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.ScheduleScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.ui.theme.ScalesAppMobileTheme
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -75,10 +79,10 @@ class MainActivity : ComponentActivity() {
                         items = bottomBarItems,
                         showBottomBar = route in listOf(
                             "home/${HomeScreenDestination.route}",
-                            "kalibrasi/${HomeScreenDestination.route}",
-                            "schedule/${HomeScreenDestination.route}",
-                            "notifications/${HomeScreenDestination.route}",
-                            "settings/${HomeScreenDestination.route}"
+                            "kalibrasi/${ListKalibrasiScreenDestination.route}",
+                            "schedule/${ScheduleScreenDestination.route}",
+                            "notifications/${NotificationScreenDestination.route}",
+                            "settings/${SettingsScreenDestination.route}"
                         )
                     ) { innerPadding ->
                         Box(modifier = Modifier.padding(innerPadding)) {

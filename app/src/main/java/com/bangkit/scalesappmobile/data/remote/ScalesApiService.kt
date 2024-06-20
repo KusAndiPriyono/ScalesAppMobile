@@ -5,7 +5,9 @@ import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetAllScalesResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesDetailResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesUpdateResponse
+import com.bangkit.scalesappmobile.data.remote.scales.PostFormKalibrasiResponse
 import com.bangkit.scalesappmobile.domain.model.ForgotPasswordRequest
+import com.bangkit.scalesappmobile.domain.model.Form
 import com.bangkit.scalesappmobile.domain.model.LoginRequest
 import com.bangkit.scalesappmobile.domain.model.RefreshTokenRequest
 import com.bangkit.scalesappmobile.domain.model.RegisterRequest
@@ -70,6 +72,11 @@ interface ScalesApiService {
 //        @Header("Authorization") token: String,
         @Path("id") id: String,
     )
+
+    @POST("api/v1/forms")
+    suspend fun createFormKalibrasi(
+        @Body formKalibrasi: Form,
+    ): PostFormKalibrasiResponse
 
     @POST("api/v1/users/login")
     suspend fun refreshToken(

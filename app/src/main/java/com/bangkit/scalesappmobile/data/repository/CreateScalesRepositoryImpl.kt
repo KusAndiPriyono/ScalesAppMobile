@@ -3,7 +3,6 @@ package com.bangkit.scalesappmobile.data.repository
 import com.bangkit.scalesappmobile.data.remote.ScalesApiService
 import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
 import com.bangkit.scalesappmobile.domain.repository.CreateScalesRepository
-import com.bangkit.scalesappmobile.domain.repository.DataStoreRepository
 import com.bangkit.scalesappmobile.util.Resource
 import com.bangkit.scalesappmobile.util.safeApiCall
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +12,6 @@ import javax.inject.Inject
 
 class CreateScalesRepositoryImpl @Inject constructor(
     private val scalesApiService: ScalesApiService,
-    private val dataStoreRepository: DataStoreRepository,
 ) : CreateScalesRepository {
     override suspend fun createNewScales(
         brand: String,
@@ -48,14 +46,4 @@ class CreateScalesRepositoryImpl @Inject constructor(
             )
         }
     }
-
-//    override suspend fun uploadImage(image: MultipartBody.Part): Resource<ErrorResponse> {
-//        return safeApiCall(Dispatchers.IO) {
-//            val requestBody = "imageCover".toRequestBody("multipart/form-data".toMediaTypeOrNull())
-//            scalesApiService.uploadImageScales(
-//                image = image,
-//                imageCover = requestBody
-//            )
-//        }
-//    }
 }
