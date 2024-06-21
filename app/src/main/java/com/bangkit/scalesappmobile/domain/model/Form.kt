@@ -4,6 +4,7 @@ package com.bangkit.scalesappmobile.domain.model
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
+import java.util.Date
 
 @Parcelize
 data class Form(
@@ -12,9 +13,9 @@ data class Form(
     @SerializedName("calibrationMethod")
     val calibrationMethod: String,
     @SerializedName("createdAt")
-    val createdAt: String,
-    @SerializedName("_id")
-    val id: String,
+    val createdAt: Date,
+//    @SerializedName("_id")
+//    val id: String,
     @SerializedName("reference")
     val reference: String,
     @SerializedName("resultCalibration")
@@ -25,20 +26,20 @@ data class Form(
     val standardCalibration: String,
     @SerializedName("suhu")
     val suhu: Int,
-    @SerializedName("user")
-    val user: User,
+//    @SerializedName("user")
+//    val user: User,
     @SerializedName("validUntil")
     val validUntil: String,
     @SerializedName("readingCenter")
-    val readingCenter: Int,
+    val readingCenter: Double,
     @SerializedName("readingFront")
-    val readingFront: Int,
+    val readingFront: Double,
     @SerializedName("readingBack")
-    val readingBack: Int,
+    val readingBack: Double,
     @SerializedName("readingLeft")
-    val readingLeft: Int,
+    val readingLeft: Double,
     @SerializedName("readingRight")
-    val readingRight: Int,
+    val readingRight: Double,
     @SerializedName("maxTotalReading")
-    val maxTotalReading: Int,
+    val maxTotalReading: Double,
 ) : Parcelable

@@ -93,7 +93,7 @@ fun DetailsScreen(
             navigator.openUpdateScales(id, scalesDetails)
         },
         onClickCreateDocumentKalibrasi = {
-            navigator.openCreateDocumentKalibrasi()
+            navigator.openCreateDocumentKalibrasi(id)
         },
         onClickDeleteScales = {
             viewModel.deleteScales(scalesState.scalesDetails?.id ?: "")

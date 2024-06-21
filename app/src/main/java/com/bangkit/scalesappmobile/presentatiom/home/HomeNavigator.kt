@@ -19,5 +19,5 @@ interface HomeNavigator {
     fun openSettings()
     fun navigateBackToHome()
 
-    fun openCreateDocumentKalibrasi()
+    fun openCreateDocumentKalibrasi(id: String? = null)
 }

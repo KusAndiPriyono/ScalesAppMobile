@@ -114,8 +114,10 @@ class CoreFeatureNavigator(
         navController.clearBackStack("home")
     }
 
-    override fun openCreateDocumentKalibrasi() {
-        navController.navigate(CreateDocumentKalibrasiScreenDestination within navGraph)
+    override fun openCreateDocumentKalibrasi(id: String?) {
+        navController.navigate(
+            CreateDocumentKalibrasiScreenDestination(id = id) within navGraph
+        )
     }
 
     override fun openHome() {
