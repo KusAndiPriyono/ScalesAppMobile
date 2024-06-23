@@ -95,7 +95,11 @@ fun DocumentHolder(
                         style = TextStyle(fontSize = MaterialTheme.typography.bodyMedium.fontSize),
                         fontFamily = fontFamily
                     )
-
+                }
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Image(
                         modifier = Modifier
                             .padding(horizontal = 14.dp, vertical = 7.dp)
@@ -138,6 +142,25 @@ fun DocumentHolder(
                     Text(
                         modifier = Modifier.padding(vertical = 7.dp),
                         text = ": " + document.suhu.toString() + "°C",
+                        style = TextStyle(fontSize = MaterialTheme.typography.bodyMedium.fontSize),
+                        fontFamily = fontFamily
+                    )
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .padding(horizontal = 14.dp, vertical = 7.dp)
+                            .size(24.dp),
+                        painter = painterResource(id = R.drawable.note),
+                        contentDescription = null
+                    )
+                    Text(
+                        modifier = Modifier.padding(vertical = 7.dp),
+                        text = ": " + document.resultCalibration,
                         style = TextStyle(fontSize = MaterialTheme.typography.bodyMedium.fontSize),
                         fontFamily = fontFamily
                     )

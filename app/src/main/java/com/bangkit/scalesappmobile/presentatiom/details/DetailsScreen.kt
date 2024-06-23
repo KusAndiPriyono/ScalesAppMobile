@@ -204,11 +204,21 @@ fun DetailScreenContent(
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Nomor Document",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontFamily = fontFamily
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                painter = painterResource(id = R.drawable.nomor_alat),
+                                contentDescription = null,
+                            )
+                            Text(
+                                text = "Nomor Document",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontFamily = fontFamily
+                            )
+                        }
                     }
                     item {
                         Row(
@@ -232,11 +242,59 @@ fun DetailScreenContent(
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Tanggal Kalibrasi",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontFamily = fontFamily
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                painter = painterResource(id = R.drawable.serial_number),
+                                contentDescription = null,
+                            )
+                            Text(
+                                text = "Serial Number",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontFamily = fontFamily
+                            )
+                        }
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier.padding(start = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(6.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.onBackground)
+                            )
+                            Text(
+                                text = scale.serialNumber,
+                                modifier = Modifier.padding(3.dp),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontFamily = fontFamily
+                            )
+                        }
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                painter = painterResource(id = R.drawable.tgl_kalibrasi),
+                                contentDescription = null,
+                            )
+                            Text(
+                                text = "Tanggal Kalibrasi",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontFamily = fontFamily
+                            )
+                        }
                     }
                     item {
                         Row(
@@ -255,11 +313,21 @@ fun DetailScreenContent(
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Kalibrasi Selanjutnya",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontFamily = fontFamily
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                painter = painterResource(id = R.drawable.next_kalibrasi),
+                                contentDescription = null,
+                            )
+                            Text(
+                                text = "Kalibrasi Selanjutnya",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontFamily = fontFamily
+                            )
+                        }
                     }
                     item {
                         Row(
@@ -278,11 +346,21 @@ fun DetailScreenContent(
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Deskripsi Alat",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontFamily = fontFamily
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                painter = painterResource(id = R.drawable.note),
+                                contentDescription = null,
+                            )
+                            Text(
+                                text = "Deskripsi Alat",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontFamily = fontFamily
+                            )
+                        }
                     }
                     item {
                         Row(
@@ -458,10 +536,10 @@ fun ScalesProperties(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ScalesProperty(icon = R.drawable.ic_kindtype, value = scales.brand)
-        ScalesProperty(icon = R.drawable.ic_kindtype, value = scales.kindType)
+        ScalesProperty(icon = R.drawable.scales, value = scales.brand)
+        ScalesProperty(icon = R.drawable.scales, value = scales.kindType)
         ScalesProperty(
-            icon = R.drawable.ic_kindtype, value = "${scales.rangeCapacity} ${scales.unit}"
+            icon = R.drawable.scales, value = "${scales.rangeCapacity} ${scales.unit}"
         )
         ScalesProperty(icon = R.drawable.ic_calendar, value = scales.status)
         ScalesProperty(icon = R.drawable.ic_calendar, value = scales.ratingsAverage.toString())

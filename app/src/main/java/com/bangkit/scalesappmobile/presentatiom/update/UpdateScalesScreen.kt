@@ -967,6 +967,12 @@ fun UpdateScalesScreen(
                     }
                 }
             }
+
+            repeat(10) {
+                item {
+
+                }
+            }
         }
     }
 }
