@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,7 +46,7 @@ import java.util.TimeZone
 @Composable
 fun DocumentHolder(
     document: AllForm,
-    navigateToDetail: (AllForm) -> Unit,
+    navigateToDetail: (String) -> Unit,
 ) {
     var componentHeight by remember {
         mutableStateOf(0.dp)
@@ -53,7 +54,12 @@ fun DocumentHolder(
     val localDensity = LocalDensity.current
 
     Row(
-        modifier = Modifier.clickable { navigateToDetail.toString() }
+        modifier = Modifier.clickable(
+            indication = null,
+            interactionSource = remember {
+                MutableInteractionSource()
+            }
+        ) { navigateToDetail(document.id) }
     ) {
         Spacer(modifier = Modifier.width(14.dp))
         Surface(

@@ -28,6 +28,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -64,12 +68,19 @@ fun ListKalibrasiScreen(
         }.filterValues { it.isNotEmpty() }
     }
 
+    var selectedDocument by remember {
+        mutableStateOf<AllForm?>(null)
+    }
+
     ListKalibrasiScreenContent(
         documentKalibrasi = filteredDocuments,
-        navigateToDetail = {},
+        navigateToDetail = { document ->
+            selectedDocument = documentState.documents.values.flatten().find { it.id == document }
+        },
         onSelectedStatusApproval = { viewModel.setSelectedStatusApproval(it) },
         selectedStatusApproval = selectedStatusApproval
     )
+
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -77,7 +88,7 @@ fun ListKalibrasiScreen(
 @Composable
 private fun ListKalibrasiScreenContent(
     documentKalibrasi: Map<LocalDate, List<AllForm>>,
-    navigateToDetail: (AllForm) -> Unit,
+    navigateToDetail: (String) -> Unit,
     onSelectedStatusApproval: (String) -> Unit,
     selectedStatusApproval: String,
 ) {

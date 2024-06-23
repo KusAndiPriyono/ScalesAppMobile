@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -139,6 +140,9 @@ dependencies {
 
     // CALENDAR
     implementation(libs.calendar)
+
+    // Accompanist System UI Controller Library
+    implementation(libs.accompanist.systemuicontroller)
 
 //    // CLOCK
 //    implementation("com.maxkeppeler.sheets-compose-dialogs:clock:1.2.1")
