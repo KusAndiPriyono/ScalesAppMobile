@@ -528,7 +528,6 @@ val sampleScalesDetails = ScalesDetails(
     calibrationPeriod = 1,
     calibrationPeriodInYears = 1.1,
     equipmentDescription = "Equipment Description 1",
-    forms = emptyList(),
     kindType = "Kind Type 1",
     location = "Location 1",
     measuringEquipmentIdNumber = "1",

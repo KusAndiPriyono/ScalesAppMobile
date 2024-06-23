@@ -2,13 +2,16 @@ package com.bangkit.scalesappmobile.presentatiom.createdocumentkalibrasi
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,9 +23,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,11 +47,13 @@ import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
 import com.bangkit.scalesappmobile.presentatiom.home.HomeNavigator
 import com.bangkit.scalesappmobile.presentatiom.home.component.StandardToolbar
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
+import com.bangkit.scalesappmobile.util.UiEvents
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.ramcosta.composedestinations.annotation.Destination
+import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -74,19 +83,46 @@ fun CreateDocumentKalibrasiScreen(
     var pickedValidUntil by remember {
         mutableStateOf(LocalDate.now())
     }
-
     val formattedValidUntil by remember {
         derivedStateOf {
             DateTimeFormatter.ofPattern("dd-MM-yyyy").format(pickedValidUntil)
         }
     }
-
     val dateDialog = rememberUseCaseState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEvents.SnackbarEvent -> {
+                    snackbarHostState.showSnackbar(
+                        message = event.message,
+                        duration = SnackbarDuration.Short
+                    )
+                }
+
+                is UiEvents.NavigationEvent -> {
+                    snackbarHostState.showSnackbar(
+                        message = event.route,
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            }
+        }
+    }
 
     Scaffold(
         Modifier.fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.padding(16.dp)
+            )
+        },
         topBar = {
             StandardToolbar(
                 navigate = {
@@ -166,6 +202,7 @@ fun CreateDocumentKalibrasiScreen(
             contentPadding = paddingValues,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            //Metode Kalibrasi
             item {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -201,6 +238,7 @@ fun CreateDocumentKalibrasiScreen(
                     }
                 }
             }
+            //Referensi
             item {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -233,6 +271,7 @@ fun CreateDocumentKalibrasiScreen(
                     }
                 }
             }
+            //Standar Kalibrasi
             item {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -268,41 +307,320 @@ fun CreateDocumentKalibrasiScreen(
                     }
                 }
             }
+            //Suhu & Berlaku Sampai
             item {
-                Column(
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(text = "Suhu", style = MaterialTheme.typography.labelMedium)
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = suhu.toString(),
-                        onValueChange = {
-                            viewModel.setSuhu(it.toIntOrNull() ?: 0)
-                        },
-                        colors = TextFieldDefaults.colors(),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                        ),
-                        isError = suhu == 0,
-                    )
-                    if (suhu == 0) {
-                        Text(
-                            text = "Suhu tidak boleh bernilai 0",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth()
+                    Column(
+                        modifier = Modifier.fillMaxWidth(.5f),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(text = "Suhu", style = MaterialTheme.typography.labelMedium)
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = suhu.toString(),
+                            onValueChange = {
+                                viewModel.setSuhu(it.toIntOrNull() ?: 0)
+                            },
+                            colors = TextFieldDefaults.colors(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            isError = suhu == 0,
                         )
+                        if (suhu == 0) {
+                            Text(
+                                text = "Suhu tidak boleh bernilai 0",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(text = "Berlaku Sampai", style = MaterialTheme.typography.labelMedium)
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = formattedValidUntil,
+                            onValueChange = {
+                                viewModel.setValidUntil(formattedValidUntil)
+                            },
+                            colors = TextFieldDefaults.colors(),
+                            trailingIcon = {
+                                IconButton(onClick = {
+                                    dateDialog.show()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.DateRange,
+                                        contentDescription = "Date Range Icon",
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            },
+                            isError = validUntil.error != null
+                        )
+
+                        if (validUntil.error != null) {
+                            Text(
+                                text = validUntil.error,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                    CalendarDialog(
+                        state = dateDialog,
+                        selection = CalendarSelection.Date { date ->
+                            pickedValidUntil = date
+                            viewModel.setValidUntil(date.toString())
+                        },
+                        config = CalendarConfig(
+                            monthSelection = true,
+                            yearSelection = true
+                        )
+                    )
+                }
+            }
+            //Peraturan Kalibrasi
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "#Peraturan Kalibrasi",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontFamily = fontFamily
+                )
+                Text(
+                    text = "1. Gunakan anak timbangan yang sudah dikalibrasi",
+                    style = MaterialTheme.typography.labelSmall
+                )
+                Text(
+                    text = "2. Letakkan anak timbangan di posisi yang benar",
+                    style = MaterialTheme.typography.labelSmall
+                )
+                Text(
+                    text = "3. Baca nilai pembacaan anak timbangan di posisi tengah, depan, belakang, kiri, dan kanan",
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
+            //Nilai Pembacaan Batu Timbangan di Posisi Tengah & Depan
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(.5f),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = "Nilai Pembacaan Batu Timbangan di Posisi Tengah",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = readingCenter.toString(),
+                            onValueChange = {
+                                viewModel.setReadingCenter(it.toDoubleOrNull() ?: 0.0)
+                            },
+                            colors = TextFieldDefaults.colors(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            isError = readingCenter == 0.0,
+                        )
+                        if (readingCenter == 0.0) {
+                            Text(
+                                text = "Suhu tidak boleh bernilai 0.0",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = "Nilai Pembacaan Batu Timbangan di Posisi Depan",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = readingFront.toString(),
+                            onValueChange = {
+                                viewModel.setReadingFront(it.toDoubleOrNull() ?: 0.0)
+                            },
+                            colors = TextFieldDefaults.colors(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            isError = readingFront == 0.0,
+                        )
+                        if (readingFront == 0.0) {
+                            Text(
+                                text = "Suhu tidak boleh bernilai 0.0",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
                 }
             }
+            //Nilai Pembacaan Batu Timbangan di Posisi Belakang & Kiri
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(.5f),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = "Nilai Pembacaan Batu Timbangan di Posisi Belakang",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = readingBack.toString(),
+                            onValueChange = {
+                                viewModel.setReadingBack(it.toDoubleOrNull() ?: 0.0)
+                            },
+                            colors = TextFieldDefaults.colors(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            isError = readingBack == 0.0,
+                        )
+                        if (readingBack == 0.0) {
+                            Text(
+                                text = "Suhu tidak boleh bernilai 0.0",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = "Nilai Pembacaan Batu Timbangan di Posisi Kiri",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = readingLeft.toString(),
+                            onValueChange = {
+                                viewModel.setReadingLeft(it.toDoubleOrNull() ?: 0.0)
+                            },
+                            colors = TextFieldDefaults.colors(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            isError = readingLeft == 0.0,
+                        )
+                        if (readingLeft == 0.0) {
+                            Text(
+                                text = "Suhu tidak boleh bernilai 0.0",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                }
+            }
+            //Nilai Pembacaan Batu Timbangan di Posisi Kanan & Maksimal Total Pembacaan Batu Timbangan
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(.5f),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = "Nilai Pembacaan Batu Timbangan di Posisi Kanan",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = readingRight.toString(),
+                            onValueChange = {
+                                viewModel.setReadingRight(it.toDoubleOrNull() ?: 0.0)
+                            },
+                            colors = TextFieldDefaults.colors(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            isError = readingRight == 0.0,
+                        )
+                        if (readingRight == 0.0) {
+                            Text(
+                                text = "Suhu tidak boleh bernilai 0.0",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = "Maksimal Total Pembacaan Batu Timbangan",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                                .background(MaterialTheme.colorScheme.surface)
+                                .clickable(enabled = false, onClick = {})
+                        ) {
+                            Text(
+                                text = maxTotalReading.toString(),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.align(Alignment.CenterStart)
+                            )
+                        }
+                    }
+                }
+            }
+            //Ketarangan Hasil Kalibrasi
             item {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text(text = "Hasil Kalibrasi", style = MaterialTheme.typography.labelMedium)
+                    Text(
+                        text = "Ketarangan Hasil Kalibrasi",
+                        style = MaterialTheme.typography.labelMedium
+                    )
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
                         value = resultCalibration.text,
@@ -332,241 +650,10 @@ fun CreateDocumentKalibrasiScreen(
                     }
                 }
             }
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(text = "Berlaku Sampai", style = MaterialTheme.typography.labelMedium)
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = formattedValidUntil,
-                        onValueChange = {
-                            viewModel.setValidUntil(formattedValidUntil)
-                        },
-                        colors = TextFieldDefaults.colors(),
-                        trailingIcon = {
-                            IconButton(onClick = {
-                                dateDialog.show()
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.DateRange,
-                                    contentDescription = "Date Range Icon",
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                        },
-                        isError = validUntil.error != null
-                    )
 
-                    if (validUntil.error != null) {
-                        Text(
-                            text = validUntil.error,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-                CalendarDialog(
-                    state = dateDialog,
-                    selection = CalendarSelection.Date { date ->
-                        pickedValidUntil = date
-                        viewModel.setValidUntil(date.toString())
-                    },
-                    config = CalendarConfig(
-                        monthSelection = true,
-                        yearSelection = true
-                    )
-                )
-            }
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = "Nilai Pembacaan Batu Timbangan di Posisi Tengah",
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = readingCenter.toString(),
-                        onValueChange = {
-                            viewModel.setReadingCenter(it.toDoubleOrNull() ?: 0.0)
-                        },
-                        colors = TextFieldDefaults.colors(),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                        ),
-                        isError = readingCenter == 0.0,
-                    )
-                    if (readingCenter == 0.0) {
-                        Text(
-                            text = "Suhu tidak boleh bernilai 0.0",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-            }
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = "Nilai Pembacaan Batu Timbangan di Posisi Depan",
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = readingFront.toString(),
-                        onValueChange = {
-                            viewModel.setReadingFront(it.toDoubleOrNull() ?: 0.0)
-                        },
-                        colors = TextFieldDefaults.colors(),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                        ),
-                        isError = readingFront == 0.0,
-                    )
-                    if (readingFront == 0.0) {
-                        Text(
-                            text = "Suhu tidak boleh bernilai 0.0",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-            }
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = "Nilai Pembacaan Batu Timbangan di Posisi Belakang",
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = readingBack.toString(),
-                        onValueChange = {
-                            viewModel.setReadingBack(it.toDoubleOrNull() ?: 0.0)
-                        },
-                        colors = TextFieldDefaults.colors(),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                        ),
-                        isError = readingBack == 0.0,
-                    )
-                    if (readingBack == 0.0) {
-                        Text(
-                            text = "Suhu tidak boleh bernilai 0.0",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-            }
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = "Nilai Pembacaan Batu Timbangan di Posisi Kiri",
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = readingLeft.toString(),
-                        onValueChange = {
-                            viewModel.setReadingLeft(it.toDoubleOrNull() ?: 0.0)
-                        },
-                        colors = TextFieldDefaults.colors(),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                        ),
-                        isError = readingLeft == 0.0,
-                    )
-                    if (readingLeft == 0.0) {
-                        Text(
-                            text = "Suhu tidak boleh bernilai 0.0",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-            }
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = "Nilai Pembacaan Batu Timbangan di Posisi Kanan",
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = readingRight.toString(),
-                        onValueChange = {
-                            viewModel.setReadingRight(it.toDoubleOrNull() ?: 0.0)
-                        },
-                        colors = TextFieldDefaults.colors(),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                        ),
-                        isError = readingRight == 0.0,
-                    )
-                    if (readingRight == 0.0) {
-                        Text(
-                            text = "Suhu tidak boleh bernilai 0.0",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-            }
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = "Maksimal Total Pembacaan Batu Timbangan",
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = listOf(
-                            readingCenter,
-                            readingFront,
-                            readingBack,
-                            readingLeft,
-                            readingRight
-                        ).maxOrNull().toString(),
-                        onValueChange = {
-                            viewModel.setMaxTotalReading(it.toDoubleOrNull() ?: 0.0)
-                        },
-                        colors = TextFieldDefaults.colors(),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                        ),
-                    )
+            repeat(10) {
+                item {
+
                 }
             }
         }

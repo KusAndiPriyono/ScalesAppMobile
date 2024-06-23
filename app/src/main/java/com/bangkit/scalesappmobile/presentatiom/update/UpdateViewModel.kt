@@ -216,7 +216,6 @@ class UpdateViewModel @Inject constructor(
             reviews = emptyList(),
             id = id,
             calibrationPeriodInYears = scalesCalibrationPeriodInYears.intValue.toDouble(),
-            forms = emptyList(),
             measuringEquipmentIdNumber = scalesDocNumber.value.text,
             ratingsAverage = scalesRatingAverage.intValue.toDouble(),
             ratingsQuantity = scalesRatingQuantity.value,

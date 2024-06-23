@@ -2,7 +2,9 @@ package com.bangkit.scalesappmobile.data.remote
 
 import com.bangkit.scalesappmobile.data.remote.scales.AuthResponse
 import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
+import com.bangkit.scalesappmobile.data.remote.scales.GetAllFormsResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetAllScalesResponse
+import com.bangkit.scalesappmobile.data.remote.scales.GetDocumentDetailResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesDetailResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesUpdateResponse
 import com.bangkit.scalesappmobile.data.remote.scales.PostFormKalibrasiResponse
@@ -62,14 +64,12 @@ interface ScalesApiService {
 
     @PATCH("api/v1/scales/{id}")
     suspend fun updateScales(
-//        @Header("Authorization") token: String,
         @Path("id") id: String,
         @Body scalesDetails: ScalesDetails,
     ): GetScalesUpdateResponse
 
     @DELETE("api/v1/scales/{id}")
     suspend fun deleteScales(
-//        @Header("Authorization") token: String,
         @Path("id") id: String,
     )
 
@@ -77,6 +77,14 @@ interface ScalesApiService {
     suspend fun createFormKalibrasi(
         @Body formKalibrasi: Form,
     ): PostFormKalibrasiResponse
+
+    @GET("api/v1/forms")
+    suspend fun getAllForms(): GetAllFormsResponse
+
+    @GET("api/v1/forms/{id}")
+    suspend fun getFormKalibrasiDetail(
+        @Path("id") id: String,
+    ): GetDocumentDetailResponse
 
     @POST("api/v1/users/login")
     suspend fun refreshToken(

@@ -82,30 +82,35 @@ class CreateDocumentKalibrasiViewModel @Inject constructor(
     val readingCenter: State<Double> = _readingCenter
     fun setReadingCenter(value: Double) {
         _readingCenter.doubleValue = value
+        updateMaxTotalReading()
     }
 
     private val _readingFront = mutableDoubleStateOf(0.0)
     val readingFront: State<Double> = _readingFront
     fun setReadingFront(value: Double) {
         _readingFront.doubleValue = value
+        updateMaxTotalReading()
     }
 
     private val _readingBack = mutableDoubleStateOf(0.0)
     val readingBack: State<Double> = _readingBack
     fun setReadingBack(value: Double) {
         _readingBack.doubleValue = value
+        updateMaxTotalReading()
     }
 
     private val _readingLeft = mutableDoubleStateOf(0.0)
     val readingLeft: State<Double> = _readingLeft
     fun setReadingLeft(value: Double) {
         _readingLeft.doubleValue = value
+        updateMaxTotalReading()
     }
 
     private val _readingRight = mutableDoubleStateOf(0.0)
     val readingRight: State<Double> = _readingRight
     fun setReadingRight(value: Double) {
         _readingRight.doubleValue = value
+        updateMaxTotalReading()
     }
 
     private val _maxTotalReading = mutableDoubleStateOf(0.0)
@@ -117,9 +122,21 @@ class CreateDocumentKalibrasiViewModel @Inject constructor(
     private val _createDocumentKalibrasi = mutableStateOf(CreateDocumentKalibrasiState())
     val createDocumentKalibrasi: State<CreateDocumentKalibrasiState> = _createDocumentKalibrasi
 
+    private fun updateMaxTotalReading() {
+        val readings = listOf(
+            _readingCenter.doubleValue,
+            _readingFront.doubleValue,
+            _readingBack.doubleValue,
+            _readingLeft.doubleValue,
+            _readingRight.doubleValue
+        )
+        val maxReading = readings.maxOrNull() ?: 0.0
+        val minReading = readings.minOrNull() ?: 0.0
+        _maxTotalReading.doubleValue = maxReading - minReading
+    }
+
     fun createDocumentKalibrasi(id: String) {
         val form = Form(
-            approval = "waiting",
             calibrationMethod = calibrationMethod.value.text,
             createdAt = Date(),
             reference = reference.value.text,
@@ -159,11 +176,11 @@ class CreateDocumentKalibrasiViewModel @Inject constructor(
                 is Resource.Error -> {
                     _createDocumentKalibrasi.value = createDocumentKalibrasi.value.copy(
                         isLoading = false,
-                        error = result.message ?: "An unexpected error occurred"
+                        error = result.message ?: "Terjadi kesalahan"
                     )
                     _eventFlow.emit(
                         UiEvents.SnackbarEvent(
-                            message = result.message ?: "An unknown error occurred"
+                            message = "Terjadi kesalahan"
                         )
                     )
                 }

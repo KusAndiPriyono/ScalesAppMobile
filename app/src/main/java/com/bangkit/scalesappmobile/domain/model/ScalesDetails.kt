@@ -16,8 +16,6 @@ data class ScalesDetails(
     val calibrationPeriodInYears: Double,
     @SerializedName("equipmentDescription")
     val equipmentDescription: String,
-    @SerializedName("forms")
-    val forms: List<Form>,
     @SerializedName("id")
     val id: String,
     @SerializedName("imageCover")
