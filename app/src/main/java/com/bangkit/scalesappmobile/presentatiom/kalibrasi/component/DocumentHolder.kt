@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -121,6 +124,8 @@ fun DocumentHolder(
                     )
                 }
                 Row(
+                    modifier = Modifier
+                        .height(IntrinsicSize.Min),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -137,10 +142,12 @@ fun DocumentHolder(
                         style = TextStyle(fontSize = MaterialTheme.typography.bodyMedium.fontSize),
                         fontFamily = fontFamily
                     )
-
+                    VerticalDivider(
+                        modifier = Modifier.padding(12.dp),
+                        color = Color.Gray
+                    )
                     Image(
                         modifier = Modifier
-                            .padding(horizontal = 14.dp, vertical = 7.dp)
                             .size(24.dp),
                         painter = painterResource(id = R.drawable.temperature),
                         contentDescription = null

@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,7 +46,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bangkit.scalesappmobile.domain.model.AllForm
 import com.bangkit.scalesappmobile.presentatiom.common.EmptyPage
+import com.bangkit.scalesappmobile.presentatiom.kalibrasi.component.ApprovalStatus
+import com.bangkit.scalesappmobile.presentatiom.kalibrasi.component.DocumentDetailDialog
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.component.DocumentHolder
+import com.bangkit.scalesappmobile.presentatiom.kalibrasi.state.DocumentState
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.ramcosta.composedestinations.annotation.Destination
 import java.time.LocalDate
@@ -73,21 +78,31 @@ fun ListKalibrasiScreen(
     }
 
     ListKalibrasiScreenContent(
-        documentKalibrasi = filteredDocuments,
+        documentKalibrasi = documentState.copy(documents = filteredDocuments),
         navigateToDetail = { document ->
-            selectedDocument = documentState.documents.values.flatten().find { it.id == document }
+            selectedDocument =
+                documentState.documents.values.flatten().find { it.id == document }
         },
         onSelectedStatusApproval = { viewModel.setSelectedStatusApproval(it) },
         selectedStatusApproval = selectedStatusApproval
     )
 
+    selectedDocument?.let { document ->
+        DocumentDetailDialog(
+            document = document,
+            onDismissRequest = {
+                selectedDocument = null
+            },
+            statusApproval = ApprovalStatus.fromString(document.approval)
+        )
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun ListKalibrasiScreenContent(
-    documentKalibrasi: Map<LocalDate, List<AllForm>>,
+    documentKalibrasi: DocumentState,
     navigateToDetail: (String) -> Unit,
     onSelectedStatusApproval: (String) -> Unit,
     selectedStatusApproval: String,
@@ -109,20 +124,27 @@ private fun ListKalibrasiScreenContent(
                 .padding(top = paddingValues.calculateTopPadding())
         ) {
             ApprovalSelection(
-                approval = documentKalibrasi.values.flatten(),
+                approval = documentKalibrasi.documents.values.flatten(),
                 onClick = onSelectedStatusApproval,
                 selectedApproval = selectedStatusApproval
             )
-            if (documentKalibrasi.isNotEmpty()) {
+            if (!documentKalibrasi.isLoading && documentKalibrasi.documents.isNotEmpty()) {
                 LazyColumn {
-                    documentKalibrasi.forEach { (localDate, forms) ->
+                    documentKalibrasi.documents.forEach { (localDate, forms) ->
                         stickyHeader(key = localDate) {
                             DateHeader(localDate = localDate)
                         }
                         items(forms) { form ->
                             DocumentHolder(
                                 document = form,
-                                navigateToDetail = navigateToDetail
+                                navigateToDetail = { navigateToDetail(form.id) }
+                            )
+                        }
+                        item {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(start = 24.dp),
+                                thickness = 0.8.dp,
+                                color = Color.Gray
                             )
                         }
                     }

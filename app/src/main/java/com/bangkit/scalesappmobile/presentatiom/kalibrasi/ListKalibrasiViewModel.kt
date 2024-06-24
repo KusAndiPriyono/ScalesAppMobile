@@ -45,15 +45,18 @@ class ListKalibrasiViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getAllDocumentKalibrasi() {
         viewModelScope.launch {
+            _documentState.value = documentState.value.copy(isLoading = true)
             when (val result = getDocumentKalibrasiUseCase.invoke()) {
                 is Resource.Success -> {
                     val documentsMap = result.data?.groupBy {
                         it.createdAt.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
                     }
-                    _documentState.value = DocumentState(documents = documentsMap!!)
+                    _documentState.value =
+                        documentState.value.copy(documents = documentsMap ?: emptyMap())
                 }
 
                 is Resource.Error -> {
+                    _documentState.value = documentState.value.copy(error = result.message)
                     _eventsFlow.emit(UiEvents.SnackbarEvent(result.message.toString()))
                 }
 

@@ -25,6 +25,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CreateNewFolder
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -201,6 +202,12 @@ fun DetailScreenContent(
                                 ScalesProperties(scales = scale)
                             }
                         }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
+                        )
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
@@ -242,6 +249,14 @@ fun DetailScreenContent(
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
+                        )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -280,6 +295,14 @@ fun DetailScreenContent(
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
+                        )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -313,6 +336,14 @@ fun DetailScreenContent(
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
+                        )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -343,6 +374,14 @@ fun DetailScreenContent(
                             )
                             FormatStringToDate(dateString = scale.nextCalibrationDate)
                         }
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
+                        )
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
@@ -381,6 +420,14 @@ fun DetailScreenContent(
                                 fontFamily = fontFamily
                             )
                         }
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
+                        )
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
