@@ -57,6 +57,7 @@ import com.bangkit.scalesappmobile.domain.model.ScalesDetails
 import com.bangkit.scalesappmobile.presentatiom.common.DisplayAlertDialog
 import com.bangkit.scalesappmobile.presentatiom.common.EmptyStateComponent
 import com.bangkit.scalesappmobile.presentatiom.common.ErrorStateComponent
+import com.bangkit.scalesappmobile.presentatiom.common.FormatStringToDate
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
 import com.bangkit.scalesappmobile.presentatiom.home.HomeNavigator
 import com.bangkit.scalesappmobile.ui.theme.SurprisedColor
@@ -66,8 +67,6 @@ import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.CollapsingToolbarScaffoldState
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Destination
@@ -575,23 +574,6 @@ fun DetailScreenContent(
             onClickDeleteScales()
             isDialogOpened = false
         }
-    )
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun FormatStringToDate(
-    modifier: Modifier = Modifier,
-    dateString: String,
-) {
-    val date = ZonedDateTime.parse(dateString)
-    val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-    val formattedDate = date.format(formatter)
-    Text(
-        modifier = modifier.padding(4.dp),
-        text = formattedDate,
-        style = MaterialTheme.typography.bodyMedium,
-        fontFamily = fontFamily
     )
 }
 

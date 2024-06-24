@@ -226,32 +226,3 @@ fun DocumentHeader(statusApproval: ApprovalStatus, time: Instant) {
         )
     }
 }
-
-//@RequiresApi(Build.VERSION_CODES.O)
-//@Preview
-//@Composable
-//fun DocumentHolderPreview() {
-//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//        DocumentHolder(
-//            document = AllForm(
-//                id = "1",
-//                approval = "Rejected",
-//                createdAt = Date(),
-//                calibrationMethod = "Calibration Method",
-//                reference = "Reference",
-//                resultCalibration = "Result Calibration",
-//                scale = "Scale",
-//                standardCalibration = "Standard Calibration",
-//                suhu = 0,
-//                validUntil = "Valid Until",
-//                readingCenter = 0.0,
-//                readingFront = 0.0,
-//                readingBack = 0.0,
-//                readingLeft = 0.0,
-//                readingRight = 0.0,
-//                maxTotalReading = 0.0
-//            ),
-//            navigateToDetail = {}
-//        )
-//    }
-//}

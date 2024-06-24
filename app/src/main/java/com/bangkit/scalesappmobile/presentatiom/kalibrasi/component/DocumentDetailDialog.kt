@@ -1,7 +1,9 @@
 package com.bangkit.scalesappmobile.presentatiom.kalibrasi.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,6 +43,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bangkit.scalesappmobile.R
 import com.bangkit.scalesappmobile.domain.model.AllForm
+import com.bangkit.scalesappmobile.presentatiom.common.formatDate
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import kotlinx.coroutines.launch
 
@@ -87,7 +91,6 @@ fun DocumentDetailDialog(
                     ),
                     text = "IDENTITAS ALAT"
                 )  // Display some document details
-                Spacer(modifier = Modifier.width(8.dp))
                 IconButton(
                     onClick = {
                         scope.launch { bottomSheetState.hide() }
@@ -311,7 +314,120 @@ fun DocumentDetailDialog(
             )
 
             // Display some document details
+            Box(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                ) {
+                    // Define a data class for label-value pairs
+                    data class DocumentDetail(val icon: Int, val label: String, val value: String)
 
+                    // List of document details
+                    val details = listOf(
+                        DocumentDetail(
+                            R.drawable.pemilik,
+                            "Nama Pemilik",
+                            document.scale.parentMachineOfEquipment
+                        ),
+                        DocumentDetail(
+                            R.drawable.method,
+                            "Metoda Kalibrasi",
+                            document.calibrationMethod
+                        ),
+                        DocumentDetail(
+                            R.drawable.nomor_alat,
+                            "Acuan Standard",
+                            document.reference
+                        ),
+                        DocumentDetail(
+                            R.drawable.nomor_alat,
+                            "Standar Kalibrasi",
+                            document.standardCalibration
+                        ),
+                        DocumentDetail(
+                            R.drawable.tgl_kalibrasi,
+                            "Tanggal Kalibrasi",
+                            formatDate(date = document.createdAt.toString())
+                        ),
+                        DocumentDetail(
+                            R.drawable.location,
+                            "Tempat Kalibrasi",
+                            document.scale.location
+                        ),
+                        DocumentDetail(
+                            R.drawable.temperature,
+                            "Tempat Kalibrasi",
+                            document.suhu.toString() + "°C"
+                        ),
+                        DocumentDetail(
+                            R.drawable.note,
+                            "Hasil Kalibrasi",
+                            document.resultCalibration
+                        ),
+                        DocumentDetail(
+                            R.drawable.next_kalibrasi,
+                            "Berlaku Sampai",
+                            formatDate(date = document.validUntil.toString())
+                        ),
+                    )
+
+                    // Iterate over details and display each row
+                    details.forEach { detail ->
+                        Row(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.Top,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Image(
+                                    modifier = Modifier.size(20.dp),
+                                    painter = painterResource(id = detail.icon),
+                                    contentDescription = null
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = detail.label,
+                                    style = TextStyle(
+                                        fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                        fontWeight = FontWeight.Thin,
+                                        fontFamily = fontFamily
+                                    ),
+                                    color = Color.Gray
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(
+                                text = detail.value,
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = fontFamily
+                                ),
+                                modifier = Modifier
+                                    .weight(1f)
+                            )
+                        }
+                        HorizontalDivider(
+                            modifier = Modifier.padding(4.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
+                        )
+                    }
+                }
+            }
 
             repeat(100) {
                 Spacer(modifier = Modifier.height(16.dp))

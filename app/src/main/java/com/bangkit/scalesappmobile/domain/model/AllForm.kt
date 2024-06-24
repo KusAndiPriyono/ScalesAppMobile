@@ -26,7 +26,7 @@ data class AllForm(
     @SerializedName("suhu")
     val suhu: Int,
     @SerializedName("validUntil")
-    val validUntil: String,
+    val validUntil: Date,
     @SerializedName("readingCenter")
     val readingCenter: Double,
     @SerializedName("readingFront")
