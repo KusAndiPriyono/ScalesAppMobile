@@ -82,10 +82,10 @@ fun DocumentDetailDialog(
                     modifier = Modifier.align(Alignment.CenterVertically),
                     style = TextStyle(
                         fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Medium,
                         fontFamily = fontFamily
                     ),
-                    text = document.scale.name
+                    text = "IDENTITAS ALAT"
                 )  // Display some document details
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(
@@ -105,7 +105,6 @@ fun DocumentDetailDialog(
                     )
                 }
             }
-
             Card(
                 modifier = Modifier
                     .padding(16.dp),
@@ -122,7 +121,8 @@ fun DocumentDetailDialog(
                     AsyncImage(
                         modifier = Modifier
                             .padding(8.dp)
-                            .size(80.dp),
+                            .size(80.dp)
+                            .align(Alignment.CenterVertically),
                         model = ImageRequest.Builder(context).crossfade(true)
                             .data(document.scale.imageCover)
                             .build(),
@@ -136,14 +136,37 @@ fun DocumentDetailDialog(
                     Column(
                         modifier = Modifier.padding(8.dp),
                     ) {
-                        Text(
-                            text = document.scale.brand,
-                            style = TextStyle(
-                                fontSize = MaterialTheme.typography.titleSmall.fontSize,
-                                fontWeight = FontWeight.Light,
-                                fontFamily = fontFamily
-                            ),
-                        )
+                        Row(
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.size(20.dp),
+                                painter = painterResource(id = R.drawable.nomor_alat),
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "Nomor Alat",
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(text = ":", style = TextStyle(fontFamily = fontFamily))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = document.scale.measuringEquipmentIdNumber,
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = fontFamily
+                                ),
+                            )
+                        }
                         Row(
                             modifier = Modifier.padding(vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -155,10 +178,53 @@ fun DocumentDetailDialog(
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = document.scale.kindType,
+                                text = "Nama Alat",
                                 style = TextStyle(
-                                    fontSize = MaterialTheme.typography.titleSmall.fontSize,
-                                    fontWeight = FontWeight.Light,
+                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(text = ":", style = TextStyle(fontFamily = fontFamily))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = document.scale.name,
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = fontFamily
+                                ),
+                            )
+                        }
+                        Row(
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.size(20.dp),
+                                painter = painterResource(id = R.drawable.scales),
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "Merk Pabrik / Tipe",
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(text = ":", style = TextStyle(fontFamily = fontFamily))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = document.scale.brand + " / " + document.scale.kindType,
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                    fontWeight = FontWeight.Bold,
                                     fontFamily = fontFamily
                                 ),
                             )
@@ -174,31 +240,60 @@ fun DocumentDetailDialog(
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
+                                text = "Nomor Seri",
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(text = ":", style = TextStyle(fontFamily = fontFamily))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
                                 text = document.scale.serialNumber,
                                 style = TextStyle(
-                                    fontSize = MaterialTheme.typography.titleSmall.fontSize,
-                                    fontWeight = FontWeight.Light,
+                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = fontFamily
+                                ),
+                            )
+                        }
+                        Row(
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.size(20.dp),
+                                painter = painterResource(id = R.drawable.weight),
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "Kapasitas",
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(text = ":", style = TextStyle(fontFamily = fontFamily))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = document.scale.rangeCapacity.toString() + " " + document.scale.unit,
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                    fontWeight = FontWeight.Bold,
                                     fontFamily = fontFamily
                                 ),
                             )
                         }
                     }
-
-                    Column(
-                        modifier = Modifier.padding(8.dp),
-                    ) {
-                        Text(
-                            text = document.scale.measuringEquipmentIdNumber,
-                            style = TextStyle(
-                                fontSize = MaterialTheme.typography.labelSmall.fontSize,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = fontFamily
-                            ),
-                        )
-                    }
                 }
             }
-
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 thickness = 0.8.dp,
@@ -209,11 +304,14 @@ fun DocumentDetailDialog(
                 modifier = Modifier.padding(start = 16.dp),
                 style = TextStyle(
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Medium,
                     fontFamily = fontFamily
                 ),
-                text = "Hasil Kalibrasi"
+                text = "IDENTITAS PEMILIK"
             )
+
+            // Display some document details
+
 
             repeat(100) {
                 Spacer(modifier = Modifier.height(16.dp))

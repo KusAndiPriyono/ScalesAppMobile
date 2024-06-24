@@ -53,9 +53,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -415,7 +418,12 @@ fun UpdateScalesScreen(
                 ) {
                     Text(
                         text = "Nama Timbangan",
-                        style = MaterialTheme.typography.labelMedium
+                        style = TextStyle(
+                            fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                            fontWeight = FontWeight.Thin,
+                            fontFamily = fontFamily
+                        ),
+                        color = Color.Gray
                     )
                     BloomDropDown(
                         modifier = Modifier.fillMaxWidth(),
@@ -423,7 +431,13 @@ fun UpdateScalesScreen(
                         selectedOption = viewModel.scalesName.value.text,
                         onOptionSelected = { item ->
                             viewModel.setScalesName(item)
-                        }
+                        },
+                        textStyle = TextStyle(
+                            fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                            fontWeight = FontWeight.Thin,
+                            fontFamily = fontFamily,
+                            color = Color.Gray
+                        ),
                     )
                     if (updateScalesState.error != null) {
                         Text(
@@ -449,7 +463,12 @@ fun UpdateScalesScreen(
                     ) {
                         Text(
                             text = "Merk/Pabrik",
-                            style = MaterialTheme.typography.labelMedium
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily
+                            ),
+                            color = Color.Gray
                         )
                         BloomDropDown(
                             modifier = Modifier.fillMaxWidth(),
@@ -457,7 +476,13 @@ fun UpdateScalesScreen(
                             selectedOption = viewModel.scalesBrand.value.text,
                             onOptionSelected = { item ->
                                 viewModel.setScalesBrand(item)
-                            }
+                            },
+                            textStyle = TextStyle(
+                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily,
+                                color = Color.Gray
+                            )
                         )
 
                         if (updateScalesState.error != null) {
@@ -477,7 +502,12 @@ fun UpdateScalesScreen(
                     ) {
                         Text(
                             text = "Type",
-                            style = MaterialTheme.typography.labelMedium
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily
+                            ),
+                            color = Color.Gray
                         )
 
                         OutlinedTextField(
@@ -487,6 +517,12 @@ fun UpdateScalesScreen(
                                 viewModel.setScalesKindType(it)
                             },
                             colors = TextFieldDefaults.colors(),
+                            textStyle = TextStyle(
+                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily,
+                                color = Color.Gray
+                            ),
                             placeholder = {
                                 Text(
                                     text = "Type",
@@ -524,7 +560,12 @@ fun UpdateScalesScreen(
                     ) {
                         Text(
                             text = "Kapasitas Timbangan",
-                            style = MaterialTheme.typography.labelMedium
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily
+                            ),
+                            color = Color.Gray
                         )
 
                         OutlinedTextField(
@@ -534,6 +575,12 @@ fun UpdateScalesScreen(
                                 viewModel.setScalesRangeCapacity(it.toInt())
                             },
                             colors = TextFieldDefaults.colors(),
+                            textStyle = TextStyle(
+                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily,
+                                color = Color.Gray
+                            ),
                             placeholder = {
                                 Text(
                                     text = "Kapasitas Timbangan",
@@ -563,7 +610,12 @@ fun UpdateScalesScreen(
                     ) {
                         Text(
                             text = "Satuan",
-                            style = MaterialTheme.typography.labelMedium
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily
+                            ),
+                            color = Color.Gray
                         )
 
                         BloomDropDown(
@@ -572,7 +624,13 @@ fun UpdateScalesScreen(
                             selectedOption = viewModel.scalesUnit.value.text,
                             onOptionSelected = { item ->
                                 viewModel.setScalesUnit(item)
-                            }
+                            },
+                            textStyle = TextStyle(
+                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily,
+                                color = Color.Gray
+                            ),
                         )
 
                         if (updateScalesState.error != null) {
@@ -600,7 +658,12 @@ fun UpdateScalesScreen(
                     ) {
                         Text(
                             text = "Serial Number",
-                            style = MaterialTheme.typography.labelMedium
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily
+                            ),
+                            color = Color.Gray
                         )
 
                         OutlinedTextField(
@@ -610,9 +673,15 @@ fun UpdateScalesScreen(
                                 viewModel.setScalesSerialNumber(it)
                             },
                             colors = TextFieldDefaults.colors(),
+                            textStyle = TextStyle(
+                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily,
+                                color = Color.Gray
+                            ),
                             placeholder = {
                                 Text(
-                                    text = "Serial Number",
+                                    text = "Nomor Seri",
                                     style = MaterialTheme.typography.labelMedium
                                 )
                             },
@@ -639,7 +708,12 @@ fun UpdateScalesScreen(
                     ) {
                         Text(
                             text = "Lokasi Timbangan",
-                            style = MaterialTheme.typography.labelMedium
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily
+                            ),
+                            color = Color.Gray
                         )
 
                         OutlinedTextField(
@@ -649,6 +723,12 @@ fun UpdateScalesScreen(
                                 viewModel.setScalesLocation(it)
                             },
                             colors = TextFieldDefaults.colors(),
+                            textStyle = TextStyle(
+                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily,
+                                color = Color.Gray
+                            ),
                             placeholder = {
                                 Text(
                                     text = "Lokasi Timbangan",
@@ -686,7 +766,12 @@ fun UpdateScalesScreen(
                     ) {
                         Text(
                             text = "Periode Kalibrasi",
-                            style = MaterialTheme.typography.labelMedium
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily
+                            ),
+                            color = Color.Gray
                         )
 
                         OutlinedTextField(
@@ -725,7 +810,12 @@ fun UpdateScalesScreen(
                     ) {
                         Text(
                             text = "Document Number",
-                            style = MaterialTheme.typography.labelMedium
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily
+                            ),
+                            color = Color.Gray
                         )
 
                         OutlinedTextField(
@@ -735,6 +825,12 @@ fun UpdateScalesScreen(
                                 viewModel.setScalesDocNumber(it)
                             },
                             colors = TextFieldDefaults.colors(),
+                            textStyle = TextStyle(
+                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily,
+                                color = Color.Gray
+                            ),
                             placeholder = {
                                 Text(
                                     text = "Document Number",
@@ -772,7 +868,12 @@ fun UpdateScalesScreen(
                     ) {
                         Text(
                             text = "Tanggal Kalibrasi",
-                            style = MaterialTheme.typography.labelMedium
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily
+                            ),
+                            color = Color.Gray
                         )
 
                         OutlinedTextField(
@@ -782,6 +883,12 @@ fun UpdateScalesScreen(
                                 viewModel.setScalesCalibrationDate(formattedCalibrationDate)
                             },
                             colors = TextFieldDefaults.colors(),
+                            textStyle = TextStyle(
+                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily,
+                                color = Color.Gray
+                            ),
                             trailingIcon = {
                                 IconButton(onClick = {
                                     selectedDateType = DateType.CALIBRATION_DATE
@@ -814,7 +921,12 @@ fun UpdateScalesScreen(
                     ) {
                         Text(
                             text = "Tanggal Kalibrasi Selanjutnya",
-                            style = MaterialTheme.typography.labelMedium
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily
+                            ),
+                            color = Color.Gray
                         )
 
                         OutlinedTextField(
@@ -824,6 +936,12 @@ fun UpdateScalesScreen(
                                 viewModel.setScalesNextCalibrationDate(formattedNextCalibrationDate)
                             },
                             colors = TextFieldDefaults.colors(),
+                            textStyle = TextStyle(
+                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily,
+                                color = Color.Gray
+                            ),
                             trailingIcon = {
                                 IconButton(onClick = {
                                     selectedDateType = DateType.NEXT_CALIBRATION_DATE
@@ -864,7 +982,12 @@ fun UpdateScalesScreen(
                     ) {
                         Text(
                             text = "Description",
-                            style = MaterialTheme.typography.labelMedium
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily
+                            ),
+                            color = Color.Gray
                         )
 
                         OutlinedTextField(
@@ -874,6 +997,12 @@ fun UpdateScalesScreen(
                                 viewModel.setScalesEquipmentDescription(it)
                             },
                             colors = TextFieldDefaults.colors(),
+                            textStyle = TextStyle(
+                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily,
+                                color = Color.Gray
+                            ),
                             placeholder = {
                                 Text(
                                     text = "Description",
@@ -903,7 +1032,12 @@ fun UpdateScalesScreen(
                     ) {
                         Text(
                             text = "Mesin Induk Alat",
-                            style = MaterialTheme.typography.labelMedium
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily
+                            ),
+                            color = Color.Gray
                         )
 
                         OutlinedTextField(
@@ -913,6 +1047,12 @@ fun UpdateScalesScreen(
                                 viewModel.setScalesParentMachineOfEquipment(it)
                             },
                             colors = TextFieldDefaults.colors(),
+                            textStyle = TextStyle(
+                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                fontWeight = FontWeight.Thin,
+                                fontFamily = fontFamily,
+                                color = Color.Gray
+                            ),
                             placeholder = {
                                 Text(
                                     text = "Mesin Induk Alat",
@@ -946,7 +1086,12 @@ fun UpdateScalesScreen(
                 ) {
                     Text(
                         text = "Status Timbangan",
-                        style = MaterialTheme.typography.labelMedium
+                        style = TextStyle(
+                            fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                            fontWeight = FontWeight.Thin,
+                            fontFamily = fontFamily
+                        ),
+                        color = Color.Gray
                     )
                     BloomDropDown(
                         modifier = Modifier.fillMaxWidth(),
@@ -954,7 +1099,13 @@ fun UpdateScalesScreen(
                         selectedOption = viewModel.statusScales.value.text,
                         onOptionSelected = { item ->
                             viewModel.setScalesStatus(item)
-                        }
+                        },
+                        textStyle = TextStyle(
+                            fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                            fontWeight = FontWeight.Thin,
+                            fontFamily = fontFamily,
+                            color = Color.Gray
+                        ),
                     )
                     if (updateScalesState.error != null) {
                         Text(

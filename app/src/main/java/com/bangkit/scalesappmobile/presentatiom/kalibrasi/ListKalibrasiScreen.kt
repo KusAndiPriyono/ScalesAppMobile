@@ -7,6 +7,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bangkit.scalesappmobile.domain.model.AllForm
 import com.bangkit.scalesappmobile.presentatiom.common.EmptyPage
+import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.component.ApprovalStatus
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.component.DocumentDetailDialog
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.component.DocumentHolder
@@ -84,7 +86,8 @@ fun ListKalibrasiScreen(
                 documentState.documents.values.flatten().find { it.id == document }
         },
         onSelectedStatusApproval = { viewModel.setSelectedStatusApproval(it) },
-        selectedStatusApproval = selectedStatusApproval
+        selectedStatusApproval = selectedStatusApproval,
+        isLoading = documentState.isLoading
     )
 
     selectedDocument?.let { document ->
@@ -106,6 +109,7 @@ private fun ListKalibrasiScreenContent(
     navigateToDetail: (String) -> Unit,
     onSelectedStatusApproval: (String) -> Unit,
     selectedStatusApproval: String,
+    isLoading: Boolean,
 ) {
     Scaffold(
         topBar = {
@@ -116,41 +120,49 @@ private fun ListKalibrasiScreenContent(
             )
         },
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp)
-                .navigationBarsPadding()
-                .padding(top = paddingValues.calculateTopPadding())
-        ) {
-            ApprovalSelection(
-                approval = documentKalibrasi.documents.values.flatten(),
-                onClick = onSelectedStatusApproval,
-                selectedApproval = selectedStatusApproval
-            )
-            if (!documentKalibrasi.isLoading && documentKalibrasi.documents.isNotEmpty()) {
-                LazyColumn {
-                    documentKalibrasi.documents.forEach { (localDate, forms) ->
-                        stickyHeader(key = localDate) {
-                            DateHeader(localDate = localDate)
-                        }
-                        items(forms) { form ->
-                            DocumentHolder(
-                                document = form,
-                                navigateToDetail = { navigateToDetail(form.id) }
-                            )
-                        }
-                        item {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(start = 24.dp),
-                                thickness = 0.8.dp,
-                                color = Color.Gray
-                            )
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                LoadingStateComponent()
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp)
+                    .navigationBarsPadding()
+                    .padding(top = paddingValues.calculateTopPadding())
+            ) {
+                ApprovalSelection(
+                    approval = documentKalibrasi.documents.values.flatten(),
+                    onClick = onSelectedStatusApproval,
+                    selectedApproval = selectedStatusApproval
+                )
+                if (documentKalibrasi.documents.isNotEmpty()) {
+                    LazyColumn {
+                        documentKalibrasi.documents.forEach { (localDate, forms) ->
+                            stickyHeader(key = localDate) {
+                                DateHeader(localDate = localDate)
+                            }
+                            items(forms) { form ->
+                                DocumentHolder(
+                                    document = form,
+                                    navigateToDetail = { navigateToDetail(form.id) }
+                                )
+                            }
+                            item {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(start = 24.dp),
+                                    thickness = 0.8.dp,
+                                    color = Color.Gray
+                                )
+                            }
                         }
                     }
+                } else {
+                    EmptyPage()
                 }
-            } else {
-                EmptyPage()
             }
         }
     }

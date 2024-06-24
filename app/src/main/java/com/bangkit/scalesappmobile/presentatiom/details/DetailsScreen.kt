@@ -43,6 +43,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -221,9 +223,13 @@ fun DetailScreenContent(
                                 contentDescription = null,
                             )
                             Text(
-                                text = "Nomor Document",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontFamily = fontFamily
+                                text = "Nomor Alat",
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
                             )
                         }
                     }
@@ -267,9 +273,13 @@ fun DetailScreenContent(
                                 contentDescription = null,
                             )
                             Text(
-                                text = "Serial Number",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontFamily = fontFamily
+                                text = "Nomor Seri",
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
                             )
                         }
                     }
@@ -314,8 +324,12 @@ fun DetailScreenContent(
                             )
                             Text(
                                 text = "Tanggal Kalibrasi",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontFamily = fontFamily
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
                             )
                         }
                     }
@@ -355,8 +369,12 @@ fun DetailScreenContent(
                             )
                             Text(
                                 text = "Kalibrasi Selanjutnya",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontFamily = fontFamily
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
                             )
                         }
                     }
@@ -396,8 +414,12 @@ fun DetailScreenContent(
                             )
                             Text(
                                 text = "Deskripsi Alat",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontFamily = fontFamily
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
                             )
                         }
                     }

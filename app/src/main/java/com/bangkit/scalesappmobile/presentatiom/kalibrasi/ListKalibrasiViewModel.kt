@@ -52,16 +52,20 @@ class ListKalibrasiViewModel @Inject constructor(
                         it.createdAt.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
                     }
                     _documentState.value =
-                        documentState.value.copy(documents = documentsMap ?: emptyMap())
+                        documentState.value.copy(
+                            documents = documentsMap ?: emptyMap(),
+                            isLoading = false
+                        )
                 }
 
                 is Resource.Error -> {
-                    _documentState.value = documentState.value.copy(error = result.message)
+                    _documentState.value =
+                        documentState.value.copy(error = result.message, isLoading = false)
                     _eventsFlow.emit(UiEvents.SnackbarEvent(result.message.toString()))
                 }
 
                 else -> {
-                    documentState
+                    _documentState.value = documentState.value.copy(isLoading = false)
                 }
             }
         }
