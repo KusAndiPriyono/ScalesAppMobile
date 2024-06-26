@@ -1,28 +1,35 @@
 package com.bangkit.scalesappmobile.presentatiom.kalibrasi.component
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Print
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,12 +46,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.bangkit.scalesappmobile.R
+import androidx.core.content.FileProvider
 import com.bangkit.scalesappmobile.domain.model.AllForm
-import com.bangkit.scalesappmobile.presentatiom.common.formatDate
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
+import com.bangkit.scalesappmobile.util.createPdfFile
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,12 +61,14 @@ fun DocumentDetailDialog(
 ) {
 
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var skipPartiallyExpanded by rememberSaveable { mutableStateOf(false) }
+    val skipPartiallyExpanded by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val bottomSheetState =
         rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
 
     val context = LocalContext.current
+    // State to manage loading
+    var isLoading by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         openBottomSheet = true
@@ -76,361 +83,166 @@ fun DocumentDetailDialog(
             },
             sheetState = bottomSheetState,
         ) {
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    style = TextStyle(
-                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = fontFamily
-                    ),
-                    text = "IDENTITAS ALAT"
-                )  // Display some document details
-                IconButton(
-                    onClick = {
-                        scope.launch { bottomSheetState.hide() }
-                            .invokeOnCompletion {
-                                if (!bottomSheetState.isVisible) {
-                                    openBottomSheet = false
-                                    onDismissRequest()
-                                }
-                            }
-                    }
-                ) {
-                    Image(
-                        painter = painterResource(id = statusApproval.icon),
-                        contentDescription = null
-                    )
-                }
-            }
-            Card(
-                modifier = Modifier
-                    .padding(16.dp),
-                elevation = CardDefaults.elevatedCardElevation(2.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                ),
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(IntrinsicSize.Min)
+                        .padding(start = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    AsyncImage(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .size(80.dp)
-                            .align(Alignment.CenterVertically),
-                        model = ImageRequest.Builder(context).crossfade(true)
-                            .data(document.scale.imageCover)
-                            .build(),
-                        contentDescription = null,
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        style = TextStyle(
+                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                            fontWeight = FontWeight.Medium,
+                            fontFamily = fontFamily
+                        ),
+                        text = "IDENTITAS ALAT"
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    VerticalDivider(
-                        modifier = Modifier.padding(vertical = 12.dp),
-                        color = Color.Gray
-                    )
-                    Column(
-                        modifier = Modifier.padding(8.dp),
+                    // Display some document details
+                    IconButton(
+                        onClick = {
+                            scope.launch { bottomSheetState.hide() }
+                                .invokeOnCompletion {
+                                    if (!bottomSheetState.isVisible) {
+                                        openBottomSheet = false
+                                        onDismissRequest()
+                                    }
+                                }
+                        }
                     ) {
-                        Row(
-                            modifier = Modifier.padding(vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                modifier = Modifier.size(20.dp),
-                                painter = painterResource(id = R.drawable.nomor_alat),
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "Nomor Alat",
-                                style = TextStyle(
-                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                    fontWeight = FontWeight.Thin,
-                                    fontFamily = fontFamily
-                                ),
-                                color = Color.Gray
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(text = ":", style = TextStyle(fontFamily = fontFamily))
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = document.scale.measuringEquipmentIdNumber,
-                                style = TextStyle(
-                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = fontFamily
-                                ),
-                            )
-                        }
-                        Row(
-                            modifier = Modifier.padding(vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                modifier = Modifier.size(20.dp),
-                                painter = painterResource(id = R.drawable.scales),
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "Nama Alat",
-                                style = TextStyle(
-                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                    fontWeight = FontWeight.Thin,
-                                    fontFamily = fontFamily
-                                ),
-                                color = Color.Gray
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(text = ":", style = TextStyle(fontFamily = fontFamily))
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = document.scale.name,
-                                style = TextStyle(
-                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = fontFamily
-                                ),
-                            )
-                        }
-                        Row(
-                            modifier = Modifier.padding(vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                modifier = Modifier.size(20.dp),
-                                painter = painterResource(id = R.drawable.scales),
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "Merk Pabrik / Tipe",
-                                style = TextStyle(
-                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                    fontWeight = FontWeight.Thin,
-                                    fontFamily = fontFamily
-                                ),
-                                color = Color.Gray
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(text = ":", style = TextStyle(fontFamily = fontFamily))
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = document.scale.brand + " / " + document.scale.kindType,
-                                style = TextStyle(
-                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = fontFamily
-                                ),
-                            )
-                        }
-                        Row(
-                            modifier = Modifier.padding(vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                modifier = Modifier.size(20.dp),
-                                painter = painterResource(id = R.drawable.serial_number),
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "Nomor Seri",
-                                style = TextStyle(
-                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                    fontWeight = FontWeight.Thin,
-                                    fontFamily = fontFamily
-                                ),
-                                color = Color.Gray
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(text = ":", style = TextStyle(fontFamily = fontFamily))
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = document.scale.serialNumber,
-                                style = TextStyle(
-                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = fontFamily
-                                ),
-                            )
-                        }
-                        Row(
-                            modifier = Modifier.padding(vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                modifier = Modifier.size(20.dp),
-                                painter = painterResource(id = R.drawable.weight),
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "Kapasitas",
-                                style = TextStyle(
-                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                    fontWeight = FontWeight.Thin,
-                                    fontFamily = fontFamily
-                                ),
-                                color = Color.Gray
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(text = ":", style = TextStyle(fontFamily = fontFamily))
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = document.scale.rangeCapacity.toString() + " " + document.scale.unit,
-                                style = TextStyle(
-                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = fontFamily
-                                ),
-                            )
-                        }
-                    }
-                }
-            }
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                thickness = 0.8.dp,
-                color = Color.Gray
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                modifier = Modifier.padding(start = 16.dp),
-                style = TextStyle(
-                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = fontFamily
-                ),
-                text = "IDENTITAS PEMILIK"
-            )
-
-            // Display some document details
-            Box(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                ) {
-                    // Define a data class for label-value pairs
-                    data class DocumentDetail(val icon: Int, val label: String, val value: String)
-
-                    // List of document details
-                    val details = listOf(
-                        DocumentDetail(
-                            R.drawable.pemilik,
-                            "Nama Pemilik",
-                            document.scale.parentMachineOfEquipment
-                        ),
-                        DocumentDetail(
-                            R.drawable.method,
-                            "Metoda Kalibrasi",
-                            document.calibrationMethod
-                        ),
-                        DocumentDetail(
-                            R.drawable.nomor_alat,
-                            "Acuan Standard",
-                            document.reference
-                        ),
-                        DocumentDetail(
-                            R.drawable.nomor_alat,
-                            "Standar Kalibrasi",
-                            document.standardCalibration
-                        ),
-                        DocumentDetail(
-                            R.drawable.tgl_kalibrasi,
-                            "Tanggal Kalibrasi",
-                            formatDate(date = document.createdAt.toString())
-                        ),
-                        DocumentDetail(
-                            R.drawable.location,
-                            "Tempat Kalibrasi",
-                            document.scale.location
-                        ),
-                        DocumentDetail(
-                            R.drawable.temperature,
-                            "Tempat Kalibrasi",
-                            document.suhu.toString() + "°C"
-                        ),
-                        DocumentDetail(
-                            R.drawable.note,
-                            "Hasil Kalibrasi",
-                            document.resultCalibration
-                        ),
-                        DocumentDetail(
-                            R.drawable.next_kalibrasi,
-                            "Berlaku Sampai",
-                            formatDate(date = document.validUntil.toString())
-                        ),
-                    )
-
-                    // Iterate over details and display each row
-                    details.forEach { detail ->
-                        Row(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.Top,
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Image(
-                                    modifier = Modifier.size(20.dp),
-                                    painter = painterResource(id = detail.icon),
-                                    contentDescription = null
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    text = detail.label,
-                                    style = TextStyle(
-                                        fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                        fontWeight = FontWeight.Thin,
-                                        fontFamily = fontFamily
-                                    ),
-                                    color = Color.Gray
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Text(
-                                text = detail.value,
-                                style = TextStyle(
-                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = fontFamily
-                                ),
-                                modifier = Modifier
-                                    .weight(1f)
-                            )
-                        }
-                        HorizontalDivider(
-                            modifier = Modifier.padding(4.dp),
-                            thickness = 0.8.dp,
-                            color = Color.Gray
+                        Image(
+                            painter = painterResource(id = statusApproval.icon),
+                            contentDescription = null
                         )
                     }
                 }
-            }
+                ScaleCard(context = context, document = document)
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    thickness = 0.8.dp,
+                    color = Color.Gray
+                )
+                // Display some document details
+                Spacer(modifier = Modifier.height(8.dp))
+                SectionTitle("IDENTITAS PEMILIK")
+                DetailsBox(document = document)
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    thickness = 0.8.dp,
+                    color = Color.Gray
+                )
+                //Display some results of calibration
+                Spacer(modifier = Modifier.height(8.dp))
+                SectionTitle("HASIL KALIBRASI")
+                DetailsHasilKalibrasi(document = document)
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    thickness = 0.8.dp,
+                    color = Color.Gray
+                )
+                //Create PDF
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    ElevatedButton(
+                        colors = ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                            disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            disabledContentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        onClick = {}
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.background
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "Edit")
+                    }
 
-            repeat(100) {
-                Spacer(modifier = Modifier.height(16.dp))
+                    // Create PDF button
+                    ElevatedButton(
+                        colors = ButtonDefaults.elevatedButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                        ),
+                        onClick = {
+                            isLoading = true
+                            scope.launch {
+                                val pdfFile = createPdfFile(context, document)
+                                isLoading = false
+                                pdfFile?.let {
+                                    val intent = Intent(Intent.ACTION_VIEW).apply {
+                                        setDataAndType(
+                                            FileProvider.getUriForFile(
+                                                context,
+                                                context.packageName + ".provider",
+                                                it
+                                            ),
+                                            "application/pdf"
+                                        )
+                                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    }
+                                    context.startActivity(intent)
+                                } ?: run {
+                                    Toast.makeText(
+                                        context,
+                                        "Failed to create PDF",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+                        }
+                    ) {
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Print,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.background
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = "Print PDF")
+                        }
+                    }
+
+                    ElevatedButton(
+                        colors = ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                            disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            disabledContentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        onClick = {}
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.background
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "Delete")
+                    }
+                }
+
+                repeat(10) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
             }
         }
     }

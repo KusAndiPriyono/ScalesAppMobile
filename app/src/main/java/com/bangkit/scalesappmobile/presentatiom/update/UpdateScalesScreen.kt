@@ -81,6 +81,9 @@ import com.bangkit.scalesappmobile.util.compressImage
 import com.bangkit.scalesappmobile.util.createImageFile
 import com.bangkit.scalesappmobile.util.saveImage
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.mr0xf00.easycrop.CropError
 import com.mr0xf00.easycrop.CropResult
 import com.mr0xf00.easycrop.crop
@@ -920,7 +923,7 @@ fun UpdateScalesScreen(
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = "Tanggal Kalibrasi Selanjutnya",
+                            text = "Kalibrasi Selanjutnya",
                             style = TextStyle(
                                 fontSize = MaterialTheme.typography.labelMedium.fontSize,
                                 fontWeight = FontWeight.Thin,
@@ -967,6 +970,27 @@ fun UpdateScalesScreen(
                             )
                         }
                     }
+
+                    CalendarDialog(
+                        state = dateDialog,
+                        selection = CalendarSelection.Date { date ->
+                            when (selectedDateType) {
+                                DateType.CALIBRATION_DATE -> {
+                                    pickedCalibrationDate = date
+                                    viewModel.setScalesCalibrationDate(date.toString())
+                                }
+
+                                DateType.NEXT_CALIBRATION_DATE -> {
+                                    pickedNextCalibrationDate = date
+                                    viewModel.setScalesNextCalibrationDate(date.toString())
+                                }
+                            }
+                        },
+                        config = CalendarConfig(
+                            monthSelection = true,
+                            yearSelection = true
+                        )
+                    )
                 }
             }
             //Description dan Mesin Induk Alat

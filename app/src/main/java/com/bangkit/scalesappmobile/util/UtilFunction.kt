@@ -8,8 +8,21 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import com.bangkit.scalesappmobile.R
 import com.bangkit.scalesappmobile.data.remote.scales.ErrorResponse
+import com.bangkit.scalesappmobile.domain.model.AllForm
 import com.google.gson.Gson
+import com.itextpdf.io.font.constants.StandardFonts
+import com.itextpdf.io.image.ImageDataFactory
+import com.itextpdf.kernel.colors.ColorConstants
+import com.itextpdf.kernel.font.PdfFontFactory
+import com.itextpdf.kernel.geom.PageSize
+import com.itextpdf.kernel.pdf.PdfDocument
+import com.itextpdf.kernel.pdf.PdfWriter
+import com.itextpdf.layout.Document
+import com.itextpdf.layout.element.Paragraph
+import com.itextpdf.layout.properties.HorizontalAlignment
+import com.itextpdf.layout.properties.TextAlignment
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -19,6 +32,7 @@ import retrofit2.HttpException
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
@@ -137,12 +151,77 @@ fun Context.imageUriToImageBitmap(uri: Uri): Bitmap {
     }
 }
 
-//fun Context.createImageFile(): File {
-//    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-//    val imageFileName = "JPEG_${timeStamp}_"
-//    return File.createTempFile(
-//        imageFileName,
-//        ".jpg",
-//        externalCacheDir
-//    )
-//}
+// Adjust the input format to match the given date string format
+fun formatDate(date: String): String {
+    val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'XXX yyyy", Locale.ENGLISH)
+    val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+    return try {
+        val parsedDate = inputFormat.parse(date)
+        outputFormat.format(parsedDate!!)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        "Invalid Date"
+    }
+}
+
+fun createPdfFile(context: Context, data: AllForm): File? {
+    val directoryPath = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)?.absolutePath
+        ?: return null
+
+    val file = File("$directoryPath/scales.pdf")
+
+    return try {
+        val pdfWriter = PdfWriter(file)
+        val pdfDocument = PdfDocument(pdfWriter)
+        val document = Document(pdfDocument, PageSize.A4)
+
+        // Set the document margins
+        document.setMargins(36f, 36f, 36f, 36f)
+
+        // Load the image from drawable
+        val headerImageId = R.drawable.logo_myr // Replace with your drawable image resource ID
+        val bitmap = BitmapFactory.decodeResource(context.resources, headerImageId)
+            ?: throw FileNotFoundException("Drawable resource not found: $headerImageId")
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        val headerImage =
+            com.itextpdf.layout.element.Image(ImageDataFactory.create(stream.toByteArray()))
+        headerImage.setWidth(50f)
+        headerImage.setHorizontalAlignment(HorizontalAlignment.LEFT)
+        // Add header image to the PDF
+        document.add(headerImage)
+
+        // Add title
+        val title = Paragraph("DEPARTEMENT TEKNIK\nCALIBRATION")
+            .setFontSize(18f)
+            .setTextAlignment(TextAlignment.CENTER)
+            .setBold()
+        document.add(title)
+
+        // Add the form data
+        document.add(Paragraph("\nIDENTITAS ALAT").setBold())
+        document.add(Paragraph("Deskripsi Alat: ${data.scale.name}"))
+
+        // Footer
+        val footer = Paragraph("Tangerang, ${Date()}\n\n\n\n\n")
+            .setFontSize(12f)
+            .setTextAlignment(TextAlignment.RIGHT)
+        document.add(footer)
+
+        val font = PdfFontFactory.createFont(StandardFonts.HELVETICA)
+        val footerSign = Paragraph("CALIBRATOR\n\n(Dept. Head Teknik)")
+            .setFont(font)
+            .setFontSize(10f)
+            .setTextAlignment(TextAlignment.RIGHT)
+            .setFontColor(ColorConstants.GRAY)
+        document.add(footerSign)
+
+        // Close document
+        document.close()
+        pdfDocument.close()
+        file
+    } catch (e: IOException) {
+        e.printStackTrace()
+        null
+    }
+}

@@ -48,6 +48,8 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/native-image/resource-config.json"
+            excludes += "META-INF/native-image/reflect-config.json"
         }
     }
 
@@ -141,8 +143,11 @@ dependencies {
     // CALENDAR
     implementation(libs.calendar)
 
-    // Accompanist System UI Controller Library
-    implementation(libs.accompanist.systemuicontroller)
+    //iTextPdf
+    implementation(libs.itext7.core)
+
+//    // Accompanist System UI Controller Library
+//    implementation(libs.accompanist.systemuicontroller)
 
 //    // CLOCK
 //    implementation("com.maxkeppeler.sheets-compose-dialogs:clock:1.2.1")

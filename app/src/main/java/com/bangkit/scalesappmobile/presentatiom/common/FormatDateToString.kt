@@ -30,11 +30,3 @@ fun FormatStringToDate(
         fontFamily = fontFamily
     )
 }
-
-// Function to format the date
-fun formatDate(date: String): String {
-    val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault())
-    val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
-    val parsedDate = inputFormat.parse(date)
-    return outputFormat.format(parsedDate!!)
-}
