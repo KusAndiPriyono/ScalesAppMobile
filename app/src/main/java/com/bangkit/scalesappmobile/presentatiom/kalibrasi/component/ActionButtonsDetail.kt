@@ -56,7 +56,6 @@ fun ActionButtonsDetails(
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.background
             )
-            Spacer(modifier = Modifier.width(8.dp))
             Text(text = "Edit")
         }
 
@@ -102,7 +101,6 @@ fun ActionButtonsDetails(
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.background
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
                     Text(text = "Print PDF")
                 }
             }
@@ -120,7 +118,6 @@ fun ActionButtonsDetails(
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.background
             )
-            Spacer(modifier = Modifier.width(8.dp))
             Text(text = "Delete")
         }
     }
