@@ -316,7 +316,7 @@ fun UpdateScalesScreen(
                             if (photoFile != null) {
                                 val photoURI = FileProvider.getUriForFile(
                                     context,
-                                    context.applicationContext.packageName + ".fileprovider",
+                                    "${context.packageName}.provider", // Ensure this matches the manifest
                                     photoFile
                                 )
                                 imageUri = photoFile
@@ -345,7 +345,7 @@ fun UpdateScalesScreen(
                             if (photoFile != null) {
                                 val photoURI = FileProvider.getUriForFile(
                                     context,
-                                    context.applicationContext.packageName + ".fileprovider",
+                                    "${context.packageName}.provider", // Ensure this matches the manifest
                                     photoFile
                                 )
                                 imageUri = photoFile
