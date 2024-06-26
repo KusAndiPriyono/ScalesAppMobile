@@ -36,4 +36,11 @@ class DocumentKalibrasiRepositoryImpl @Inject constructor(
             response.data
         }
     }
+
+    override suspend fun deleteDocumentKalibrasi(id: String): Resource<Boolean> {
+        return safeApiCall(Dispatchers.IO) {
+            val response = scalesApiService.deleteDocument(id = id)
+            response.toString().isNotEmpty()
+        }
+    }
 }

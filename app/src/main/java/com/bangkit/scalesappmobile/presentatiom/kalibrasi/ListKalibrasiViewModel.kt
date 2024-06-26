@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.DeleteDocumentKalibrasiUseCase
 import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.GetDocumentKalibrasiUseCase
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.state.DocumentState
 import com.bangkit.scalesappmobile.util.Resource
@@ -23,10 +24,14 @@ import javax.inject.Inject
 @HiltViewModel
 class ListKalibrasiViewModel @Inject constructor(
     private val getDocumentKalibrasiUseCase: GetDocumentKalibrasiUseCase,
+    private val deleteDocumentKalibrasiUseCase: DeleteDocumentKalibrasiUseCase,
 ) : ViewModel() {
 
     private val _eventsFlow = MutableSharedFlow<UiEvents>()
     val eventsFlow = _eventsFlow.asSharedFlow()
+
+    private val _isDeleted = mutableStateOf(false)
+    val isDeleted: State<Boolean> = _isDeleted
 
     private val _documentState = mutableStateOf(DocumentState())
     val documentState: State<DocumentState> = _documentState
@@ -66,6 +71,26 @@ class ListKalibrasiViewModel @Inject constructor(
 
                 else -> {
                     _documentState.value = documentState.value.copy(isLoading = false)
+                }
+            }
+        }
+    }
+
+    fun deleteDocumentKalibrasi(id: String) {
+        viewModelScope.launch {
+            when (val result = deleteDocumentKalibrasiUseCase.invoke(id = id)) {
+                is Resource.Success -> {
+                    _isDeleted.value = true
+                    _eventsFlow.emit(UiEvents.SnackbarEvent("Document deleted"))
+                    getAllDocumentKalibrasi()
+                }
+
+                is Resource.Error -> {
+                    _eventsFlow.emit(UiEvents.SnackbarEvent(result.message ?: "An error occurred"))
+                }
+
+                else -> {
+                    documentState
                 }
             }
         }

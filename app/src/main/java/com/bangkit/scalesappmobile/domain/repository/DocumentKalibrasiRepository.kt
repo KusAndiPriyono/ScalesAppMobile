@@ -8,4 +8,6 @@ interface DocumentKalibrasiRepository {
     suspend fun getAllDocumentKalibrasi(): Resource<List<AllForm>>
 
     suspend fun getDocumentKalibrasiDetail(id: String): Resource<AllForm>
+
+    suspend fun deleteDocumentKalibrasi(id: String): Resource<Boolean>
 }

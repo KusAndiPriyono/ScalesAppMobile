@@ -96,7 +96,12 @@ fun ListKalibrasiScreen(
             onDismissRequest = {
                 selectedDocument = null
             },
-            statusApproval = ApprovalStatus.fromString(document.approval)
+            statusApproval = ApprovalStatus.fromString(document.approval),
+            onClickDeleteDocument = {
+                viewModel.deleteDocumentKalibrasi(document.id)
+                navigator.openKalibrasi()
+                selectedDocument = null
+            }
         )
     }
 }

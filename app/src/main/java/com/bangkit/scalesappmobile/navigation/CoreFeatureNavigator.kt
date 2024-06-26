@@ -97,6 +97,11 @@ class CoreFeatureNavigator(
         navController.navigate(ListKalibrasiScreenDestination within navGraph)
     }
 
+    override fun navigateBackToKalibrasi() {
+        navController.navigate(ListKalibrasiScreenDestination within navGraph)
+        navController.clearBackStack("kalibrasi")
+    }
+
     override fun openSchedule() {
         navController.navigate(ScheduleScreenDestination within navGraph)
     }

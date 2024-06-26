@@ -81,10 +81,15 @@ interface ScalesApiService {
     @GET("api/v1/forms")
     suspend fun getAllForms(): GetAllFormsResponse
 
-    @GET("api/v1/forms/{id}")
+    @PATCH("api/v1/forms/{id}")
     suspend fun getFormKalibrasiDetail(
         @Path("id") id: String,
     ): GetDocumentDetailResponse
+
+    @DELETE("api/v1/forms/{id}")
+    suspend fun deleteDocument(
+        @Path("id") id: String,
+    )
 
     @POST("api/v1/users/login")
     suspend fun refreshToken(
