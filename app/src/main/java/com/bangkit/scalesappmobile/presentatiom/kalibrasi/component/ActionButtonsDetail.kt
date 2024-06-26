@@ -41,8 +41,8 @@ fun ActionButtonsDetails(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(horizontal = 8.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceAround
     ) {
         ElevatedButton(
             colors = ButtonDefaults.elevatedButtonColors(
