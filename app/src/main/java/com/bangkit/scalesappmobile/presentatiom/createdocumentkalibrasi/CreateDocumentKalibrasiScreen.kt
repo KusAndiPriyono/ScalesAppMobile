@@ -166,22 +166,22 @@ fun CreateDocumentKalibrasiScreen(
                                         error = "Berlaku Sampai tidak boleh kosong"
                                     )
                                 }
-                                if (readingCenter.outputNumberScale == 0) {
+                                if (readingCenter == 0.0) {
                                     viewModel.setReadingCenter(0.0)
                                 }
-                                if (readingFront.outputNumberScale == 0) {
+                                if (readingFront == 0.0) {
                                     viewModel.setReadingFront(0.0)
                                 }
-                                if (readingBack.outputNumberScale == 0) {
+                                if (readingBack == 0.0) {
                                     viewModel.setReadingBack(0.0)
                                 }
-                                if (readingLeft.outputNumberScale == 0) {
+                                if (readingLeft == 0.0) {
                                     viewModel.setReadingLeft(0.0)
                                 }
-                                if (readingRight.outputNumberScale == 0) {
+                                if (readingRight == 0.0) {
                                     viewModel.setReadingRight(0.0)
                                 }
-                                if (maxTotalReading.outputNumberScale == 0) {
+                                if (maxTotalReading == 0.0) {
                                     viewModel.setMaxTotalReading(0.0)
                                 }
 
@@ -320,7 +320,7 @@ fun CreateDocumentKalibrasiScreen(
                         Text(text = "Suhu", style = MaterialTheme.typography.labelMedium)
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            value = suhu.toString(),
+                            value = if (suhu == 0) "" else suhu.toString(), // Tampilkan string kosong jika nilai adalah 0
                             onValueChange = {
                                 viewModel.setSuhu(it.toIntOrNull() ?: 0)
                             },
@@ -328,11 +328,11 @@ fun CreateDocumentKalibrasiScreen(
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number
                             ),
-                            isError = suhu == 0,
+                            isError = viewModel.createDocumentKalibrasi.value.error != null && suhu == 0
                         )
-                        if (suhu == 0) {
+                        if (viewModel.createDocumentKalibrasi.value.error != null && suhu == 0) {
                             Text(
-                                text = "Suhu tidak boleh bernilai 0",
+                                text = "Suhu tidak boleh kosong",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.error,
                                 textAlign = TextAlign.End,
@@ -340,7 +340,6 @@ fun CreateDocumentKalibrasiScreen(
                             )
                         }
                     }
-
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -366,7 +365,6 @@ fun CreateDocumentKalibrasiScreen(
                             },
                             isError = validUntil.error != null
                         )
-
                         if (validUntil.error != null) {
                             Text(
                                 text = validUntil.error,
@@ -427,19 +425,19 @@ fun CreateDocumentKalibrasiScreen(
                         )
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            value = readingCenter.outputNumberScale.toString(),
+                            value = if (readingCenter == 0.0) "" else readingCenter.toString(), // Tampilkan string kosong jika nilai adalah 0.0
                             onValueChange = {
-                                viewModel.setReadingCenter()
+                                viewModel.setReadingCenter(it.toDoubleOrNull() ?: 0.0)
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
-                                keyboardType = KeyboardType.Number
+                                keyboardType = KeyboardType.Decimal
                             ),
-                            isError = readingCenter.error != null,
+                            isError = viewModel.createDocumentKalibrasi.value.error != null && readingCenter == 0.0,
                         )
-                        if (readingCenter.error != null) {
+                        if (viewModel.createDocumentKalibrasi.value.error != null && readingCenter == 0.0) {
                             Text(
-                                text = "tidak boleh bernilai 0.0",
+                                text = "tidak boleh kosong",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.error,
                                 textAlign = TextAlign.End,
@@ -447,7 +445,6 @@ fun CreateDocumentKalibrasiScreen(
                             )
                         }
                     }
-
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -458,17 +455,17 @@ fun CreateDocumentKalibrasiScreen(
                         )
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            value = readingFront.toString(),
+                            value = if (readingFront == 0.0) "" else readingFront.toString(), // Tampilkan string kosong jika nilai adalah 0.0
                             onValueChange = {
-                                viewModel.setReadingFront(it.toDouble())
+                                viewModel.setReadingFront(it.toDoubleOrNull() ?: 0.0)
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
-                                keyboardType = KeyboardType.Number
+                                keyboardType = KeyboardType.Decimal
                             ),
-                            isError = readingFront.error != null,
+                            isError = viewModel.createDocumentKalibrasi.value.error != null && readingFront == 0.0,
                         )
-                        if (readingFront.error != null) {
+                        if (viewModel.createDocumentKalibrasi.value.error != null && readingFront == 0.0) {
                             Text(
                                 text = "tidak boleh bernilai 0.0",
                                 style = MaterialTheme.typography.labelSmall,
@@ -496,17 +493,17 @@ fun CreateDocumentKalibrasiScreen(
                         )
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            value = readingBack.toString(),
+                            value = if (readingBack == 0.0) "" else readingBack.toString(), // Tampilkan string kosong jika nilai adalah 0.0
                             onValueChange = {
-                                viewModel.setReadingBack(it.toDouble())
+                                viewModel.setReadingBack(it.toDoubleOrNull() ?: 0.0)
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
-                                keyboardType = KeyboardType.Number
+                                keyboardType = KeyboardType.Decimal
                             ),
-                            isError = readingBack.error != null,
+                            isError = viewModel.createDocumentKalibrasi.value.error != null && readingBack == 0.0,
                         )
-                        if (readingBack.error != null) {
+                        if (viewModel.createDocumentKalibrasi.value.error != null && readingBack == 0.0) {
                             Text(
                                 text = "tidak boleh bernilai 0.0",
                                 style = MaterialTheme.typography.labelSmall,
@@ -516,7 +513,6 @@ fun CreateDocumentKalibrasiScreen(
                             )
                         }
                     }
-
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -527,17 +523,17 @@ fun CreateDocumentKalibrasiScreen(
                         )
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            value = readingLeft.toString(),
+                            value = if (readingLeft == 0.0) "" else readingLeft.toString(), // Tampilkan string kosong jika nilai adalah 0.0
                             onValueChange = {
-                                viewModel.setReadingLeft(it.toDouble())
+                                viewModel.setReadingLeft(it.toDoubleOrNull() ?: 0.0)
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
-                                keyboardType = KeyboardType.Number
+                                keyboardType = KeyboardType.Decimal
                             ),
-                            isError = readingLeft.error != null,
+                            isError = viewModel.createDocumentKalibrasi.value.error != null && readingLeft == 0.0,
                         )
-                        if (readingLeft.error != null) {
+                        if (viewModel.createDocumentKalibrasi.value.error != null && readingLeft == 0.0) {
                             Text(
                                 text = "tidak boleh bernilai 0.0",
                                 style = MaterialTheme.typography.labelSmall,
@@ -565,17 +561,17 @@ fun CreateDocumentKalibrasiScreen(
                         )
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            value = readingRight.toString(),
+                            value = if (readingRight == 0.0) "" else readingRight.toString(), // Tampilkan string kosong jika nilai adalah 0.0
                             onValueChange = {
-                                viewModel.setReadingRight(it.toDouble())
+                                viewModel.setReadingRight(it.toDoubleOrNull() ?: 0.0)
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
-                                keyboardType = KeyboardType.Number
+                                keyboardType = KeyboardType.Decimal
                             ),
-                            isError = readingRight.error != null,
+                            isError = viewModel.createDocumentKalibrasi.value.error != null && readingRight == 0.0,
                         )
-                        if (readingRight.error != null) {
+                        if (viewModel.createDocumentKalibrasi.value.error != null && readingRight == 0.0) {
                             Text(
                                 text = "tidak boleh bernilai 0.0",
                                 style = MaterialTheme.typography.labelSmall,
@@ -585,7 +581,6 @@ fun CreateDocumentKalibrasiScreen(
                             )
                         }
                     }
-
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
