@@ -2,6 +2,7 @@ package com.bangkit.scalesappmobile.data.repository
 
 import coil.network.HttpException
 import com.bangkit.scalesappmobile.data.remote.ScalesApiService
+import com.bangkit.scalesappmobile.data.remote.scales.UpdateDocumentKalibrasiResponse
 import com.bangkit.scalesappmobile.domain.model.AllForm
 import com.bangkit.scalesappmobile.domain.repository.DocumentKalibrasiRepository
 import com.bangkit.scalesappmobile.util.Resource
@@ -30,10 +31,12 @@ class DocumentKalibrasiRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDocumentKalibrasiDetail(id: String): Resource<AllForm> {
+    override suspend fun updateDocumentKalibrasiDetail(
+        id: String,
+        allForm: AllForm
+    ): Resource<UpdateDocumentKalibrasiResponse> {
         return safeApiCall(Dispatchers.IO) {
-            val response = scalesApiService.getFormKalibrasiDetail(id = id)
-            response.data
+            scalesApiService.updateDocumentKalibrasi(id = id, allForm = allForm)
         }
     }
 

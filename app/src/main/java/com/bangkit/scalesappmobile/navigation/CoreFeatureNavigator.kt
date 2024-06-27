@@ -2,6 +2,7 @@ package com.bangkit.scalesappmobile.navigation
 
 import android.net.Uri
 import androidx.navigation.NavController
+import com.bangkit.scalesappmobile.domain.model.AllForm
 import com.bangkit.scalesappmobile.domain.model.ScalesDetails
 import com.bangkit.scalesappmobile.presentatiom.auth.AuthNavigator
 import com.bangkit.scalesappmobile.presentatiom.createscales.CreateScalesNavigator
@@ -19,6 +20,7 @@ import com.bangkit.scalesappmobile.presentatiom.destinations.ScheduleScreenDesti
 import com.bangkit.scalesappmobile.presentatiom.destinations.SearchScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.UpdateDocKalibrasiScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.UpdateScalesScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.home.HomeNavigator
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.KalibrasiNavigator
@@ -100,6 +102,15 @@ class CoreFeatureNavigator(
     override fun navigateBackToKalibrasi() {
         navController.navigate(ListKalibrasiScreenDestination within navGraph)
         navController.clearBackStack("kalibrasi")
+    }
+
+    override fun openUpdateDocKalibrasi(id: String?, allForm: AllForm?) {
+        navController.navigate(
+            UpdateDocKalibrasiScreenDestination(
+                id = id,
+                allForm = allForm
+            ) within navGraph
+        )
     }
 
     override fun openSchedule() {

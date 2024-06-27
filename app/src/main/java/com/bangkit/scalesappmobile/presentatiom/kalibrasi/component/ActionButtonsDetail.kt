@@ -40,6 +40,7 @@ fun ActionButtonsDetails(
     isLoading: Boolean,
     setLoading: (Boolean) -> Unit,
     onClickDeleteDocument: () -> Unit,
+    onClickEditDocument: (AllForm) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -58,7 +59,9 @@ fun ActionButtonsDetails(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
             ),
-            onClick = {}
+            onClick = {
+                onClickEditDocument(document)
+            }
         ) {
             Icon(
                 imageVector = Icons.Default.Edit,

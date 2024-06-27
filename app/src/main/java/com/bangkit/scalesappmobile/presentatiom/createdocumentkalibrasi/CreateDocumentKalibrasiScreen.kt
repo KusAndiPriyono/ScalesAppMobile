@@ -166,22 +166,22 @@ fun CreateDocumentKalibrasiScreen(
                                         error = "Berlaku Sampai tidak boleh kosong"
                                     )
                                 }
-                                if (readingCenter == 0.0) {
+                                if (readingCenter.outputNumberScale == 0) {
                                     viewModel.setReadingCenter(0.0)
                                 }
-                                if (readingFront == 0.0) {
+                                if (readingFront.outputNumberScale == 0) {
                                     viewModel.setReadingFront(0.0)
                                 }
-                                if (readingBack == 0.0) {
+                                if (readingBack.outputNumberScale == 0) {
                                     viewModel.setReadingBack(0.0)
                                 }
-                                if (readingLeft == 0.0) {
+                                if (readingLeft.outputNumberScale == 0) {
                                     viewModel.setReadingLeft(0.0)
                                 }
-                                if (readingRight == 0.0) {
+                                if (readingRight.outputNumberScale == 0) {
                                     viewModel.setReadingRight(0.0)
                                 }
-                                if (maxTotalReading == 0.0) {
+                                if (maxTotalReading.outputNumberScale == 0) {
                                     viewModel.setMaxTotalReading(0.0)
                                 }
 
@@ -427,19 +427,19 @@ fun CreateDocumentKalibrasiScreen(
                         )
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            value = readingCenter.toString(),
+                            value = readingCenter.outputNumberScale.toString(),
                             onValueChange = {
-                                viewModel.setReadingCenter(it.toDoubleOrNull() ?: 0.0)
+                                viewModel.setReadingCenter()
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number
                             ),
-                            isError = readingCenter == 0.0,
+                            isError = readingCenter.error != null,
                         )
-                        if (readingCenter == 0.0) {
+                        if (readingCenter.error != null) {
                             Text(
-                                text = "Suhu tidak boleh bernilai 0.0",
+                                text = "tidak boleh bernilai 0.0",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.error,
                                 textAlign = TextAlign.End,
@@ -460,17 +460,17 @@ fun CreateDocumentKalibrasiScreen(
                             modifier = Modifier.fillMaxWidth(),
                             value = readingFront.toString(),
                             onValueChange = {
-                                viewModel.setReadingFront(it.toDoubleOrNull() ?: 0.0)
+                                viewModel.setReadingFront(it.toDouble())
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number
                             ),
-                            isError = readingFront == 0.0,
+                            isError = readingFront.error != null,
                         )
-                        if (readingFront == 0.0) {
+                        if (readingFront.error != null) {
                             Text(
-                                text = "Suhu tidak boleh bernilai 0.0",
+                                text = "tidak boleh bernilai 0.0",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.error,
                                 textAlign = TextAlign.End,
@@ -498,17 +498,17 @@ fun CreateDocumentKalibrasiScreen(
                             modifier = Modifier.fillMaxWidth(),
                             value = readingBack.toString(),
                             onValueChange = {
-                                viewModel.setReadingBack(it.toDoubleOrNull() ?: 0.0)
+                                viewModel.setReadingBack(it.toDouble())
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number
                             ),
-                            isError = readingBack == 0.0,
+                            isError = readingBack.error != null,
                         )
-                        if (readingBack == 0.0) {
+                        if (readingBack.error != null) {
                             Text(
-                                text = "Suhu tidak boleh bernilai 0.0",
+                                text = "tidak boleh bernilai 0.0",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.error,
                                 textAlign = TextAlign.End,
@@ -529,17 +529,17 @@ fun CreateDocumentKalibrasiScreen(
                             modifier = Modifier.fillMaxWidth(),
                             value = readingLeft.toString(),
                             onValueChange = {
-                                viewModel.setReadingLeft(it.toDoubleOrNull() ?: 0.0)
+                                viewModel.setReadingLeft(it.toDouble())
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number
                             ),
-                            isError = readingLeft == 0.0,
+                            isError = readingLeft.error != null,
                         )
-                        if (readingLeft == 0.0) {
+                        if (readingLeft.error != null) {
                             Text(
-                                text = "Suhu tidak boleh bernilai 0.0",
+                                text = "tidak boleh bernilai 0.0",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.error,
                                 textAlign = TextAlign.End,
@@ -567,17 +567,17 @@ fun CreateDocumentKalibrasiScreen(
                             modifier = Modifier.fillMaxWidth(),
                             value = readingRight.toString(),
                             onValueChange = {
-                                viewModel.setReadingRight(it.toDoubleOrNull() ?: 0.0)
+                                viewModel.setReadingRight(it.toDouble())
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number
                             ),
-                            isError = readingRight == 0.0,
+                            isError = readingRight.error != null,
                         )
-                        if (readingRight == 0.0) {
+                        if (readingRight.error != null) {
                             Text(
-                                text = "Suhu tidak boleh bernilai 0.0",
+                                text = "tidak boleh bernilai 0.0",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.error,
                                 textAlign = TextAlign.End,

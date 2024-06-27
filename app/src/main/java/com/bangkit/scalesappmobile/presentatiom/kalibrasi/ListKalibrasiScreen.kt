@@ -101,6 +101,9 @@ fun ListKalibrasiScreen(
                 viewModel.deleteDocumentKalibrasi(document.id)
                 navigator.openKalibrasi()
                 selectedDocument = null
+            },
+            onClickEditDocument = {
+                navigator.openUpdateDocKalibrasi(id = document.id, allForm = document)
             }
         )
     }

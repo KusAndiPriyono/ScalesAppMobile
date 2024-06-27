@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class GetDocumentDetailResponse(
+data class UpdateDocumentKalibrasiResponse(
     @SerializedName("data")
     val data: AllForm,
     @SerializedName("status")

@@ -15,6 +15,7 @@ import com.bangkit.scalesappmobile.presentatiom.destinations.ScheduleScreenDesti
 import com.bangkit.scalesappmobile.presentatiom.destinations.SearchScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.UpdateDocKalibrasiScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.UpdateScalesScreenDestination
 import com.ramcosta.composedestinations.dynamic.routedIn
 import com.ramcosta.composedestinations.spec.DestinationSpec
@@ -70,7 +71,8 @@ object NavGraphs {
         override val route = "kalibrasi"
         override val startRoute = ListKalibrasiScreenDestination routedIn this
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
-            ListKalibrasiScreenDestination
+            ListKalibrasiScreenDestination,
+            UpdateDocKalibrasiScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 

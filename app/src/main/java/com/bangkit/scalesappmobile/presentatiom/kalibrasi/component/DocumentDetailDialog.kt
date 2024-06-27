@@ -44,6 +44,7 @@ fun DocumentDetailDialog(
     statusApproval: ApprovalStatus,
     onDismissRequest: () -> Unit,
     onClickDeleteDocument: () -> Unit,
+    onClickEditDocument: (AllForm) -> Unit
 ) {
 
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -141,6 +142,9 @@ fun DocumentDetailDialog(
                     setLoading = { isLoading = it },
                     onClickDeleteDocument = {
                         onClickDeleteDocument()
+                    },
+                    onClickEditDocument = {
+                        onClickEditDocument(it)
                     }
                 )
                 repeat(10) {
