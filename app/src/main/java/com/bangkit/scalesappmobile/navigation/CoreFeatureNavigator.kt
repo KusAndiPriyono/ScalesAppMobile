@@ -87,6 +87,12 @@ class CoreFeatureNavigator(
         navController.popBackStack()
     }
 
+    override fun openUpdateDocKalibrasi(id: String?, allForm: AllForm?) {
+        navController.navigate(
+            UpdateDocKalibrasiScreenDestination(id = id, allForm = allForm) within navGraph
+        )
+    }
+
     override fun openCreateScales() {
         navController.navigate(CreateScalesScreenDestination within navGraph)
     }
@@ -102,15 +108,6 @@ class CoreFeatureNavigator(
     override fun navigateBackToKalibrasi() {
         navController.navigate(ListKalibrasiScreenDestination within navGraph)
         navController.clearBackStack("kalibrasi")
-    }
-
-    override fun openUpdateDocKalibrasi(id: String?, allForm: AllForm?) {
-        navController.navigate(
-            UpdateDocKalibrasiScreenDestination(
-                id = id,
-                allForm = allForm
-            ) within navGraph
-        )
     }
 
     override fun openSchedule() {

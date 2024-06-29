@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bangkit.scalesappmobile.domain.model.AllForm
+import com.bangkit.scalesappmobile.domain.model.UpdateForm
 import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.UpdateDocumentKalibrasiUseCase
 import com.bangkit.scalesappmobile.presentatiom.auth.state.TextFieldState
 import com.bangkit.scalesappmobile.util.Resource
@@ -23,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UpdateDocKalibrasiViewModel @Inject constructor(
-    private val updateDocumentKalibrasiUseCase: UpdateDocumentKalibrasiUseCase
+    private val updateDocumentKalibrasiUseCase: UpdateDocumentKalibrasiUseCase,
 ) : ViewModel() {
 
     private val _eventFlow = MutableSharedFlow<UiEvents>()
@@ -153,15 +154,14 @@ class UpdateDocKalibrasiViewModel @Inject constructor(
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun saveDocumentKalibrasi(id: String, form: AllForm) {
-        val allForm = AllForm(
-            approval = toString(),
+    fun saveDocumentKalibrasi(id: String) {
+        val allForm = UpdateForm(
+            approval = "waiting",
             calibrationMethod = calibrationMethod.value.text,
             createdAt = Date(),
             id = id,
             reference = reference.value.text,
             resultCalibration = resultCalibration.value.text,
-            scale = form.scale,
             standardCalibration = standardCalibration.value.text,
             suhu = suhu.value,
             validUntil = Date(),
@@ -175,14 +175,14 @@ class UpdateDocKalibrasiViewModel @Inject constructor(
         updateDocumentKalibrasi(id, allForm)
     }
 
-    private fun updateDocumentKalibrasi(id: String, allForm: AllForm) {
+    private fun updateDocumentKalibrasi(id: String, updateForm: UpdateForm) {
         viewModelScope.launch {
             _updateDocState.value = updateDocState.value.copy(isLoading = true)
 
-            when (val result = updateDocumentKalibrasiUseCase(id, allForm)) {
+            when (val result = updateDocumentKalibrasiUseCase(id, updateForm)) {
                 is Resource.Success -> {
                     _updateDocState.value =
-                        updateDocState.value.copy(isLoading = false, allForm = result.data?.data)
+                        updateDocState.value.copy(isLoading = false, updateForm = result.data?.data)
                     _eventFlow.emit(UiEvents.SnackbarEvent("Document updated Successfully"))
 
                     _eventFlow.emit(UiEvents.NavigationEvent("kalibrasi"))
@@ -204,5 +204,5 @@ class UpdateDocKalibrasiViewModel @Inject constructor(
 data class UpdateDocKalibrasiState(
     val isLoading: Boolean = false,
     val error: String? = null,
-    val allForm: AllForm? = null,
+    val updateForm: UpdateForm? = null,
 )

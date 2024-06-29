@@ -62,7 +62,7 @@ fun UpdateDocKalibrasiScreen(
     id: String?,
     allForm: AllForm?,
     navigator: KalibrasiNavigator,
-    viewModel: UpdateDocKalibrasiViewModel = hiltViewModel()
+    viewModel: UpdateDocKalibrasiViewModel = hiltViewModel(),
 ) {
     val updateDocKalibrasiState = viewModel.updateDocState.value
     val scaffoldState = rememberBottomSheetScaffoldState()
@@ -118,7 +118,7 @@ fun UpdateDocKalibrasiScreen(
                     SaveTextButtonContent(
                         isLoading = viewModel.updateDocState.value.isLoading,
                         onClick = {
-                            viewModel.saveDocumentKalibrasi(id!!, form = allForm!!)
+                            viewModel.saveDocumentKalibrasi(id!!)
                         }
                     )
                 }

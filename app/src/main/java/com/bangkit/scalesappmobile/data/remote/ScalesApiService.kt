@@ -4,17 +4,17 @@ import com.bangkit.scalesappmobile.data.remote.scales.AuthResponse
 import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetAllFormsResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetAllScalesResponse
-import com.bangkit.scalesappmobile.data.remote.scales.UpdateDocumentKalibrasiResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesDetailResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesUpdateResponse
 import com.bangkit.scalesappmobile.data.remote.scales.PostFormKalibrasiResponse
-import com.bangkit.scalesappmobile.domain.model.AllForm
+import com.bangkit.scalesappmobile.data.remote.scales.UpdateDocumentKalibrasiResponse
 import com.bangkit.scalesappmobile.domain.model.ForgotPasswordRequest
 import com.bangkit.scalesappmobile.domain.model.Form
 import com.bangkit.scalesappmobile.domain.model.LoginRequest
 import com.bangkit.scalesappmobile.domain.model.RefreshTokenRequest
 import com.bangkit.scalesappmobile.domain.model.RegisterRequest
 import com.bangkit.scalesappmobile.domain.model.ScalesDetails
+import com.bangkit.scalesappmobile.domain.model.UpdateForm
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -85,7 +85,7 @@ interface ScalesApiService {
     @PATCH("api/v1/forms/{id}")
     suspend fun updateDocumentKalibrasi(
         @Path("id") id: String,
-        @Body allForm: AllForm,
+        @Body updateForm: UpdateForm,
     ): UpdateDocumentKalibrasiResponse
 
     @DELETE("api/v1/forms/{id}")
