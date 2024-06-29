@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -22,11 +23,16 @@ import com.bangkit.scalesappmobile.navigation.BottomNavItem
 import com.bangkit.scalesappmobile.navigation.CoreFeatureNavigator
 import com.bangkit.scalesappmobile.navigation.NavGraphs
 import com.bangkit.scalesappmobile.navigation.StandardScaffold
+import com.bangkit.scalesappmobile.navigation.navGraph
 import com.bangkit.scalesappmobile.navigation.scaleInEnterTransition
 import com.bangkit.scalesappmobile.navigation.scaleInPopEnterTransition
 import com.bangkit.scalesappmobile.navigation.scaleOutExitTransition
 import com.bangkit.scalesappmobile.navigation.scaleOutPopExitTransition
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.ListKalibrasiScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.NotificationScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.ScheduleScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.ui.theme.ScalesAppMobileTheme
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -56,11 +62,14 @@ class MainActivity : ComponentActivity() {
                 ) {
 //                    NavGraph(startDestination = viewModel.startDestination.value)
                     val navController = rememberNavController()
-                    val newBackStackEntry = navController.currentBackStackEntryAsState()
-                    val route = newBackStackEntry.value?.destination?.route
+                    val newBackStackEntry by navController.currentBackStackEntryAsState()
+                    val route = newBackStackEntry?.destination?.route
 
                     val bottomBarItems = listOf(
                         BottomNavItem.Home,
+                        BottomNavItem.Kalibrasi,
+                        BottomNavItem.Schedule,
+                        BottomNavItem.Notifications,
                         BottomNavItem.Settings
                     )
 
@@ -70,7 +79,10 @@ class MainActivity : ComponentActivity() {
                         items = bottomBarItems,
                         showBottomBar = route in listOf(
                             "home/${HomeScreenDestination.route}",
-                            "settings/${HomeScreenDestination.route}"
+                            "kalibrasi/${ListKalibrasiScreenDestination.route}",
+                            "schedule/${ScheduleScreenDestination.route}",
+                            "notifications/${NotificationScreenDestination.route}",
+                            "settings/${SettingsScreenDestination.route}"
                         )
                     ) { innerPadding ->
                         Box(modifier = Modifier.padding(innerPadding)) {
@@ -142,6 +154,48 @@ class MainActivity : ComponentActivity() {
                         scaleOutPopExitTransition()
                     }
                 ),
+                NavGraphs.kalibrasi to NestedNavGraphDefaultAnimations(
+                    enterTransition = {
+                        scaleInEnterTransition()
+                    },
+                    exitTransition = {
+                        scaleOutExitTransition()
+                    },
+                    popEnterTransition = {
+                        scaleInPopEnterTransition()
+                    },
+                    popExitTransition = {
+                        scaleOutPopExitTransition()
+                    }
+                ),
+                NavGraphs.schedule to NestedNavGraphDefaultAnimations(
+                    enterTransition = {
+                        scaleInEnterTransition()
+                    },
+                    exitTransition = {
+                        scaleOutExitTransition()
+                    },
+                    popEnterTransition = {
+                        scaleInPopEnterTransition()
+                    },
+                    popExitTransition = {
+                        scaleOutPopExitTransition()
+                    }
+                ),
+                NavGraphs.notifications to NestedNavGraphDefaultAnimations(
+                    enterTransition = {
+                        scaleInEnterTransition()
+                    },
+                    exitTransition = {
+                        scaleOutExitTransition()
+                    },
+                    popEnterTransition = {
+                        scaleInPopEnterTransition()
+                    },
+                    popExitTransition = {
+                        scaleOutPopExitTransition()
+                    }
+                ),
                 NavGraphs.settings to NestedNavGraphDefaultAnimations(
                     enterTransition = {
                         scaleInEnterTransition()
@@ -177,7 +231,7 @@ class MainActivity : ComponentActivity() {
         isLoggedIn: Boolean,
     ): CoreFeatureNavigator {
         return CoreFeatureNavigator(
-            navGraph = NavGraphs.root(isLoggedIn),
+            navGraph = navBackStackEntry.destination.navGraph(isLoggedIn),
             navController = navController,
         )
     }

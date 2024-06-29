@@ -21,7 +21,6 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateScalesViewModel @Inject constructor(
     private val createNewScalesUseCase: CreateNewScalesUseCase,
-//    private val uploadImageUseCase: UploadImageUseCase,
 ) : ViewModel() {
     private val _eventFlow = MutableSharedFlow<UiEvents>()
     val eventFlow = _eventFlow.asSharedFlow()

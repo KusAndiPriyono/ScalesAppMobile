@@ -2,19 +2,24 @@ package com.bangkit.scalesappmobile.data.remote
 
 import com.bangkit.scalesappmobile.data.remote.scales.AuthResponse
 import com.bangkit.scalesappmobile.data.remote.scales.CreateScalesResponse
+import com.bangkit.scalesappmobile.data.remote.scales.GetAllFormsResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetAllScalesResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesDetailResponse
 import com.bangkit.scalesappmobile.data.remote.scales.GetScalesUpdateResponse
+import com.bangkit.scalesappmobile.data.remote.scales.PostFormKalibrasiResponse
+import com.bangkit.scalesappmobile.data.remote.scales.UpdateDocumentKalibrasiResponse
 import com.bangkit.scalesappmobile.domain.model.ForgotPasswordRequest
+import com.bangkit.scalesappmobile.domain.model.Form
 import com.bangkit.scalesappmobile.domain.model.LoginRequest
 import com.bangkit.scalesappmobile.domain.model.RefreshTokenRequest
 import com.bangkit.scalesappmobile.domain.model.RegisterRequest
+import com.bangkit.scalesappmobile.domain.model.ScalesDetails
+import com.bangkit.scalesappmobile.domain.model.UpdateForm
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -26,7 +31,7 @@ interface ScalesApiService {
 
     @GET("api/v1/scales")
     suspend fun searchScales(
-        @Query("brand") brand: String,
+        @Query("slug") slug: String,
         @Query("page") page: Int,
     ): GetAllScalesResponse
 
@@ -58,22 +63,33 @@ interface ScalesApiService {
         @Part imageCover: MultipartBody.Part,
     ): CreateScalesResponse
 
-//    @Multipart
-//    @POST("api/v1/scales")
-//    suspend fun uploadImageScales(
-//        @Part image: MultipartBody.Part,
-//        @Part("imageCover") imageCover: RequestBody,
-//    ): ErrorResponse
-
     @PATCH("api/v1/scales/{id}")
     suspend fun updateScales(
-        @Header("Authorization") token: String,
         @Path("id") id: String,
+        @Body scalesDetails: ScalesDetails,
     ): GetScalesUpdateResponse
 
     @DELETE("api/v1/scales/{id}")
     suspend fun deleteScales(
-        @Header("Authorization") token: String,
+        @Path("id") id: String,
+    )
+
+    @POST("api/v1/forms")
+    suspend fun createFormKalibrasi(
+        @Body formKalibrasi: Form,
+    ): PostFormKalibrasiResponse
+
+    @GET("api/v1/forms")
+    suspend fun getAllForms(): GetAllFormsResponse
+
+    @PATCH("api/v1/forms/{id}")
+    suspend fun updateDocumentKalibrasi(
+        @Path("id") id: String,
+        @Body updateForm: UpdateForm,
+    ): UpdateDocumentKalibrasiResponse
+
+    @DELETE("api/v1/forms/{id}")
+    suspend fun deleteDocument(
         @Path("id") id: String,
     )
 

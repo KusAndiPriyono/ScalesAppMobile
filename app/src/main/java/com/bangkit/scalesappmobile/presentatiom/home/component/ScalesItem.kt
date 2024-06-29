@@ -30,7 +30,8 @@ import com.bangkit.scalesappmobile.ui.theme.fontFamily
 @Composable
 fun ScalesItem(
     scales: Scales,
-    onClick: (() -> Unit)? = null,
+//    onClick: (() -> Unit)? = null,
+    onClick: (String) -> Unit,
 ) {
 
     val context = LocalContext.current
@@ -38,7 +39,7 @@ fun ScalesItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 5.dp)
-            .clickable { onClick?.invoke() },
+            .clickable { onClick?.invoke(scales.id) },
         shape = MaterialTheme.shapes.large,
         elevation = CardDefaults.elevatedCardElevation(5.dp),
         colors = CardDefaults.cardColors(
@@ -129,13 +130,14 @@ fun ScalesItemPreview() {
             nextCalibrationDate = "nextCalibrationDate",
             parentMachineOfEquipment = "parentMachineOfEquipment",
             rangeCapacity = 1,
-            ratingsAverage = 1.4,
+            ratingsAverage = 1.1,
             ratingsQuantity = 1,
             serialNumber = "serialNumber",
             slug = "slug",
             status = "status",
             unit = "unit",
             v = 1
-        )
+        ),
+        onClick = {}
     )
 }

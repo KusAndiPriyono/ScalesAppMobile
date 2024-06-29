@@ -6,7 +6,7 @@ import com.bangkit.scalesappmobile.domain.model.Scales
 
 class SearchScalesPagingSource(
     private val scalesApiService: ScalesApiService,
-    private val brand: String,
+    private val slug: String,
 ) : PagingSource<Int, Scales>() {
     override fun getRefreshKey(state: PagingState<Int, Scales>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -21,7 +21,7 @@ class SearchScalesPagingSource(
         val page = params.key ?: 1
         return try {
             val scalesResponse = scalesApiService.searchScales(
-                brand = brand,
+                slug = slug,
                 page = page
             )
             totalScalesCount += scalesResponse.data.size

@@ -18,4 +18,5 @@ interface AuthRepository {
     suspend fun logoutUser()
     suspend fun saveAccessToken(token: String)
     suspend fun saveUserId(id: String)
+    suspend fun saveUserRole(role: String)
 }

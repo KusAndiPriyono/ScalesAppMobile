@@ -10,7 +10,6 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -85,7 +84,7 @@ private val DarkColors = darkColorScheme(
 fun ScalesAppMobileTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
@@ -101,29 +100,59 @@ fun ScalesAppMobileTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = colorScheme.background.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
-
-//    SideEffect {
-//        val window = (view.context as Activity).window
-//
-//        window.statusBarColor = Color.Transparent.toArgb()
-//        window.navigationBarColor = colorScheme.primary.toArgb()
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            window.isNavigationBarContrastEnforced = false
-//        }
-//
-//        val windowsInsetsController = WindowCompat.getInsetsController(window, view)
-//        windowsInsetsController.isAppearanceLightStatusBars = !darkTheme
-//        windowsInsetsController.isAppearanceLightNavigationBars = !darkTheme
-//    }
-
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
         content = content
     )
 }
+//
+//@RequiresApi(Build.VERSION_CODES.S)
+//@Composable
+//fun ScalesAppMobileTheme(theme: Int, content: @Composable () -> Unit) {
+//    val isDarkTheme = when (theme) {
+//        Theme.DARK_THEME.themeValue -> true
+//        Theme.LIGHT_THEME.themeValue -> false
+//        else -> isSystemInDarkTheme()
+//    }
+//
+//    val dynamicColorEnabled = supportsDynamicTheming() && theme == Theme.MATERIAL_YOU.themeValue
+//
+//    val colors = when {
+//        dynamicColorEnabled -> {
+//            val context = LocalContext.current
+//            if (isDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+//        }
+//
+//        isDarkTheme -> DarkColors
+//        else -> LightColors
+//    }
+//
+//    @Suppress("DEPRECATION") val systemUiController = rememberSystemUiController()
+//
+//    SideEffect {
+//        systemUiController.setSystemBarsColor(
+//            color = colors.background
+//        )
+//    }
+//
+//    MaterialTheme(
+//        colorScheme = colors,
+//        typography = Typography,
+//        content = content
+//    )
+//}
+//
+//@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
+//private fun supportsDynamicTheming() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+//
+//enum class Theme(val themeValue: Int) {
+//    MATERIAL_YOU(12),
+//    FOLLOW_SYSTEM(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM),
+//    LIGHT_THEME(AppCompatDelegate.MODE_NIGHT_NO),
+//    DARK_THEME(AppCompatDelegate.MODE_NIGHT_YES);
+//}

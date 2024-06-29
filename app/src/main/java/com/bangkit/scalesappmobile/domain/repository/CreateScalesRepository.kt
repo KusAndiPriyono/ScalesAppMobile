@@ -21,8 +21,4 @@ interface CreateScalesRepository {
         serialNumber: String,
         unit: String,
     ): Resource<CreateScalesResponse>
-
-//    suspend fun uploadImage(
-//        image: MultipartBody.Part,
-//    ): Resource<ErrorResponse>
 }

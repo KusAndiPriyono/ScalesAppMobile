@@ -193,7 +193,7 @@ fun NextCreateScalesScreen(
                     )
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
-                        value = calibrationPeriod.toString(),
+                        value = if (calibrationPeriod == 0) "" else calibrationPeriod.toString(),
                         onValueChange = { newValue ->
                             viewModel.setScalesCalibrationPeriod(newValue.toIntOrNull() ?: 0)
                         },
@@ -201,10 +201,10 @@ fun NextCreateScalesScreen(
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Number
                         ),
-                        isError = calibrationPeriod == 0
+                        isError = viewModel.createNewScales.value.error != null && calibrationPeriod == 0
                     )
 
-                    if (calibrationPeriod == 0) {
+                    if (viewModel.createNewScales.value.error != null && calibrationPeriod == 0) {
                         Text(
                             text = "Periode Kalibrasi tidak boleh 0",
                             style = MaterialTheme.typography.labelSmall,

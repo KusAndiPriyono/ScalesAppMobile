@@ -22,12 +22,21 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CreateNewFolder
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,8 +44,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,10 +53,14 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.bangkit.scalesappmobile.R
 import com.bangkit.scalesappmobile.domain.model.ScalesDetails
+import com.bangkit.scalesappmobile.presentatiom.common.DisplayAlertDialog
 import com.bangkit.scalesappmobile.presentatiom.common.EmptyStateComponent
 import com.bangkit.scalesappmobile.presentatiom.common.ErrorStateComponent
+import com.bangkit.scalesappmobile.presentatiom.common.FormatStringToDate
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
+import com.bangkit.scalesappmobile.presentatiom.details.component.ScalesProperties
 import com.bangkit.scalesappmobile.presentatiom.home.HomeNavigator
+import com.bangkit.scalesappmobile.presentatiom.home.component.UserRole
 import com.bangkit.scalesappmobile.ui.theme.SurprisedColor
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.ramcosta.composedestinations.annotation.Destination
@@ -55,8 +68,6 @@ import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.CollapsingToolbarScaffoldState
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Destination
@@ -66,6 +77,7 @@ fun DetailsScreen(
 ) {
     val state = rememberCollapsingToolbarScaffoldState()
     val scalesState = viewModel.details.value
+    val userRole by viewModel.getUserRole().collectAsState(initial = UserRole.USER)
 
     LaunchedEffect(key1 = true, block = {
         if (id != null) {
@@ -79,8 +91,19 @@ fun DetailsScreen(
         scalesState = scalesState,
         state = state,
         navigateToBack = {
-            navigator.popBackStack()
+            navigator.navigateBackToHome()
         },
+        onClickEditScales = { scalesDetails ->
+            navigator.openUpdateScales(id, scalesDetails)
+        },
+        onClickCreateDocumentKalibrasi = {
+            navigator.openCreateDocumentKalibrasi(id)
+        },
+        onClickDeleteScales = {
+            viewModel.deleteScales(scalesState.scalesDetails?.id ?: "")
+            navigator.navigateBackToHome()
+        },
+        userRole = userRole
     )
 }
 
@@ -90,7 +113,15 @@ fun DetailScreenContent(
     scalesState: DetailState,
     state: CollapsingToolbarScaffoldState,
     navigateToBack: () -> Unit,
+    onClickEditScales: (ScalesDetails) -> Unit,
+    onClickCreateDocumentKalibrasi: () -> Unit,
+    onClickDeleteScales: () -> Unit,
+    userRole: UserRole,
 ) {
+    var isDialogOpened by remember {
+        mutableStateOf(false)
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         if (!scalesState.isLoading && scalesState.scalesDetails != null) {
             val scale = scalesState.scalesDetails
@@ -176,14 +207,34 @@ fun DetailScreenContent(
                                 ScalesProperties(scales = scale)
                             }
                         }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
+                        )
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Nomor Document",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontFamily = fontFamily
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                painter = painterResource(id = R.drawable.nomor_alat),
+                                contentDescription = null,
+                            )
+                            Text(
+                                text = "Nomor Alat",
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
+                            )
+                        }
                     }
                     item {
                         Row(
@@ -207,11 +258,83 @@ fun DetailScreenContent(
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Tanggal Kalibrasi",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontFamily = fontFamily
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
                         )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                painter = painterResource(id = R.drawable.serial_number),
+                                contentDescription = null,
+                            )
+                            Text(
+                                text = "Nomor Seri",
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
+                            )
+                        }
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier.padding(start = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(6.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.onBackground)
+                            )
+                            Text(
+                                text = scale.serialNumber,
+                                modifier = Modifier.padding(3.dp),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontFamily = fontFamily
+                            )
+                        }
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
+                        )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                painter = painterResource(id = R.drawable.tgl_kalibrasi),
+                                contentDescription = null,
+                            )
+                            Text(
+                                text = "Tanggal Kalibrasi",
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
+                            )
+                        }
                     }
                     item {
                         Row(
@@ -230,11 +353,33 @@ fun DetailScreenContent(
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Kalibrasi Selanjutnya",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontFamily = fontFamily
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
                         )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                painter = painterResource(id = R.drawable.next_kalibrasi),
+                                contentDescription = null,
+                            )
+                            Text(
+                                text = "Kalibrasi Selanjutnya",
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
+                            )
+                        }
                     }
                     item {
                         Row(
@@ -253,11 +398,33 @@ fun DetailScreenContent(
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Deskripsi Alat",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontFamily = fontFamily
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
                         )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                painter = painterResource(id = R.drawable.note),
+                                contentDescription = null,
+                            )
+                            Text(
+                                text = "Deskripsi Alat",
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    fontWeight = FontWeight.Thin,
+                                    fontFamily = fontFamily
+                                ),
+                                color = Color.Gray
+                            )
+                        }
                     }
                     item {
                         Row(
@@ -279,6 +446,113 @@ fun DetailScreenContent(
                             )
                         }
                     }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
+                        )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        if (userRole == UserRole.fromString("admin")) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceAround
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .height(80.dp)
+                                        .width(70.dp)
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(color = SurprisedColor)
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize(),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        IconButton(onClick = {
+                                            onClickEditScales(scalesState.scalesDetails)
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Edit,
+                                                contentDescription = "Edit",
+                                                tint = MaterialTheme.colorScheme.onBackground
+                                            )
+                                        }
+                                        Text(
+                                            text = "Edit",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontFamily = fontFamily
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .height(80.dp)
+                                        .width(150.dp)
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(color = SurprisedColor)
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize(),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        IconButton(onClick = {
+                                            onClickCreateDocumentKalibrasi()
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Default.CreateNewFolder,
+                                                contentDescription = "Create",
+                                                tint = MaterialTheme.colorScheme.onBackground
+                                            )
+                                        }
+                                        Text(
+                                            text = "Buat Dokumen",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontFamily = fontFamily
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .height(80.dp)
+                                        .width(70.dp)
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(color = SurprisedColor)
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize(),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        IconButton(onClick = { isDialogOpened = true }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                contentDescription = "Delete",
+                                                tint = MaterialTheme.colorScheme.onBackground
+                                            )
+                                        }
+                                        Text(
+                                            text = "Delete",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontFamily = fontFamily
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -295,112 +569,17 @@ fun DetailScreenContent(
             EmptyStateComponent()
         }
     }
-}
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun FormatStringToDate(
-    modifier: Modifier = Modifier,
-    dateString: String,
-) {
-    val date = ZonedDateTime.parse(dateString)
-    val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss")
-    val formattedDate = date.format(formatter)
-    Text(
-        modifier = modifier.padding(4.dp),
-        text = formattedDate,
-        style = MaterialTheme.typography.bodyMedium,
-        fontFamily = fontFamily
+    DisplayAlertDialog(
+        title = "Hapus Timbangan",
+        message = "Apakah Anda yakin ingin menghapus timbangan ini?",
+        dialogOpened = isDialogOpened,
+        onDialogClosed = {
+            isDialogOpened = false
+        },
+        onYesClicked = {
+            onClickDeleteScales()
+            isDialogOpened = false
+        }
     )
 }
-
-@Preview(showBackground = true)
-@Composable
-fun ScalesProperties(
-    scales: ScalesDetails = sampleScalesDetails,
-) {
-    Row(
-        Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        ScalesProperty(icon = R.drawable.ic_kindtype, value = scales.brand)
-        ScalesProperty(icon = R.drawable.ic_kindtype, value = scales.kindType)
-        ScalesProperty(
-            icon = R.drawable.ic_kindtype, value = "${scales.rangeCapacity} ${scales.unit}"
-        )
-        ScalesProperty(icon = R.drawable.ic_calendar, value = scales.status)
-        ScalesProperty(icon = R.drawable.ic_calendar, value = scales.ratingsAverage.toString())
-    }
-}
-
-@Composable
-fun ScalesProperty(
-    modifier: Modifier = Modifier, icon: Int, value: String,
-) {
-    Box(
-        modifier = modifier
-            .height(80.dp)
-            .width(70.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(color = SurprisedColor)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                modifier = Modifier.size(24.dp),
-                painter = painterResource(id = icon),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimary
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = value,
-                color = MaterialTheme.colorScheme.onPrimary,
-                style = MaterialTheme.typography.labelSmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                fontFamily = fontFamily,
-            )
-        }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun PreviewDetailsScreen() {
-    DetailScreenContent(scalesState = DetailState(
-        isLoading = false, scalesDetails = sampleScalesDetails
-    ), state = rememberCollapsingToolbarScaffoldState(), navigateToBack = {})
-}
-
-val sampleScalesDetails = ScalesDetails(
-    id = "1",
-    name = "Scales 1",
-    imageCover = "https://www.themealdb.com/images/media/meals/58oia61564916529.jpg",
-    brand = "Brand 1",
-    calibrationDate = "2021-01-01",
-    calibrationPeriod = 1,
-    calibrationPeriodInYears = 1.1,
-    equipmentDescription = "Equipment Description 1",
-    forms = emptyList(),
-    kindType = "Kind Type 1",
-    location = "Location 1",
-    measuringEquipmentIdNumber = "1",
-    nextCalibrationDate = "2022-01-01",
-    parentMachineOfEquipment = "Parent Machine Of Equipment 1",
-    rangeCapacity = 1,
-    ratingsAverage = 1.3,
-    ratingsQuantity = 1,
-    reviews = emptyList(),
-    serialNumber = "1",
-    slug = "scales-1",
-    status = "Status 1",
-    unit = "Unit 1",
-)

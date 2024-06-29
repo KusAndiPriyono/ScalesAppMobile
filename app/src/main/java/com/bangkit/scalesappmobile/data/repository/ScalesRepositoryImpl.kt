@@ -28,7 +28,7 @@ class ScalesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun searchScales(
-        brand: List<String>,
+        slug: List<String>,
     ): Resource<Flow<PagingData<Scales>>> {
         return safeApiCall(Dispatchers.IO) {
             Pager(
@@ -36,7 +36,7 @@ class ScalesRepositoryImpl @Inject constructor(
                 pagingSourceFactory = {
                     SearchScalesPagingSource(
                         scalesApiService = scalesApiService,
-                        brand = brand.joinToString(",")
+                        slug = slug.joinToString(",")
                     )
                 }
             ).flow
@@ -50,10 +50,10 @@ class ScalesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getScalesUpdate(token: String, id: String): Resource<ScalesDetails> {
+    override suspend fun deleteScales(id: String): Resource<Boolean> {
         return safeApiCall(Dispatchers.IO) {
-            val response = scalesApiService.updateScales(token = "Bearer $token", id = id)
-            response.data
+            val response = scalesApiService.deleteScales(id = id)
+            response.toString().isNotEmpty()
         }
     }
 }

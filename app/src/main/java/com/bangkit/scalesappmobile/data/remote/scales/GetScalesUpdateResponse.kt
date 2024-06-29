@@ -11,5 +11,5 @@ data class GetScalesUpdateResponse(
     @SerializedName("data")
     val data: ScalesDetails,
     @SerializedName("status")
-    val status: String
+    val status: String,
 ) : Parcelable
