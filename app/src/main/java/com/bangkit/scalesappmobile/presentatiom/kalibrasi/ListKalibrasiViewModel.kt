@@ -8,14 +8,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.DeleteDocumentKalibrasiUseCase
 import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.GetDocumentKalibrasiUseCase
+import com.bangkit.scalesappmobile.domain.usecase.user.GetUserRoleUseCase
+import com.bangkit.scalesappmobile.presentatiom.home.component.UserRole
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.state.DocumentState
 import com.bangkit.scalesappmobile.util.Resource
 import com.bangkit.scalesappmobile.util.UiEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.ZoneId
 import javax.inject.Inject
@@ -25,10 +29,20 @@ import javax.inject.Inject
 class ListKalibrasiViewModel @Inject constructor(
     private val getDocumentKalibrasiUseCase: GetDocumentKalibrasiUseCase,
     private val deleteDocumentKalibrasiUseCase: DeleteDocumentKalibrasiUseCase,
+    private val getUserRoleUseCase: GetUserRoleUseCase,
 ) : ViewModel() {
 
     private val _eventsFlow = MutableSharedFlow<UiEvents>()
     val eventsFlow = _eventsFlow.asSharedFlow()
+
+    fun getUserRole(): Flow<UserRole> =
+        getUserRoleUseCase().map { roleString ->
+            try {
+                UserRole.fromString(roleString ?: "")
+            } catch (e: IllegalArgumentException) {
+                UserRole.USER
+            }
+        }
 
     private val _isDeleted = mutableStateOf(false)
     val isDeleted: State<Boolean> = _isDeleted

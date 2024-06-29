@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.bangkit.scalesappmobile.domain.usecase.auth.LoginUserUseCase
 import com.bangkit.scalesappmobile.domain.usecase.auth.SaveAccessTokenUseCase
 import com.bangkit.scalesappmobile.domain.usecase.auth.SaveUserIdUseCase
+import com.bangkit.scalesappmobile.domain.usecase.auth.SaveUserRoleUseCase
 import com.bangkit.scalesappmobile.presentatiom.auth.state.LoginState
 import com.bangkit.scalesappmobile.presentatiom.auth.state.PasswordTextFieldState
 import com.bangkit.scalesappmobile.presentatiom.auth.state.TextFieldState
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val saveAccessTokenUseCase: SaveAccessTokenUseCase,
     private val saveUserIdUseCase: SaveUserIdUseCase,
+    private val saveUserRoleUseCase: SaveUserRoleUseCase,
     private val loginUserUseCase: LoginUserUseCase,
 ) : ViewModel() {
 
@@ -80,6 +82,7 @@ class LoginViewModel @Inject constructor(
                     _loginState.value = loginState.value.copy(isLoading = false, data = result.data)
                     result.data?.token?.let { saveAccessTokenUseCase(it) }
                     result.data?.user?.id?.let { saveUserIdUseCase(it) }
+                    result.data?.user?.role?.let { saveUserRoleUseCase(it) }
                     _eventFlow.emit(
                         UiEvents.NavigationEvent(route = "")
                     )

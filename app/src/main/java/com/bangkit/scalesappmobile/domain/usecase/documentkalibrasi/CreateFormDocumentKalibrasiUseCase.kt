@@ -9,5 +9,4 @@ class CreateFormDocumentKalibrasiUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(formKalibrasi: Form) =
         createFormDocumentKalibrasiRepository.createFormDocumentKalibrasi(formKalibrasi)
-
 }

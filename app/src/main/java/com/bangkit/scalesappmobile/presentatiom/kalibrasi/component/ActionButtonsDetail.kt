@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import com.bangkit.scalesappmobile.domain.model.AllForm
 import com.bangkit.scalesappmobile.presentatiom.common.DisplayAlertDialog
+import com.bangkit.scalesappmobile.presentatiom.home.component.UserRole
 import com.bangkit.scalesappmobile.util.createPdfFile
 import kotlinx.coroutines.launch
 
@@ -35,6 +36,7 @@ fun ActionButtonsDetails(
     context: Context,
     document: AllForm,
     statusApproval: ApprovalStatus,
+    userRole: UserRole,
     onClickDeleteDocument: () -> Unit,
     onClickEditDocument: (AllForm) -> Unit,
 ) {
@@ -43,87 +45,89 @@ fun ActionButtonsDetails(
     var isDialogDeleteDocumentOpened by remember {
         mutableStateOf(false)
     }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
-        ElevatedButton(
-            colors = ButtonDefaults.elevatedButtonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            ),
-            onClick = {
-                onClickEditDocument(document)
-            }
+    if (userRole == UserRole.fromString("admin")) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceAround
         ) {
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.background
-            )
-            Text(text = "Edit")
-        }
-
-        if (statusApproval == ApprovalStatus.fromString("Approved")) {
             ElevatedButton(
                 colors = ButtonDefaults.elevatedButtonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary,
                 ),
                 onClick = {
-//                    setLoading(true)
-                    scope.launch {
-                        val pdfFile = createPdfFile(context, document)
-//                        setLoading(false)
-                        pdfFile?.let {
-                            val intent = Intent(Intent.ACTION_VIEW).apply {
-                                setDataAndType(
-                                    FileProvider.getUriForFile(
-                                        context,
-                                        context.packageName + ".provider",
-                                        it
-                                    ),
-                                    "application/pdf"
-                                )
-                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                            }
-                            context.startActivity(intent)
-                        } ?: run {
-                            Toast.makeText(context, "Failed to create PDF", Toast.LENGTH_LONG)
-                                .show()
-                        }
-                    }
+                    onClickEditDocument(document)
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Default.Print,
+                    imageVector = Icons.Default.Edit,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.background
                 )
-                Text(text = "Print PDF")
+                Text(text = "Edit")
             }
-        }
 
-        ElevatedButton(
-            colors = ButtonDefaults.elevatedButtonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            ),
-            onClick = {
-                isDialogDeleteDocumentOpened = true
+            if (statusApproval == ApprovalStatus.fromString("Approved")) {
+                ElevatedButton(
+                    colors = ButtonDefaults.elevatedButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                    onClick = {
+//                    setLoading(true)
+                        scope.launch {
+                            val pdfFile = createPdfFile(context, document)
+//                        setLoading(false)
+                            pdfFile?.let {
+                                val intent = Intent(Intent.ACTION_VIEW).apply {
+                                    setDataAndType(
+                                        FileProvider.getUriForFile(
+                                            context,
+                                            context.packageName + ".provider",
+                                            it
+                                        ),
+                                        "application/pdf"
+                                    )
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                }
+                                context.startActivity(intent)
+                            } ?: run {
+                                Toast.makeText(context, "Failed to create PDF", Toast.LENGTH_LONG)
+                                    .show()
+                            }
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Print,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.background
+                    )
+                    Text(text = "Print PDF")
+                }
             }
-        ) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.background
-            )
-            Text(text = "Delete")
+
+            ElevatedButton(
+                colors = ButtonDefaults.elevatedButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                onClick = {
+                    isDialogDeleteDocumentOpened = true
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.background
+                )
+                Text(text = "Delete")
+            }
         }
     }
+
 
     DisplayAlertDialog(
         title = "Hapus Timbangan",

@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun OnBoardingScreen(
     navigator: AppNavigator,
-    viewModel: OnBoardingViewModel = hiltViewModel()
+    viewModel: OnBoardingViewModel = hiltViewModel(),
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -134,6 +134,14 @@ fun OnBoardingScreenPreview() {
                 }
 
                 override suspend fun saveUserId(id: String) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun getUserRole(): Flow<String?> {
+                    TODO("Not yet implemented")
+                }
+
+                override suspend fun saveUserRole(role: String) {
                     TODO("Not yet implemented")
                 }
 

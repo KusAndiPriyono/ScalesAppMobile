@@ -34,6 +34,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bangkit.scalesappmobile.domain.model.AllForm
+import com.bangkit.scalesappmobile.presentatiom.home.component.UserRole
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import kotlinx.coroutines.launch
 
@@ -42,9 +43,10 @@ import kotlinx.coroutines.launch
 fun DocumentDetailDialog(
     document: AllForm,
     statusApproval: ApprovalStatus,
+    userRole: UserRole,
     onDismissRequest: () -> Unit,
     onClickDeleteDocument: () -> Unit,
-    onClickEditDocument: (AllForm) -> Unit
+    onClickEditDocument: (AllForm) -> Unit,
 ) {
 
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -141,7 +143,8 @@ fun DocumentDetailDialog(
                     },
                     onClickEditDocument = {
                         onClickEditDocument(it)
-                    }
+                    },
+                    userRole = userRole
                 )
                 repeat(10) {
                     Spacer(modifier = Modifier.height(8.dp))

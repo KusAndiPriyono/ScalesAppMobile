@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bangkit.scalesappmobile.domain.model.AllForm
 import com.bangkit.scalesappmobile.presentatiom.common.EmptyPage
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
+import com.bangkit.scalesappmobile.presentatiom.home.component.UserRole
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.component.ApprovalSelection
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.component.ApprovalStatus
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.component.DateHeader
@@ -47,6 +48,7 @@ fun ListKalibrasiScreen(
 
     val documentState = viewModel.documentState.value
     val selectedStatusApproval = viewModel.selectedStatusApproval.collectAsState().value
+    val userRole by viewModel.getUserRole().collectAsState(initial = UserRole.USER)
 
     val filteredDocuments = if (selectedStatusApproval == "All") {
         documentState.documents
@@ -84,7 +86,8 @@ fun ListKalibrasiScreen(
             },
             onClickEditDocument = {
                 navigator.openUpdateDocKalibrasi(id = document.id, allForm = document)
-            }
+            },
+            userRole = userRole
         )
     }
 }

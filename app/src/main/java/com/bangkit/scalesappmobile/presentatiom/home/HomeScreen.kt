@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,24 +11,17 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,11 +32,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
@@ -52,7 +44,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.bangkit.scalesappmobile.domain.model.Scales
 import com.bangkit.scalesappmobile.presentatiom.common.handlePagingResult
 import com.bangkit.scalesappmobile.presentatiom.home.component.Banner
+import com.bangkit.scalesappmobile.presentatiom.home.component.LocationSelection
 import com.bangkit.scalesappmobile.presentatiom.home.component.ScalesItem
+import com.bangkit.scalesappmobile.presentatiom.home.component.UserRole
 import com.bangkit.scalesappmobile.presentatiom.home.state.HomeState
 import com.bangkit.scalesappmobile.ui.theme.AngryColor
 import com.ramcosta.composedestinations.annotation.Destination
@@ -71,6 +65,7 @@ fun HomeScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val lazyVerticalGridState = rememberLazyGridState()
     val selectedLocation = viewModel.selectedLocation.collectAsState().value
+    val userRole by viewModel.getUserRole().collectAsState(initial = UserRole.USER)
 
 
     HomeScreenContent(
@@ -92,6 +87,7 @@ fun HomeScreen(
         onSelectedLocation = { locationName ->
             viewModel.setSelectedLocation(locationName)
         },
+        userRole = userRole
     )
 }
 
@@ -104,6 +100,7 @@ private fun HomeScreenContent(
     lazyVerticalGridState: LazyGridState,
     onSelectedLocation: (location: String) -> Unit,
     event: (HomeEvent) -> Unit,
+    userRole: UserRole,
     navigateToDetails: (Scales) -> Unit,
     onClickSearch: () -> Unit,
     onClickAddScales: () -> Unit,
@@ -121,26 +118,28 @@ private fun HomeScreenContent(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                containerColor = AngryColor, onClick = onClickAddScales
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+            if (userRole == UserRole.fromString("admin")) {
+                FloatingActionButton(
+                    containerColor = AngryColor, onClick = onClickAddScales
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Add,
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        contentDescription = null
-                    )
-                    AnimatedVisibility(visible = true) {
-                        Text(
-                            text = "Add Scales",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            textAlign = TextAlign.Center
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Add,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            contentDescription = null
                         )
+                        AnimatedVisibility(visible = true) {
+                            Text(
+                                text = "Add Scales",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
             }
@@ -220,74 +219,6 @@ private fun HomeScreenContent(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun LocationSelection(
-    scales: LazyPagingItems<Scales>,
-    onClick: (String) -> Unit,
-    selectedLocation: String,
-) {
-    val uniqueLocations = listOf("All") + scales.itemSnapshotList.map { it!!.location }.distinct()
-    LazyRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        items(uniqueLocations) { location ->
-            LocationItem(
-                location = location,
-                onClick = {
-                    onClick(location)
-                }, selectedLocation = selectedLocation
-            )
-        }
-    }
-}
-
-@Composable
-fun LocationItem(
-    location: String,
-    selectedLocation: String,
-    onClick: () -> Unit,
-) {
-    val selected = location == selectedLocation
-    Card(
-        modifier = Modifier
-            .width(100.dp)
-            .wrapContentHeight()
-            .clickable {
-                onClick()
-            },
-        shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(
-            containerColor = if (selected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant
-            }
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(12.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = location,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                color = if (selected) {
-                    MaterialTheme.colorScheme.onPrimary
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                }
-            )
         }
     }
 }

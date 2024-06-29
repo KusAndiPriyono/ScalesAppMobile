@@ -4,7 +4,7 @@ import com.bangkit.scalesappmobile.domain.repository.DataStoreRepository
 import javax.inject.Inject
 
 class GetIfUserIsLoggedInUseCase @Inject constructor(
-    private val dataStoreRepository: DataStoreRepository
+    private val dataStoreRepository: DataStoreRepository,
 ) {
     operator fun invoke() = dataStoreRepository.getUserId()
 }

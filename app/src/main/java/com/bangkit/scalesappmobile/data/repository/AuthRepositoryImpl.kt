@@ -62,4 +62,8 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun saveUserId(id: String) {
         dataStoreRepository.saveUserId(id)
     }
+
+    override suspend fun saveUserRole(role: String) {
+        dataStoreRepository.saveUserRole(role)
+    }
 }

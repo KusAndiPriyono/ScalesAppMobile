@@ -10,5 +10,10 @@ interface DataStoreRepository {
     suspend fun deleteAccessToken()
     fun getUserId(): Flow<String?>
     suspend fun saveUserId(id: String)
+
+    fun getUserRole(): Flow<String?>
+
+    suspend fun saveUserRole(role: String)
+
     suspend fun clear()
 }

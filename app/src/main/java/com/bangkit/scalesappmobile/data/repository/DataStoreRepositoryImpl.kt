@@ -62,6 +62,18 @@ class DataStoreRepositoryImpl @Inject constructor(private val application: Appli
         }
     }
 
+    override fun getUserRole(): Flow<String?> {
+        return application.datastore.data.map { preferences ->
+            preferences[ROLE]
+        }
+    }
+
+    override suspend fun saveUserRole(role: String) {
+        application.datastore.edit { preferences ->
+            preferences[ROLE] = role
+        }
+    }
+
     override suspend fun clear() {
         application.datastore.edit { preferences ->
             preferences.clear()
@@ -71,7 +83,6 @@ class DataStoreRepositoryImpl @Inject constructor(private val application: Appli
 
     companion object {
         val ON_BOARDING = booleanPreferencesKey("onBoarding")
-        val ID = stringPreferencesKey("id")
         val EMAIL = stringPreferencesKey("email")
         val NAME = stringPreferencesKey("name")
         val PHOTO = stringPreferencesKey("photo")

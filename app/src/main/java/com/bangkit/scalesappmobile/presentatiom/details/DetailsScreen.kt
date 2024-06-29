@@ -32,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,6 +60,7 @@ import com.bangkit.scalesappmobile.presentatiom.common.FormatStringToDate
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
 import com.bangkit.scalesappmobile.presentatiom.details.component.ScalesProperties
 import com.bangkit.scalesappmobile.presentatiom.home.HomeNavigator
+import com.bangkit.scalesappmobile.presentatiom.home.component.UserRole
 import com.bangkit.scalesappmobile.ui.theme.SurprisedColor
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.ramcosta.composedestinations.annotation.Destination
@@ -75,6 +77,7 @@ fun DetailsScreen(
 ) {
     val state = rememberCollapsingToolbarScaffoldState()
     val scalesState = viewModel.details.value
+    val userRole by viewModel.getUserRole().collectAsState(initial = UserRole.USER)
 
     LaunchedEffect(key1 = true, block = {
         if (id != null) {
@@ -99,7 +102,8 @@ fun DetailsScreen(
         onClickDeleteScales = {
             viewModel.deleteScales(scalesState.scalesDetails?.id ?: "")
             navigator.navigateBackToHome()
-        }
+        },
+        userRole = userRole
     )
 }
 
@@ -112,6 +116,7 @@ fun DetailScreenContent(
     onClickEditScales: (ScalesDetails) -> Unit,
     onClickCreateDocumentKalibrasi: () -> Unit,
     onClickDeleteScales: () -> Unit,
+    userRole: UserRole,
 ) {
     var isDialogOpened by remember {
         mutableStateOf(false)
@@ -451,97 +456,99 @@ fun DetailScreenContent(
                     }
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp, vertical = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceAround
-                        ) {
-                            Box(
+                        if (userRole == UserRole.fromString("admin")) {
+                            Row(
                                 modifier = Modifier
-                                    .height(80.dp)
-                                    .width(70.dp)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(color = SurprisedColor)
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceAround
                             ) {
-                                Column(
+                                Box(
                                     modifier = Modifier
-                                        .fillMaxSize(),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
+                                        .height(80.dp)
+                                        .width(70.dp)
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(color = SurprisedColor)
                                 ) {
-                                    IconButton(onClick = {
-                                        onClickEditScales(scalesState.scalesDetails)
-                                    }) {
-                                        Icon(
-                                            imageVector = Icons.Default.Edit,
-                                            contentDescription = "Edit",
-                                            tint = MaterialTheme.colorScheme.onBackground
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize(),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        IconButton(onClick = {
+                                            onClickEditScales(scalesState.scalesDetails)
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Edit,
+                                                contentDescription = "Edit",
+                                                tint = MaterialTheme.colorScheme.onBackground
+                                            )
+                                        }
+                                        Text(
+                                            text = "Edit",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontFamily = fontFamily
                                         )
                                     }
-                                    Text(
-                                        text = "Edit",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontFamily = fontFamily
-                                    )
                                 }
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Box(
-                                modifier = Modifier
-                                    .height(80.dp)
-                                    .width(150.dp)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(color = SurprisedColor)
-                            ) {
-                                Column(
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Box(
                                     modifier = Modifier
-                                        .fillMaxSize(),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
+                                        .height(80.dp)
+                                        .width(150.dp)
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(color = SurprisedColor)
                                 ) {
-                                    IconButton(onClick = {
-                                        onClickCreateDocumentKalibrasi()
-                                    }) {
-                                        Icon(
-                                            imageVector = Icons.Default.CreateNewFolder,
-                                            contentDescription = "Create",
-                                            tint = MaterialTheme.colorScheme.onBackground
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize(),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        IconButton(onClick = {
+                                            onClickCreateDocumentKalibrasi()
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Default.CreateNewFolder,
+                                                contentDescription = "Create",
+                                                tint = MaterialTheme.colorScheme.onBackground
+                                            )
+                                        }
+                                        Text(
+                                            text = "Buat Dokumen",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontFamily = fontFamily
                                         )
                                     }
-                                    Text(
-                                        text = "Buat Dokumen",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontFamily = fontFamily
-                                    )
                                 }
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Box(
-                                modifier = Modifier
-                                    .height(80.dp)
-                                    .width(70.dp)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(color = SurprisedColor)
-                            ) {
-                                Column(
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Box(
                                     modifier = Modifier
-                                        .fillMaxSize(),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
+                                        .height(80.dp)
+                                        .width(70.dp)
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(color = SurprisedColor)
                                 ) {
-                                    IconButton(onClick = { isDialogOpened = true }) {
-                                        Icon(
-                                            imageVector = Icons.Default.Delete,
-                                            contentDescription = "Delete",
-                                            tint = MaterialTheme.colorScheme.onBackground
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize(),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        IconButton(onClick = { isDialogOpened = true }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                contentDescription = "Delete",
+                                                tint = MaterialTheme.colorScheme.onBackground
+                                            )
+                                        }
+                                        Text(
+                                            text = "Delete",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontFamily = fontFamily
                                         )
                                     }
-                                    Text(
-                                        text = "Delete",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontFamily = fontFamily
-                                    )
                                 }
                             }
                         }
