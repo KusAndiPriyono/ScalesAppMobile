@@ -452,9 +452,10 @@ fun DetailScreenContent(
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
                         Row(
-                            modifier = Modifier.padding(start = 12.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceAround
                         ) {
                             Box(
                                 modifier = Modifier
