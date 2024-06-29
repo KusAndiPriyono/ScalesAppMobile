@@ -45,8 +45,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,6 +57,7 @@ import com.bangkit.scalesappmobile.presentatiom.common.EmptyStateComponent
 import com.bangkit.scalesappmobile.presentatiom.common.ErrorStateComponent
 import com.bangkit.scalesappmobile.presentatiom.common.FormatStringToDate
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
+import com.bangkit.scalesappmobile.presentatiom.details.component.ScalesProperties
 import com.bangkit.scalesappmobile.presentatiom.home.HomeNavigator
 import com.bangkit.scalesappmobile.ui.theme.SurprisedColor
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
@@ -576,97 +575,3 @@ fun DetailScreenContent(
         }
     )
 }
-
-@Preview(showBackground = true)
-@Composable
-fun ScalesProperties(
-    scales: ScalesDetails = sampleScalesDetails,
-) {
-    Row(
-        Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        ScalesProperty(icon = R.drawable.scales, value = scales.brand)
-        ScalesProperty(icon = R.drawable.scales, value = scales.kindType)
-        ScalesProperty(
-            icon = R.drawable.scales, value = "${scales.rangeCapacity} ${scales.unit}"
-        )
-        ScalesProperty(icon = R.drawable.ic_calendar, value = scales.status)
-        ScalesProperty(icon = R.drawable.ic_calendar, value = scales.ratingsAverage.toString())
-    }
-}
-
-@Composable
-fun ScalesProperty(
-    modifier: Modifier = Modifier, icon: Int, value: String,
-) {
-    Box(
-        modifier = modifier
-            .height(80.dp)
-            .width(70.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(color = SurprisedColor)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                modifier = Modifier.size(24.dp),
-                painter = painterResource(id = icon),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimary
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = value,
-                color = MaterialTheme.colorScheme.onPrimary,
-                style = MaterialTheme.typography.labelSmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                fontFamily = fontFamily,
-            )
-        }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun PreviewDetailsScreen() {
-    DetailScreenContent(scalesState = DetailState(
-        isLoading = false, scalesDetails = sampleScalesDetails
-    ),
-        state = rememberCollapsingToolbarScaffoldState(),
-        navigateToBack = {},
-        onClickEditScales = {},
-        onClickDeleteScales = {},
-        onClickCreateDocumentKalibrasi = {})
-}
-
-val sampleScalesDetails = ScalesDetails(
-    id = "1",
-    name = "Scales 1",
-    imageCover = "https://www.themealdb.com/images/media/meals/58oia61564916529.jpg",
-    brand = "Brand 1",
-    calibrationDate = "2021-01-01",
-    calibrationPeriod = 1,
-    calibrationPeriodInYears = 1.1,
-    equipmentDescription = "Equipment Description 1",
-    kindType = "Kind Type 1",
-    location = "Location 1",
-    measuringEquipmentIdNumber = "1",
-    nextCalibrationDate = "2022-01-01",
-    parentMachineOfEquipment = "Parent Machine Of Equipment 1",
-    rangeCapacity = 1,
-    ratingsAverage = 1.1,
-    ratingsQuantity = 1,
-    reviews = emptyList(),
-    serialNumber = "1",
-    status = "Status 1",
-    unit = "Unit 1",
-)

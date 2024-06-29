@@ -1,5 +1,6 @@
 package com.bangkit.scalesappmobile.presentatiom.createdocumentkalibrasi
 
+import androidx.compose.runtime.MutableDoubleState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -25,6 +26,7 @@ class CreateDocumentKalibrasiViewModel @Inject constructor(
 ) : ViewModel() {
     private val _eventFlow = MutableSharedFlow<UiEvents>()
     val eventFlow = _eventFlow.asSharedFlow()
+
     private val _calibrationMethod = mutableStateOf(TextFieldState())
     val calibrationMethod: State<TextFieldState> = _calibrationMethod
     fun setCalibrationMethod(value: String = "", error: String? = null) {
@@ -77,44 +79,44 @@ class CreateDocumentKalibrasiViewModel @Inject constructor(
     }
 
     private val _readingCenter = mutableDoubleStateOf(0.0)
-    val readingCenter: State<Double> = _readingCenter
-    fun setReadingCenter(value: Double) {
-        _readingCenter.doubleValue = value
+    val readingCenter: MutableDoubleState = _readingCenter
+    fun setReadingCenter(value: String = "") {
+        _readingCenter.doubleValue = value.toDoubleOrNull() ?: 0.0
         updateMaxTotalReading()
     }
 
     private val _readingFront = mutableDoubleStateOf(0.0)
-    val readingFront: State<Double> = _readingFront
-    fun setReadingFront(value: Double) {
-        _readingFront.doubleValue = value
+    val readingFront: MutableDoubleState = _readingFront
+    fun setReadingFront(value: String = "") {
+        _readingFront.doubleValue = value.toDoubleOrNull() ?: 0.0
         updateMaxTotalReading()
     }
 
     private val _readingBack = mutableDoubleStateOf(0.0)
-    val readingBack: State<Double> = _readingBack
-    fun setReadingBack(value: Double) {
-        _readingBack.doubleValue = value
+    val readingBack: MutableDoubleState = _readingBack
+    fun setReadingBack(value: String = "") {
+        _readingBack.doubleValue = value.toDoubleOrNull() ?: 0.0
         updateMaxTotalReading()
     }
 
     private val _readingLeft = mutableDoubleStateOf(0.0)
-    val readingLeft: State<Double> = _readingLeft
-    fun setReadingLeft(value: Double) {
-        _readingLeft.doubleValue = value
+    val readingLeft: MutableDoubleState = _readingLeft
+    fun setReadingLeft(value: String = "") {
+        _readingLeft.doubleValue = value.toDoubleOrNull() ?: 0.0
         updateMaxTotalReading()
     }
 
     private val _readingRight = mutableDoubleStateOf(0.0)
-    val readingRight: State<Double> = _readingRight
-    fun setReadingRight(value: Double) {
-        _readingRight.doubleValue = value
+    val readingRight: MutableDoubleState = _readingRight
+    fun setReadingRight(value: String = "") {
+        _readingRight.doubleValue = value.toDoubleOrNull() ?: 0.0
         updateMaxTotalReading()
     }
 
     private val _maxTotalReading = mutableDoubleStateOf(0.0)
-    val maxTotalReading: State<Double> = _maxTotalReading
-    fun setMaxTotalReading(value: Double) {
-        _maxTotalReading.doubleValue = value
+    val maxTotalReading: MutableDoubleState = _maxTotalReading
+    fun setMaxTotalReading(value: String = "") {
+        _maxTotalReading.doubleValue = value.toDoubleOrNull() ?: 0.0
     }
 
     private val _createDocumentKalibrasi = mutableStateOf(CreateDocumentKalibrasiState())
@@ -143,12 +145,12 @@ class CreateDocumentKalibrasiViewModel @Inject constructor(
             standardCalibration = standardCalibration.value.text,
             suhu = suhu.value,
             validUntil = validUntil.value.text,
-            readingCenter = readingCenter.value.toInt(),
-            readingFront = readingFront.value.toInt(),
-            readingBack = readingBack.value.toInt(),
-            readingLeft = readingLeft.value.toInt(),
-            readingRight = readingRight.value.toInt(),
-            maxTotalReading = maxTotalReading.value.toInt(),
+            readingCenter = readingCenter.doubleValue.toInt(),
+            readingFront = readingFront.doubleValue.toInt(),
+            readingBack = readingBack.doubleValue.toInt(),
+            readingLeft = readingLeft.doubleValue.toInt(),
+            readingRight = readingRight.doubleValue.toInt(),
+            maxTotalReading = maxTotalReading.doubleValue.toInt(),
         )
 
         viewModelScope.launch {

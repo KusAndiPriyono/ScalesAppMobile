@@ -73,13 +73,12 @@ fun CreateDocumentKalibrasiScreen(
     val suhu = viewModel.suhu.value
     val resultCalibration = viewModel.resultCalibration.value
     val validUntil = viewModel.validUntil.value
-    val readingCenter = viewModel.readingCenter.value
-    val readingFront = viewModel.readingFront.value
-    val readingBack = viewModel.readingBack.value
-    val readingLeft = viewModel.readingLeft.value
-    val readingRight = viewModel.readingRight.value
-    val maxTotalReading = viewModel.maxTotalReading.value
-
+    val readingCenter = viewModel.readingCenter.doubleValue
+    val readingFront = viewModel.readingFront.doubleValue
+    val readingBack = viewModel.readingBack.doubleValue
+    val readingLeft = viewModel.readingLeft.doubleValue
+    val readingRight = viewModel.readingRight.doubleValue
+    val maxTotalReading = viewModel.maxTotalReading.doubleValue
     var pickedValidUntil by remember {
         mutableStateOf(LocalDate.now())
     }
@@ -90,10 +89,7 @@ fun CreateDocumentKalibrasiScreen(
     }
     val dateDialog = rememberUseCaseState()
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    val snackbarHostState = remember {
-        SnackbarHostState()
-    }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -167,22 +163,22 @@ fun CreateDocumentKalibrasiScreen(
                                     )
                                 }
                                 if (readingCenter == 0.0) {
-                                    viewModel.setReadingCenter(0.0)
+                                    viewModel.setReadingCenter()
                                 }
                                 if (readingFront == 0.0) {
-                                    viewModel.setReadingFront(0.0)
+                                    viewModel.setReadingFront()
                                 }
                                 if (readingBack == 0.0) {
-                                    viewModel.setReadingBack(0.0)
+                                    viewModel.setReadingBack()
                                 }
                                 if (readingLeft == 0.0) {
-                                    viewModel.setReadingLeft(0.0)
+                                    viewModel.setReadingLeft()
                                 }
                                 if (readingRight == 0.0) {
-                                    viewModel.setReadingRight(0.0)
+                                    viewModel.setReadingRight()
                                 }
                                 if (maxTotalReading == 0.0) {
-                                    viewModel.setMaxTotalReading(0.0)
+                                    viewModel.setMaxTotalReading()
                                 }
 
                                 keyboardController?.hide()
@@ -190,10 +186,11 @@ fun CreateDocumentKalibrasiScreen(
                             }
                         )
                     }
-
                 },
                 showBackArrow = true,
-                navActions = {}
+                navActions = {
+
+                }
             )
         }
     ) { paddingValues ->
@@ -427,7 +424,7 @@ fun CreateDocumentKalibrasiScreen(
                             modifier = Modifier.fillMaxWidth(),
                             value = if (readingCenter == 0.0) "" else readingCenter.toString(), // Tampilkan string kosong jika nilai adalah 0.0
                             onValueChange = {
-                                viewModel.setReadingCenter(it.toDoubleOrNull() ?: 0.0)
+                                viewModel.setReadingCenter(it)
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
@@ -457,7 +454,7 @@ fun CreateDocumentKalibrasiScreen(
                             modifier = Modifier.fillMaxWidth(),
                             value = if (readingFront == 0.0) "" else readingFront.toString(), // Tampilkan string kosong jika nilai adalah 0.0
                             onValueChange = {
-                                viewModel.setReadingFront(it.toDoubleOrNull() ?: 0.0)
+                                viewModel.setReadingFront(it)
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
@@ -495,7 +492,7 @@ fun CreateDocumentKalibrasiScreen(
                             modifier = Modifier.fillMaxWidth(),
                             value = if (readingBack == 0.0) "" else readingBack.toString(), // Tampilkan string kosong jika nilai adalah 0.0
                             onValueChange = {
-                                viewModel.setReadingBack(it.toDoubleOrNull() ?: 0.0)
+                                viewModel.setReadingBack(it)
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
@@ -525,7 +522,7 @@ fun CreateDocumentKalibrasiScreen(
                             modifier = Modifier.fillMaxWidth(),
                             value = if (readingLeft == 0.0) "" else readingLeft.toString(), // Tampilkan string kosong jika nilai adalah 0.0
                             onValueChange = {
-                                viewModel.setReadingLeft(it.toDoubleOrNull() ?: 0.0)
+                                viewModel.setReadingLeft(it)
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
@@ -563,7 +560,7 @@ fun CreateDocumentKalibrasiScreen(
                             modifier = Modifier.fillMaxWidth(),
                             value = if (readingRight == 0.0) "" else readingRight.toString(), // Tampilkan string kosong jika nilai adalah 0.0
                             onValueChange = {
-                                viewModel.setReadingRight(it.toDoubleOrNull() ?: 0.0)
+                                viewModel.setReadingRight(it)
                             },
                             colors = TextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions.Default.copy(
@@ -645,10 +642,8 @@ fun CreateDocumentKalibrasiScreen(
                     }
                 }
             }
-
             repeat(10) {
                 item {
-
                 }
             }
         }

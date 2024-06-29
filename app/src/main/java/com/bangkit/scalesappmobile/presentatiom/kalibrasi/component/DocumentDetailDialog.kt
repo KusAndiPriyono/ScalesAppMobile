@@ -54,8 +54,6 @@ fun DocumentDetailDialog(
         rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
 
     val context = LocalContext.current
-    // State to manage loading
-    var isLoading by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         openBottomSheet = true
@@ -138,8 +136,6 @@ fun DocumentDetailDialog(
                     context = context,
                     document = document,
                     statusApproval = statusApproval,
-                    isLoading = isLoading,
-                    setLoading = { isLoading = it },
                     onClickDeleteDocument = {
                         onClickDeleteDocument()
                     },

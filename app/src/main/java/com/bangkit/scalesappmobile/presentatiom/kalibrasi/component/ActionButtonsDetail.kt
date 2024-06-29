@@ -7,13 +7,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Print
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,8 +35,6 @@ fun ActionButtonsDetails(
     context: Context,
     document: AllForm,
     statusApproval: ApprovalStatus,
-    isLoading: Boolean,
-    setLoading: (Boolean) -> Unit,
     onClickDeleteDocument: () -> Unit,
     onClickEditDocument: (AllForm) -> Unit,
 ) {
@@ -78,10 +74,10 @@ fun ActionButtonsDetails(
                     contentColor = MaterialTheme.colorScheme.onPrimary,
                 ),
                 onClick = {
-                    setLoading(true)
+//                    setLoading(true)
                     scope.launch {
                         val pdfFile = createPdfFile(context, document)
-                        setLoading(false)
+//                        setLoading(false)
                         pdfFile?.let {
                             val intent = Intent(Intent.ACTION_VIEW).apply {
                                 setDataAndType(
@@ -102,19 +98,12 @@ fun ActionButtonsDetails(
                     }
                 }
             ) {
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(24.dp)
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Default.Print,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.background
-                    )
-                    Text(text = "Print PDF")
-                }
+                Icon(
+                    imageVector = Icons.Default.Print,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.background
+                )
+                Text(text = "Print PDF")
             }
         }
 
