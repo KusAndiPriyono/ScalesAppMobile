@@ -12,6 +12,7 @@ easycrop = "0.1.1"
 hiltAndroid = "2.50"
 hiltAndroidCompiler = "2.50"
 hiltNavigationCompose = "1.2.0"
+hiltWork = "1.2.0"
 itext7Core = "8.0.4"
 kotlin = "1.9.23"
 coreKtx = "1.13.0"
@@ -35,6 +36,7 @@ toolbarCompose = "2.3.5"
 uiTextGoogleFonts = "1.6.6"
 compose-destinations = "1.10.2"
 appcompat = "1.7.0"
+workRuntimeKtx = "2.9.0"
 
 [libraries]
 accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanistSwiperefresh" }
@@ -48,6 +50,7 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingRuntimeKtx" }
 androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
 androidx-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 calendar = { module = "com.maxkeppeler.sheets-compose-dialogs:calendar", version.ref = "calendar" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
@@ -55,6 +58,7 @@ desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref 
 easycrop = { module = "io.github.mr0xf00:easycrop", version.ref = "easycrop" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
 itext7-core = { module = "com.itextpdf:itext7-core", version.ref = "itext7Core" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
