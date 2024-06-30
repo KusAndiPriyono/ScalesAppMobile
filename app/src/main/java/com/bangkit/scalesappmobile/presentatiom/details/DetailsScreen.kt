@@ -6,7 +6,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CreateNewFolder
@@ -58,6 +56,7 @@ import com.bangkit.scalesappmobile.presentatiom.common.EmptyStateComponent
 import com.bangkit.scalesappmobile.presentatiom.common.ErrorStateComponent
 import com.bangkit.scalesappmobile.presentatiom.common.FormatStringToDate
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
+import com.bangkit.scalesappmobile.presentatiom.details.component.ActionButtonDetail
 import com.bangkit.scalesappmobile.presentatiom.details.component.ScalesProperties
 import com.bangkit.scalesappmobile.presentatiom.home.HomeNavigator
 import com.bangkit.scalesappmobile.presentatiom.home.component.UserRole
@@ -463,93 +462,33 @@ fun DetailScreenContent(
                                     .padding(horizontal = 8.dp, vertical = 8.dp),
                                 horizontalArrangement = Arrangement.SpaceAround
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .height(80.dp)
-                                        .width(70.dp)
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .background(color = SurprisedColor)
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxSize(),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        IconButton(onClick = {
-                                            onClickEditScales(scalesState.scalesDetails)
-                                        }) {
-                                            Icon(
-                                                imageVector = Icons.Default.Edit,
-                                                contentDescription = "Edit",
-                                                tint = MaterialTheme.colorScheme.onBackground
-                                            )
-                                        }
-                                        Text(
-                                            text = "Edit",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            fontFamily = fontFamily
-                                        )
-                                    }
-                                }
+                                ActionButtonDetail(
+                                    text = "Edit",
+                                    icon = Icons.Default.Edit,
+                                    onClick = {
+                                        onClickEditScales(scalesState.scalesDetails)
+                                    },
+                                    modifier = Modifier.width(70.dp)
+                                )
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .height(80.dp)
-                                        .width(150.dp)
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .background(color = SurprisedColor)
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxSize(),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        IconButton(onClick = {
-                                            onClickCreateDocumentKalibrasi()
-                                        }) {
-                                            Icon(
-                                                imageVector = Icons.Default.CreateNewFolder,
-                                                contentDescription = "Create",
-                                                tint = MaterialTheme.colorScheme.onBackground
-                                            )
-                                        }
-                                        Text(
-                                            text = "Buat Dokumen",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            fontFamily = fontFamily
-                                        )
-                                    }
-                                }
+                                ActionButtonDetail(
+                                    text = "Create Doc",
+                                    icon = Icons.Default.CreateNewFolder,
+                                    onClick = {
+                                        onClickCreateDocumentKalibrasi()
+                                    },
+                                    modifier = Modifier.width(150.dp)
+                                )
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .height(80.dp)
-                                        .width(70.dp)
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .background(color = SurprisedColor)
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxSize(),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        IconButton(onClick = { isDialogOpened = true }) {
-                                            Icon(
-                                                imageVector = Icons.Default.Delete,
-                                                contentDescription = "Delete",
-                                                tint = MaterialTheme.colorScheme.onBackground
-                                            )
-                                        }
-                                        Text(
-                                            text = "Delete",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            fontFamily = fontFamily
-                                        )
-                                    }
-                                }
+                                ActionButtonDetail(
+                                    text = "Delete",
+                                    icon = Icons.Default.Delete,
+                                    color = SurprisedColor,
+                                    onClick = {
+                                        isDialogOpened = true
+                                    },
+                                    modifier = Modifier.width(70.dp)
+                                )
                             }
                         }
                     }
