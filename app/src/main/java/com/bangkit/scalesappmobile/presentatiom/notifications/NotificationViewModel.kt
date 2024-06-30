@@ -10,5 +10,4 @@ class NotificationViewModel @Inject constructor(
     private val customWorkerFactory: CustomWorkerFactory,
 ) : ViewModel() {
 
-
 }

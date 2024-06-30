@@ -21,6 +21,7 @@ import timber.log.Timber
 import java.net.UnknownHostException
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.Locale
 
 @HiltWorker
@@ -37,20 +38,28 @@ class NotificationWorker @AssistedInject constructor(
                 // Log success and details
                 Timber.tag("NotificationWorker").d("Success!")
                 response.data.let { data ->
+                    val now = ZonedDateTime.now()
                     data.forEach { scale ->
-                        Timber.tag("NotificationWorker")
-                            .d(
-                                "Id: ${scale.id}, Name: ${scale.name}, Location: ${scale.location}",
-                                "Next Calibration Date: ${scale.nextCalibrationDate}"
-                            )
-                    }
-                    data.forEach { scale ->
-                        showNotification(
-                            scale.id.hashCode(),
-                            scale.name,
-                            scale.location,
-                            scale.nextCalibrationDate
+                        val nextCalibrationDate = ZonedDateTime.parse(
+                            scale.nextCalibrationDate,
+                            DateTimeFormatter.ISO_ZONED_DATE_TIME
                         )
+                        val daysUntilNextCalibration =
+                            ChronoUnit.DAYS.between(now, nextCalibrationDate)
+
+                        if (daysUntilNextCalibration in 1..30) {
+                            Timber.tag("NotificationWorker")
+                                .d(
+                                    "Id: ${scale.id}, Name: ${scale.name}, Location: ${scale.location}",
+                                    "Next Calibration Date: ${scale.nextCalibrationDate}"
+                                )
+                            showNotification(
+                                scale.id.hashCode(),
+                                scale.name,
+                                scale.location,
+                                scale.nextCalibrationDate
+                            )
+                        }
                     }
                 }
                 // Show notification for each scale
@@ -106,18 +115,26 @@ class NotificationWorker @AssistedInject constructor(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val bigTextStyle = NotificationCompat.BigTextStyle()
+            .bigText(
+                "Kalibrasi untuk $name di $lokasi akan dilakukan pada " +
+                        formatDate(nextCalibrationDate) + ". " +
+                        "Jangan lupa untuk melakukan kalibrasi!"
+            )
+
         val notification = NotificationCompat.Builder(applicationContext, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Calibration Reminder")
             .setContentText(
                 "Kalibrasi untuk $name di $lokasi akan dilakukan pada " +
-                        formatDate(nextCalibrationDate) + ". " +
+                        formatDate(nextCalibrationDate) + ".\n" +
                         "Jangan lupa untuk melakukan kalibrasi!"
             )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setStyle(bigTextStyle)
             .build()
 
         notificationManager.notify(id, notification)
