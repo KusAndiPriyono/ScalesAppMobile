@@ -1,9 +1,11 @@
 package com.bangkit.scalesappmobile
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +21,9 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.work.BackoffPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.bangkit.scalesappmobile.navigation.BottomNavItem
 import com.bangkit.scalesappmobile.navigation.CoreFeatureNavigator
 import com.bangkit.scalesappmobile.navigation.NavGraphs
@@ -33,6 +38,7 @@ import com.bangkit.scalesappmobile.presentatiom.destinations.ListKalibrasiScreen
 import com.bangkit.scalesappmobile.presentatiom.destinations.NotificationScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.ScheduleScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.notifications.NotificationWorker
 import com.bangkit.scalesappmobile.ui.theme.ScalesAppMobileTheme
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -42,17 +48,30 @@ import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import com.ramcosta.composedestinations.navigation.DependenciesContainerBuilder
 import com.ramcosta.composedestinations.navigation.dependency
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Duration
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        WindowCompat.setDecorFitsSystemWindows(window, false)
         installSplashScreen().apply {
             setKeepOnScreenCondition(condition = { viewModel.splashCondition.value })
         }
+
+        val workRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
+            .setInitialDelay(Duration.ofSeconds(10))
+            .setBackoffCriteria(
+                backoffPolicy = BackoffPolicy.LINEAR,
+                duration = Duration.ofSeconds(10)
+            )
+            .build()
+        WorkManager.getInstance(this).enqueue(workRequest)
+
         setContent {
             val isLoggedIn = viewModel.isLoggedIn.collectAsState().value
             ScalesAppMobileTheme {

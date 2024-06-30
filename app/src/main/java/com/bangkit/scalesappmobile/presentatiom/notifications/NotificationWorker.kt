@@ -9,39 +9,75 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
+import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.bangkit.scalesappmobile.MainActivity
 import com.bangkit.scalesappmobile.R
+import com.bangkit.scalesappmobile.data.remote.ScalesApiService
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import java.time.LocalDate
+import timber.log.Timber
+import java.net.UnknownHostException
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @HiltWorker
 class NotificationWorker @AssistedInject constructor(
+    private val scalesApiService: ScalesApiService,
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
-) : Worker(context, workerParams) {
+) : CoroutineWorker(context, workerParams) {
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun doWork(): Result {
-        val nextCalibrationDate =
-            inputData.getString("nextCalibrationDate") ?: return Result.failure()
-        val name = inputData.getString("name") ?: "Unknown Scales"
-        val lokasi = inputData.getString("lokasi") ?: "Unknown Location"
-        val id = inputData.getString("id")?.toIntOrNull() ?: return Result.failure()
+    override suspend fun doWork(): Result {
+        return try {
+            val response = scalesApiService.getPost()
+            if (response.status == "success") {
+                // Log success and details
+                Timber.tag("NotificationWorker").d("Success!")
+                response.data.let { data ->
+                    data.forEach { scale ->
+                        Timber.tag("NotificationWorker")
+                            .d(
+                                "Id: ${scale.id}, Name: ${scale.name}, Location: ${scale.location}",
+                                "Next Calibration Date: ${scale.nextCalibrationDate}"
+                            )
+                    }
+                    data.forEach { scale ->
+                        showNotification(
+                            scale.id.hashCode(),
+                            scale.name,
+                            scale.location,
+                            scale.nextCalibrationDate
+                        )
+                    }
+                }
+                // Show notification for each scale
 
-        val formatter = DateTimeFormatter.ISO_LOCAL_DATE
-        val calibrationDate = LocalDate.parse(nextCalibrationDate, formatter)
-        val currentDate = LocalDate.now()
-
-        if (currentDate.isEqual(calibrationDate)) {
-            showNotification(id, name, lokasi)
+                Result.success()
+            } else {
+                Timber.tag("NotificationWorker").d("Retrying...")
+                Result.retry()
+            }
+        } catch (e: Exception) {
+            if (e is UnknownHostException) {
+                Timber.tag("NotificationWorker").e("Retrying...")
+                Result.retry()
+            } else {
+                Timber.tag("NotificationWorker").e("Error: %s", e.message)
+                Result.failure(Data.Builder().putString("error", e.message).build())
+            }
         }
-        return Result.success()
     }
 
-    private fun showNotification(id: Int, name: String, lokasi: String) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showNotification(
+        id: Int,
+        name: String,
+        lokasi: String,
+        nextCalibrationDate: String,
+    ) {
         val channelId = "CALIBRATION_CHANNEL"
         val channelName = "Calibration Notification"
         val notificationManager =
@@ -67,13 +103,17 @@ class NotificationWorker @AssistedInject constructor(
             applicationContext,
             id,
             notificationIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val notification = NotificationCompat.Builder(applicationContext, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Calibration Reminder")
-            .setContentText("The calibration for $name at $lokasi is due today.")
+            .setContentText(
+                "Kalibrasi untuk $name di $lokasi akan dilakukan pada " +
+                        formatDate(nextCalibrationDate) + ". " +
+                        "Jangan lupa untuk melakukan kalibrasi!"
+            )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
@@ -81,5 +121,16 @@ class NotificationWorker @AssistedInject constructor(
             .build()
 
         notificationManager.notify(id, notification)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatDate(dateString: String): String {
+    return try {
+        val zonedDateTime = ZonedDateTime.parse(dateString, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+        val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.getDefault())
+        zonedDateTime.format(formatter)
+    } catch (e: Exception) {
+        "Invalid date"
     }
 }

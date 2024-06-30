@@ -40,6 +40,9 @@ interface ScalesApiService {
         @Query("page") page: Int,
     ): GetAllScalesResponse
 
+    @GET("api/v1/scales")
+    suspend fun getPost(): GetAllScalesResponse
+
     @GET("api/v1/scales/{id}")
     suspend fun getScalesDetail(
         @Path("id") id: String,

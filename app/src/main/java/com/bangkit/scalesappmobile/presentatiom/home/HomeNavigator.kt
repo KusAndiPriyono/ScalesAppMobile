@@ -15,7 +15,7 @@ interface HomeNavigator {
 
     fun openSchedule()
 
-    fun openNotifications(id: String? = null)
+    fun openNotifications()
     fun openSettings()
     fun navigateBackToHome()
 
