@@ -146,6 +146,12 @@ dependencies {
     //iTextPdf
     implementation(libs.itext7.core)
 
+    //workManager
+    implementation(libs.androidx.work.runtime.ktx)
+
+    //HiltWorker
+    implementation(libs.hilt.work)
+
 //    // Accompanist System UI Controller Library
 //    implementation(libs.accompanist.systemuicontroller)
 

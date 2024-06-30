@@ -114,8 +114,8 @@ class CoreFeatureNavigator(
         navController.navigate(ScheduleScreenDestination within navGraph)
     }
 
-    override fun openNotifications() {
-        navController.navigate(NotificationScreenDestination within navGraph)
+    override fun openNotifications(id: String?) {
+        navController.navigate(NotificationScreenDestination(id = id) within navGraph)
     }
 
     override fun openSettings() {
