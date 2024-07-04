@@ -152,6 +152,9 @@ dependencies {
     //HiltWorker
     implementation(libs.hilt.work)
 
+    //ComposeCharts
+    implementation(libs.compose.charts)
+
 //    // Accompanist System UI Controller Library
 //    implementation(libs.accompanist.systemuicontroller)
 
