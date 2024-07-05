@@ -4,7 +4,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bangkit.scalesappmobile.data.remote.scales.GetAllReviewsResponse
 import com.bangkit.scalesappmobile.domain.model.ScalesDetails
+import com.bangkit.scalesappmobile.domain.usecase.review.GetReviewUseCase
 import com.bangkit.scalesappmobile.domain.usecase.scales.DeleteScalesUseCase
 import com.bangkit.scalesappmobile.domain.usecase.scales.GetScalesDetailUseCase
 import com.bangkit.scalesappmobile.domain.usecase.user.GetUserRoleUseCase
@@ -24,6 +26,7 @@ class DetailViewModel @Inject constructor(
     private val getScalesDetailUseCase: GetScalesDetailUseCase,
     private val deleteScalesUseCase: DeleteScalesUseCase,
     private val getUserRoleUseCase: GetUserRoleUseCase,
+    private val getReviewUseCase: GetReviewUseCase,
 ) : ViewModel() {
 
     private val _eventsFlow = MutableSharedFlow<UiEvents>()
@@ -41,8 +44,39 @@ class DetailViewModel @Inject constructor(
     private val _details = mutableStateOf(DetailState())
     val details: State<DetailState> = _details
 
+    private val _reviewsState = mutableStateOf(ReviewState())
+    val reviewsState: State<ReviewState> = _reviewsState
+
     private val _isDeleted = mutableStateOf(false)
     val isDeleted: State<Boolean> = _isDeleted
+
+    init {
+        getReviews()
+    }
+
+    private fun getReviews() {
+        viewModelScope.launch {
+            _reviewsState.value = reviewsState.value.copy(isLoading = true)
+            when (val result = getReviewUseCase()) {
+                is Resource.Success -> {
+                    _reviewsState.value = reviewsState.value.copy(
+                        isLoading = false, reviews = result.data
+                    )
+                }
+
+                is Resource.Error -> {
+                    _reviewsState.value = reviewsState.value.copy(
+                        isLoading = false, error = result.message
+                    )
+                    _eventsFlow.emit(UiEvents.SnackbarEvent(result.message ?: "An error occurred"))
+                }
+
+                else -> {
+                    reviewsState
+                }
+            }
+        }
+    }
 
     fun getDetail(id: String) {
         _details.value = details.value.copy(
@@ -94,4 +128,10 @@ data class DetailState(
     val error: String? = null,
     val scalesDetails: ScalesDetails? = null,
     val isDeleted: Boolean = false,
+)
+
+data class ReviewState(
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val reviews: GetAllReviewsResponse? = null,
 )

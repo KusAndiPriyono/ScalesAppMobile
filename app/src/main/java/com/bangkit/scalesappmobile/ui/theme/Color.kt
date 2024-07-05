@@ -83,3 +83,11 @@ val ShamefulColor = Color(0xFF7E57C2)
 val HumorousColor = Color(0xFFFFCA28)
 val SuspiciousColor = Color(0xFFD4E157)
 val BoredColor = Color(0xFF26C6DA)
+
+val cardColorCustom = listOf(
+    Color(0xFFFFF3E0), // Orange
+    Color(0xFFE8F5E9), // Green
+    Color(0xFFE3F2FD), // Blue
+    Color(0xFFF3E5F5), // Purple
+    Color(0xFFFFEBEE)  // Red
+)

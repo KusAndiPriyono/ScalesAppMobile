@@ -214,7 +214,11 @@ private fun HomeScreenContent(
 
                     items(filteredScales) { scales ->
                         scales?.let {
-                            ScalesItem(scales = it, onClick = { navigateToDetails(scales) })
+                            ScalesItem(
+                                scales = it,
+                                onClick = { navigateToDetails(scales) },
+                                index = filteredScales.indexOf(scales)
+                            )
                         }
                     }
                 }

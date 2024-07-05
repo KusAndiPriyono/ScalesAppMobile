@@ -141,7 +141,8 @@ private fun SearchScreenContent(
                                 scales = scales,
                                 onClick = {
                                     onScalesClick(scales.id)
-                                }
+                                },
+                                index = index
                             )
                         }
                     }

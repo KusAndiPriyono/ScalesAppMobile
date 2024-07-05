@@ -25,25 +25,28 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bangkit.scalesappmobile.R
 import com.bangkit.scalesappmobile.domain.model.Scales
+import com.bangkit.scalesappmobile.ui.theme.cardColorCustom
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 
 @Composable
 fun ScalesItem(
     scales: Scales,
-//    onClick: (() -> Unit)? = null,
     onClick: (String) -> Unit,
+    index: Int,
 ) {
 
     val context = LocalContext.current
+    val cardColor = cardColorCustom[index % cardColorCustom.size]
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 5.dp)
-            .clickable { onClick?.invoke(scales.id) },
+            .clickable { onClick.invoke(scales.id) },
         shape = MaterialTheme.shapes.large,
         elevation = CardDefaults.elevatedCardElevation(5.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = cardColor
         ),
     ) {
         Column(
@@ -67,21 +70,21 @@ fun ScalesItem(
                     text = scales.brand,
                     style = MaterialTheme.typography.titleSmall,
                     fontFamily = fontFamily,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.scrim,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = scales.kindType,
                     style = MaterialTheme.typography.titleSmall,
                     fontFamily = fontFamily,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.scrim,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = scales.location,
                     style = MaterialTheme.typography.titleSmall,
                     fontFamily = fontFamily,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.scrim,
                     overflow = TextOverflow.Ellipsis
                 )
                 Row(
@@ -92,7 +95,7 @@ fun ScalesItem(
                         stringResource(id = R.string.Status),
                         style = MaterialTheme.typography.titleSmall,
                         fontFamily = fontFamily,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.scrim,
                         overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.size(8.dp))
@@ -100,7 +103,7 @@ fun ScalesItem(
                         text = scales.status,
                         style = MaterialTheme.typography.titleSmall,
                         fontFamily = fontFamily,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.scrim,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
@@ -138,6 +141,7 @@ fun ScalesItemPreview() {
             unit = "unit",
             v = 1
         ),
-        onClick = {}
+        onClick = {},
+        index = 1
     )
 }

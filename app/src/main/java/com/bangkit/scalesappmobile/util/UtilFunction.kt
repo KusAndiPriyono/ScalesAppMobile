@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.compose.ui.graphics.Color
 import com.bangkit.scalesappmobile.R
 import com.bangkit.scalesappmobile.data.remote.scales.ErrorResponse
 import com.bangkit.scalesappmobile.domain.model.AllForm

@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -57,9 +58,11 @@ import com.bangkit.scalesappmobile.presentatiom.common.ErrorStateComponent
 import com.bangkit.scalesappmobile.presentatiom.common.FormatStringToDate
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
 import com.bangkit.scalesappmobile.presentatiom.details.component.ActionButtonDetail
+import com.bangkit.scalesappmobile.presentatiom.details.component.CardReviewContent
 import com.bangkit.scalesappmobile.presentatiom.details.component.ScalesProperties
 import com.bangkit.scalesappmobile.presentatiom.home.HomeNavigator
 import com.bangkit.scalesappmobile.presentatiom.home.component.UserRole
+import com.bangkit.scalesappmobile.presentatiom.kalibrasi.component.SectionTitle
 import com.bangkit.scalesappmobile.ui.theme.SurprisedColor
 import com.bangkit.scalesappmobile.ui.theme.fontFamily
 import com.ramcosta.composedestinations.annotation.Destination
@@ -72,10 +75,13 @@ import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 @Destination
 @Composable
 fun DetailsScreen(
-    id: String?, navigator: HomeNavigator, viewModel: DetailViewModel = hiltViewModel(),
+    id: String?,
+    navigator: HomeNavigator,
+    viewModel: DetailViewModel = hiltViewModel(),
 ) {
     val state = rememberCollapsingToolbarScaffoldState()
     val scalesState = viewModel.details.value
+    val reviewsState = viewModel.reviewsState.value
     val userRole by viewModel.getUserRole().collectAsState(initial = UserRole.USER)
 
     LaunchedEffect(key1 = true, block = {
@@ -102,7 +108,8 @@ fun DetailsScreen(
             viewModel.deleteScales(scalesState.scalesDetails?.id ?: "")
             navigator.navigateBackToHome()
         },
-        userRole = userRole
+        userRole = userRole,
+        reviewsState = reviewsState,
     )
 }
 
@@ -110,6 +117,7 @@ fun DetailsScreen(
 @Composable
 fun DetailScreenContent(
     scalesState: DetailState,
+    reviewsState: ReviewState,
     state: CollapsingToolbarScaffoldState,
     navigateToBack: () -> Unit,
     onClickEditScales: (ScalesDetails) -> Unit,
@@ -120,10 +128,10 @@ fun DetailScreenContent(
     var isDialogOpened by remember {
         mutableStateOf(false)
     }
+    var showAllReviews by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (!scalesState.isLoading && scalesState.scalesDetails != null) {
-            val scale = scalesState.scalesDetails
             val textSize = (18 + (30 - 18) * state.toolbarState.progress).sp
 
             CollapsingToolbarScaffold(modifier = Modifier.fillMaxSize(),
@@ -148,14 +156,15 @@ fun DetailScreenContent(
                             .graphicsLayer {
                                 alpha = if (textSize.value == 18f) 0f else 1f
                             }, painter = rememberAsyncImagePainter(
-                            ImageRequest.Builder(LocalContext.current).data(data = scale.imageCover)
+                            ImageRequest.Builder(LocalContext.current)
+                                .data(data = scalesState.scalesDetails.imageCover)
                                 .apply(block = fun ImageRequest.Builder.() {
                                     placeholder(null)
                                 }).build()
                         ), contentDescription = null
                     )
                     Text(
-                        text = scale.name,
+                        text = scalesState.scalesDetails.name,
                         modifier = Modifier
                             .road(Alignment.CenterStart, Alignment.BottomEnd)
                             .padding(60.dp, 16.dp, 16.dp, 16.dp),
@@ -182,6 +191,11 @@ fun DetailScreenContent(
                         horizontal = 16.dp, vertical = 12.dp
                     )
                 ) {
+                    val filteredReviews =
+                        reviewsState.reviews?.data?.filter { it.scale == scalesState.scalesDetails.id }
+                    val reviewsToShow =
+                        if (showAllReviews) filteredReviews else filteredReviews?.take(1)
+
                     item {
                         if (textSize.value >= 19) {
                             Row(
@@ -190,7 +204,7 @@ fun DetailScreenContent(
                             ) {
                                 Text(
                                     modifier = Modifier.fillMaxWidth(0.85f),
-                                    text = scale.name,
+                                    text = scalesState.scalesDetails.name,
                                     fontFamily = fontFamily,
                                     style = MaterialTheme.typography.headlineMedium
                                 )
@@ -203,7 +217,7 @@ fun DetailScreenContent(
                     item {
                         LazyRow {
                             item {
-                                ScalesProperties(scales = scale)
+                                ScalesProperties(scales = scalesState.scalesDetails)
                             }
                         }
                         Spacer(modifier = Modifier.height(16.dp))
@@ -225,13 +239,11 @@ fun DetailScreenContent(
                                 contentDescription = null,
                             )
                             Text(
-                                text = "Nomor Alat",
-                                style = TextStyle(
+                                text = "Nomor Alat", style = TextStyle(
                                     fontSize = MaterialTheme.typography.titleMedium.fontSize,
                                     fontWeight = FontWeight.Thin,
                                     fontFamily = fontFamily
-                                ),
-                                color = Color.Gray
+                                ), color = Color.Gray
                             )
                         }
                     }
@@ -248,7 +260,7 @@ fun DetailScreenContent(
                                     .background(MaterialTheme.colorScheme.onBackground)
                             )
                             Text(
-                                text = scale.measuringEquipmentIdNumber,
+                                text = scalesState.scalesDetails.measuringEquipmentIdNumber,
                                 modifier = Modifier.padding(3.dp),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontFamily = fontFamily
@@ -275,13 +287,11 @@ fun DetailScreenContent(
                                 contentDescription = null,
                             )
                             Text(
-                                text = "Nomor Seri",
-                                style = TextStyle(
+                                text = "Nomor Seri", style = TextStyle(
                                     fontSize = MaterialTheme.typography.titleMedium.fontSize,
                                     fontWeight = FontWeight.Thin,
                                     fontFamily = fontFamily
-                                ),
-                                color = Color.Gray
+                                ), color = Color.Gray
                             )
                         }
                     }
@@ -298,7 +308,7 @@ fun DetailScreenContent(
                                     .background(MaterialTheme.colorScheme.onBackground)
                             )
                             Text(
-                                text = scale.serialNumber,
+                                text = scalesState.scalesDetails.serialNumber,
                                 modifier = Modifier.padding(3.dp),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontFamily = fontFamily
@@ -325,13 +335,11 @@ fun DetailScreenContent(
                                 contentDescription = null,
                             )
                             Text(
-                                text = "Tanggal Kalibrasi",
-                                style = TextStyle(
+                                text = "Tanggal Kalibrasi", style = TextStyle(
                                     fontSize = MaterialTheme.typography.titleMedium.fontSize,
                                     fontWeight = FontWeight.Thin,
                                     fontFamily = fontFamily
-                                ),
-                                color = Color.Gray
+                                ), color = Color.Gray
                             )
                         }
                     }
@@ -347,7 +355,10 @@ fun DetailScreenContent(
                                     .clip(CircleShape)
                                     .background(MaterialTheme.colorScheme.onBackground)
                             )
-                            FormatStringToDate(dateString = scale.calibrationDate)
+                            FormatStringToDate(
+                                dateString = scalesState.scalesDetails.calibrationDate,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                     }
                     item {
@@ -370,13 +381,11 @@ fun DetailScreenContent(
                                 contentDescription = null,
                             )
                             Text(
-                                text = "Kalibrasi Selanjutnya",
-                                style = TextStyle(
+                                text = "Kalibrasi Selanjutnya", style = TextStyle(
                                     fontSize = MaterialTheme.typography.titleMedium.fontSize,
                                     fontWeight = FontWeight.Thin,
                                     fontFamily = fontFamily
-                                ),
-                                color = Color.Gray
+                                ), color = Color.Gray
                             )
                         }
                     }
@@ -392,7 +401,10 @@ fun DetailScreenContent(
                                     .clip(CircleShape)
                                     .background(MaterialTheme.colorScheme.onBackground)
                             )
-                            FormatStringToDate(dateString = scale.nextCalibrationDate)
+                            FormatStringToDate(
+                                dateString = scalesState.scalesDetails.nextCalibrationDate,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                     }
                     item {
@@ -415,13 +427,11 @@ fun DetailScreenContent(
                                 contentDescription = null,
                             )
                             Text(
-                                text = "Deskripsi Alat",
-                                style = TextStyle(
+                                text = "Deskripsi Alat", style = TextStyle(
                                     fontSize = MaterialTheme.typography.titleMedium.fontSize,
                                     fontWeight = FontWeight.Thin,
                                     fontFamily = fontFamily
-                                ),
-                                color = Color.Gray
+                                ), color = Color.Gray
                             )
                         }
                     }
@@ -438,7 +448,7 @@ fun DetailScreenContent(
                                     .background(MaterialTheme.colorScheme.onBackground)
                             )
                             Text(
-                                text = scale.equipmentDescription,
+                                text = scalesState.scalesDetails.equipmentDescription,
                                 modifier = Modifier.padding(3.dp),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontFamily = fontFamily
@@ -453,6 +463,45 @@ fun DetailScreenContent(
                             color = Color.Gray
                         )
                     }
+
+                    item {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            SectionTitle(title = "Review")
+                            if (!showAllReviews && (filteredReviews?.size ?: 0) > 1) {
+                                TextButton(onClick = { showAllReviews = true }) {
+                                    Text(text = "Lihat Semua")
+                                }
+                            } else if (showAllReviews) {
+                                TextButton(onClick = { showAllReviews = false }) {
+                                    Text(text = "Tutup")
+                                }
+                            }
+                        }
+                    }
+
+                    //ReviewsComponent
+                    item {
+                        if (reviewsState.isLoading) {
+                            LoadingStateComponent()
+                        } else if (reviewsState.error != null) {
+                            ErrorStateComponent(errorMessage = reviewsState.error)
+                        } else {
+                            reviewsToShow?.forEach { review ->
+                                CardReviewContent(
+                                    allReviews = review,
+                                    index = reviewsToShow.indexOf(review)
+                                )
+                            }
+                        }
+                    }
+
+
+                    //ActionButtonDetail
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
                         if (userRole == UserRole.fromString("admin")) {
@@ -463,12 +512,9 @@ fun DetailScreenContent(
                                 horizontalArrangement = Arrangement.SpaceAround
                             ) {
                                 ActionButtonDetail(
-                                    text = "Edit",
-                                    icon = Icons.Default.Edit,
-                                    onClick = {
+                                    text = "Edit", icon = Icons.Default.Edit, onClick = {
                                         onClickEditScales(scalesState.scalesDetails)
-                                    },
-                                    modifier = Modifier.width(70.dp)
+                                    }, modifier = Modifier.width(70.dp)
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 ActionButtonDetail(
@@ -509,8 +555,7 @@ fun DetailScreenContent(
         }
     }
 
-    DisplayAlertDialog(
-        title = "Hapus Timbangan",
+    DisplayAlertDialog(title = "Hapus Timbangan",
         message = "Apakah Anda yakin ingin menghapus timbangan ini?",
         dialogOpened = isDialogOpened,
         onDialogClosed = {
@@ -519,6 +564,5 @@ fun DetailScreenContent(
         onYesClicked = {
             onClickDeleteScales()
             isDialogOpened = false
-        }
-    )
+        })
 }

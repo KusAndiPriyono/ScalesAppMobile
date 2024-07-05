@@ -39,7 +39,7 @@ data class ScalesDetails(
     @SerializedName("ratingsQuantity")
     val ratingsQuantity: Int,
     @SerializedName("reviews")
-    val reviews: List<Review>,
+    val reviews: List<AllReviews>,
     @SerializedName("serialNumber")
     val serialNumber: String,
     @SerializedName("status")
