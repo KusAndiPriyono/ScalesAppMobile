@@ -50,12 +50,14 @@ class NotificationWorker @AssistedInject constructor(
                         if (daysUntilNextCalibration in 1..30) {
                             Timber.tag("NotificationWorker")
                                 .d(
-                                    "Id: ${scale.id}, Name: ${scale.name}, Location: ${scale.location}",
+                                    "Id: ${scale.id}, Name: ${scale.name}, Brand: ${scale.brand}, KindType: ${scale.kindType}, Location: ${scale.location}",
                                     "Next Calibration Date: ${scale.nextCalibrationDate}"
                                 )
                             showNotification(
                                 scale.id.hashCode(),
                                 scale.name,
+                                scale.brand,
+                                scale.kindType,
                                 scale.location,
                                 scale.nextCalibrationDate
                             )
@@ -84,6 +86,8 @@ class NotificationWorker @AssistedInject constructor(
     private fun showNotification(
         id: Int,
         name: String,
+        brand: String,
+        kindType: String,
         lokasi: String,
         nextCalibrationDate: String,
     ) {
@@ -117,7 +121,7 @@ class NotificationWorker @AssistedInject constructor(
 
         val bigTextStyle = NotificationCompat.BigTextStyle()
             .bigText(
-                "Kalibrasi untuk $name di $lokasi akan dilakukan pada " +
+                "Kalibrasi untuk $name merk $brand seri $kindType di $lokasi akan dilakukan pada " +
                         formatDate(nextCalibrationDate) + ". " +
                         "Jangan lupa untuk melakukan kalibrasi!"
             )
@@ -126,7 +130,7 @@ class NotificationWorker @AssistedInject constructor(
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Calibration Reminder")
             .setContentText(
-                "Kalibrasi untuk $name di $lokasi akan dilakukan pada " +
+                "Kalibrasi untuk $name merk $brand seri $kindType di $lokasi akan dilakukan pada " +
                         formatDate(nextCalibrationDate) + ".\n" +
                         "Jangan lupa untuk melakukan kalibrasi!"
             )

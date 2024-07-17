@@ -6,11 +6,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bangkit.scalesappmobile.domain.model.UpdateForm
+import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.ApproveDocumentKalibrasiUseCase
 import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.DeleteDocumentKalibrasiUseCase
 import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.GetDocumentKalibrasiUseCase
 import com.bangkit.scalesappmobile.domain.usecase.user.GetUserRoleUseCase
 import com.bangkit.scalesappmobile.presentatiom.home.component.UserRole
-import com.bangkit.scalesappmobile.presentatiom.kalibrasi.component.ApprovalStatus
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.state.DocumentState
 import com.bangkit.scalesappmobile.util.Resource
 import com.bangkit.scalesappmobile.util.UiEvents
@@ -20,7 +21,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.ZoneId
@@ -31,6 +31,7 @@ import javax.inject.Inject
 class ListKalibrasiViewModel @Inject constructor(
     private val getDocumentKalibrasiUseCase: GetDocumentKalibrasiUseCase,
     private val deleteDocumentKalibrasiUseCase: DeleteDocumentKalibrasiUseCase,
+    private val approveDocumentKalibrasiUseCase: ApproveDocumentKalibrasiUseCase,
     private val getUserRoleUseCase: GetUserRoleUseCase,
 ) : ViewModel() {
 
@@ -62,6 +63,56 @@ class ListKalibrasiViewModel @Inject constructor(
 
     init {
         getAllDocumentKalibrasi()
+    }
+
+    fun updateApprovalStatus(id: String, newStatus: String) {
+        viewModelScope.launch {
+            _documentState.value = documentState.value.copy(isLoading = true)
+            _documentState.value.documents.values.flatten().find { it.id == id }?.let { document ->
+                val updatedDocument = document.copy(approval = newStatus)
+                val updateForm = UpdateForm(
+                    approval = updatedDocument.approval,
+                    calibrationMethod = updatedDocument.calibrationMethod,
+                    createdAt = updatedDocument.createdAt,
+                    id = updatedDocument.id,
+                    reference = updatedDocument.reference,
+                    resultCalibration = updatedDocument.resultCalibration,
+                    standardCalibration = updatedDocument.standardCalibration,
+                    suhu = updatedDocument.suhu,
+                    validUntil = updatedDocument.validUntil,
+                    readingCenter = updatedDocument.readingCenter,
+                    readingFront = updatedDocument.readingFront,
+                    readingBack = updatedDocument.readingBack,
+                    readingLeft = updatedDocument.readingLeft,
+                    readingRight = updatedDocument.readingRight,
+                    maxTotalReading = updatedDocument.maxTotalReading
+                )
+
+                when (val result = approveDocumentKalibrasiUseCase(id, updateForm)) {
+                    is Resource.Success -> {
+                        _documentState.value =
+                            documentState.value.copy(
+                                isLoading = false,
+                                updateForm = result.data?.data
+                            )
+                        _eventsFlow.emit(UiEvents.SnackbarEvent("Document updated Successfully"))
+                        getAllDocumentKalibrasi()
+                    }
+
+                    is Resource.Error -> {
+                        _eventsFlow.emit(
+                            UiEvents.SnackbarEvent(
+                                result.message ?: "An error occurred"
+                            )
+                        )
+                    }
+
+                    else -> {
+                        // Handle other cases if necessary
+                    }
+                }
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

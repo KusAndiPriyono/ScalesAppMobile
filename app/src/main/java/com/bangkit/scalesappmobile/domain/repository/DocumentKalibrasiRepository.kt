@@ -15,4 +15,9 @@ interface DocumentKalibrasiRepository {
     ): Resource<UpdateDocumentKalibrasiResponse>
 
     suspend fun deleteDocumentKalibrasi(id: String): Resource<Boolean>
+
+    suspend fun approveDocumentKalibrasi(
+        id: String,
+        updateForm: UpdateForm,
+    ): Resource<UpdateDocumentKalibrasiResponse>
 }

@@ -37,7 +37,6 @@ fun NotificationScreen(
             contract = ActivityResultContracts.RequestPermission(),
             onResult = { granted ->
                 notificationPermissionState = granted
-
             }
         )
 

@@ -38,6 +38,7 @@ import com.bangkit.scalesappmobile.presentatiom.kalibrasi.component.DocumentHold
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.state.DocumentState
 import com.ramcosta.composedestinations.annotation.Destination
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Destination
 @Composable
@@ -89,10 +90,18 @@ fun ListKalibrasiScreen(
             },
             userRole = userRole,
             onClickApproved = {
-
+                viewModel.updateApprovalStatus(
+                    id = document.id,
+                    newStatus = "approved"
+                )
+                navigator.openKalibrasi()
             },
             onClickRejected = {
-
+                viewModel.updateApprovalStatus(
+                    id = document.id,
+                    newStatus = "rejected"
+                )
+                navigator.openKalibrasi()
             }
         )
     }

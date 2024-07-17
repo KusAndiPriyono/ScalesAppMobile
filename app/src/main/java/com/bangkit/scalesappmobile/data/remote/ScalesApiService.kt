@@ -95,6 +95,12 @@ interface ScalesApiService {
         @Body updateForm: UpdateForm,
     ): UpdateDocumentKalibrasiResponse
 
+    @PATCH("api/v1/forms/{id}/approve")
+    suspend fun approveDocumentKalibrasi(
+        @Path("id") id: String,
+        @Body updateForm: UpdateForm,
+    ): UpdateDocumentKalibrasiResponse
+
     @DELETE("api/v1/forms/{id}")
     suspend fun deleteDocument(
         @Path("id") id: String,

@@ -25,47 +25,45 @@ fun ActionButtonApproved(
     onClickRejected: () -> Unit,
 ) {
 
-    if (userRole == UserRole.fromString("manager")) {
-        if (statusApproval == ApprovalStatus.fromString("waiting")) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceAround
+    if (userRole == UserRole.MANAGER && statusApproval == ApprovalStatus.Waiting || statusApproval == ApprovalStatus.Rejected) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            ElevatedButton(
+                colors = ButtonDefaults.elevatedButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                onClick = {
+                    onClickRejected()
+                }
             ) {
-                ElevatedButton(
-                    colors = ButtonDefaults.elevatedButtonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                    onClick = {
-                        onClickRejected()
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Cancel,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.background
-                    )
-                    Text(text = "Reject")
-                }
+                Icon(
+                    imageVector = Icons.Default.Cancel,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.background
+                )
+                Text(text = "Reject")
+            }
 
-                ElevatedButton(
-                    colors = ButtonDefaults.elevatedButtonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                    onClick = {
-                        onClickApproved()
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.background
-                    )
-                    Text(text = "Approve")
+            ElevatedButton(
+                colors = ButtonDefaults.elevatedButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                onClick = {
+                    onClickApproved()
                 }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.background
+                )
+                Text(text = "Approve")
             }
         }
     }

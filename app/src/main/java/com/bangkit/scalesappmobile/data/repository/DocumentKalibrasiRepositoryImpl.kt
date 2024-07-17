@@ -47,4 +47,13 @@ class DocumentKalibrasiRepositoryImpl @Inject constructor(
             response.toString().isNotEmpty()
         }
     }
+
+    override suspend fun approveDocumentKalibrasi(
+        id: String,
+        updateForm: UpdateForm,
+    ): Resource<UpdateDocumentKalibrasiResponse> {
+        return safeApiCall(Dispatchers.IO) {
+            scalesApiService.approveDocumentKalibrasi(id = id, updateForm = updateForm)
+        }
+    }
 }
