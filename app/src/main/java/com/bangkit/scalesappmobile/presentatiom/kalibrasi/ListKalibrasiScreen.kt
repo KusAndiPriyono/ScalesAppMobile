@@ -87,7 +87,13 @@ fun ListKalibrasiScreen(
             onClickEditDocument = {
                 navigator.openUpdateDocKalibrasi(id = document.id, allForm = document)
             },
-            userRole = userRole
+            userRole = userRole,
+            onClickApproved = {
+
+            },
+            onClickRejected = {
+
+            }
         )
     }
 }

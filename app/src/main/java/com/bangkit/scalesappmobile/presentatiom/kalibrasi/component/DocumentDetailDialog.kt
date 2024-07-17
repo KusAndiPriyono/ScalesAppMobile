@@ -47,6 +47,8 @@ fun DocumentDetailDialog(
     onDismissRequest: () -> Unit,
     onClickDeleteDocument: () -> Unit,
     onClickEditDocument: (AllForm) -> Unit,
+    onClickApproved: () -> Unit,
+    onClickRejected: () -> Unit,
 ) {
 
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -145,6 +147,16 @@ fun DocumentDetailDialog(
                         onClickEditDocument(it)
                     },
                     userRole = userRole
+                )
+                ActionButtonApproved(
+                    userRole = userRole,
+                    statusApproval = statusApproval,
+                    onClickApproved = {
+                        onClickApproved()
+                    },
+                    onClickRejected = {
+                        onClickRejected()
+                    },
                 )
                 repeat(10) {
                     Spacer(modifier = Modifier.height(8.dp))

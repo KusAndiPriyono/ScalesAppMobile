@@ -10,6 +10,7 @@ import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.DeleteDocume
 import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.GetDocumentKalibrasiUseCase
 import com.bangkit.scalesappmobile.domain.usecase.user.GetUserRoleUseCase
 import com.bangkit.scalesappmobile.presentatiom.home.component.UserRole
+import com.bangkit.scalesappmobile.presentatiom.kalibrasi.component.ApprovalStatus
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.state.DocumentState
 import com.bangkit.scalesappmobile.util.Resource
 import com.bangkit.scalesappmobile.util.UiEvents
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.ZoneId
@@ -43,6 +45,7 @@ class ListKalibrasiViewModel @Inject constructor(
                 UserRole.USER
             }
         }
+
 
     private val _isDeleted = mutableStateOf(false)
     val isDeleted: State<Boolean> = _isDeleted
