@@ -43,7 +43,7 @@ fun CardReviewContent(
     val cardColor = cardColorCustom[index % cardColorCustom.size] // Select color based on index
     Column(
         Modifier
-            .padding(16.dp)
+            .padding(8.dp)
             .fillMaxWidth()
     ) {
         Card(

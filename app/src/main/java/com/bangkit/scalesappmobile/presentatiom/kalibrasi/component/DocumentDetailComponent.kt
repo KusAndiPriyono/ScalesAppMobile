@@ -95,8 +95,9 @@ fun ScaleCard(context: Context, document: AllForm) {
 fun SectionTitle(title: String) {
     Text(
         modifier = Modifier.padding(start = 16.dp),
-        style = MaterialTheme.typography.titleLarge.copy(
-            fontWeight = FontWeight.Medium,
+        style = TextStyle(
+            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+            fontWeight = FontWeight.Thin,
             fontFamily = fontFamily
         ),
         text = title

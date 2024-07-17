@@ -16,10 +16,10 @@ sealed class BottomNavItem(var title: String, var icon: Int, var screen: NavGrap
         screen = NavGraphs.kalibrasi
     )
 
-    data object Schedule : BottomNavItem(
-        title = "Schedule",
+    data object Laporan : BottomNavItem(
+        title = "Laporan",
         icon = R.drawable.ic_schedule,
-        screen = NavGraphs.schedule
+        screen = NavGraphs.laporan
     )
 
     data object Notifications : BottomNavItem(

@@ -12,11 +12,11 @@ import com.bangkit.scalesappmobile.presentatiom.destinations.DetailsScreenDestin
 import com.bangkit.scalesappmobile.presentatiom.destinations.ForgotPasswordScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LandingPageScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.LaporanGrafisScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.ListKalibrasiScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LoginScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.NextCreateScalesScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.NotificationScreenDestination
-import com.bangkit.scalesappmobile.presentatiom.destinations.ScheduleScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SearchScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
@@ -111,7 +111,7 @@ class CoreFeatureNavigator(
     }
 
     override fun openSchedule() {
-        navController.navigate(ScheduleScreenDestination within navGraph)
+        navController.navigate(LaporanGrafisScreenDestination within navGraph)
     }
 
     override fun openNotifications() {

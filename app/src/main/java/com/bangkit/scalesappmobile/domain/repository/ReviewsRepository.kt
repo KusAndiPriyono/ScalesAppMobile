@@ -11,6 +11,11 @@ interface ReviewsRepository {
         review: Review,
     ): Resource<PostReviewsResponse>
 
+    suspend fun createReviewOnScales(
+        id: String,
+        review: Review,
+    ): Resource<PostReviewsResponse>
+
     suspend fun getReviews(): Resource<GetAllReviewsResponse>
 
     suspend fun updateReview(

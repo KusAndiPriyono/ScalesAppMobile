@@ -49,6 +49,7 @@ fun DocumentDetailDialog(
     onClickEditDocument: (AllForm) -> Unit,
     onClickApproved: () -> Unit,
     onClickRejected: () -> Unit,
+    onClickUnrelease: () -> Unit,
 ) {
 
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -157,6 +158,9 @@ fun DocumentDetailDialog(
                     onClickRejected = {
                         onClickRejected()
                     },
+                    onClickUnrelease = {
+                        onClickUnrelease()
+                    }
                 )
                 repeat(10) {
                     Spacer(modifier = Modifier.height(8.dp))

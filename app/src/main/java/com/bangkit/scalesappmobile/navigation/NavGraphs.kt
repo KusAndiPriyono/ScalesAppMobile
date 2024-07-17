@@ -6,12 +6,12 @@ import com.bangkit.scalesappmobile.presentatiom.destinations.DetailsScreenDestin
 import com.bangkit.scalesappmobile.presentatiom.destinations.ForgotPasswordScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LandingPageScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.LaporanGrafisScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.ListKalibrasiScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LoginScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.NextCreateScalesScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.NotificationScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.OnBoardingScreenDestination
-import com.bangkit.scalesappmobile.presentatiom.destinations.ScheduleScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SearchScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SignInScreenDestination
@@ -76,11 +76,11 @@ object NavGraphs {
         ).routedIn(this).associateBy { it.route }
     }
 
-    val schedule = object : NavGraphSpec {
-        override val route = "schedule"
-        override val startRoute = ScheduleScreenDestination routedIn this
+    val laporan = object : NavGraphSpec {
+        override val route = "laporan"
+        override val startRoute = LaporanGrafisScreenDestination routedIn this
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
-            ScheduleScreenDestination
+            LaporanGrafisScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 
@@ -110,7 +110,7 @@ object NavGraphs {
             auth,
             home,
             kalibrasi,
-            schedule,
+            laporan,
             notifications,
             settings
         )

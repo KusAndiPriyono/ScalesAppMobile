@@ -34,9 +34,9 @@ import com.bangkit.scalesappmobile.navigation.scaleInPopEnterTransition
 import com.bangkit.scalesappmobile.navigation.scaleOutExitTransition
 import com.bangkit.scalesappmobile.navigation.scaleOutPopExitTransition
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
+import com.bangkit.scalesappmobile.presentatiom.destinations.LaporanGrafisScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.ListKalibrasiScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.NotificationScreenDestination
-import com.bangkit.scalesappmobile.presentatiom.destinations.ScheduleScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.notifications.NotificationWorker
 import com.bangkit.scalesappmobile.ui.theme.ScalesAppMobileTheme
@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
                     val bottomBarItems = listOf(
                         BottomNavItem.Home,
                         BottomNavItem.Kalibrasi,
-                        BottomNavItem.Schedule,
+                        BottomNavItem.Laporan,
                         BottomNavItem.Notifications,
                         BottomNavItem.Settings
                     )
@@ -99,7 +99,7 @@ class MainActivity : ComponentActivity() {
                         showBottomBar = route in listOf(
                             "home/${HomeScreenDestination.route}",
                             "kalibrasi/${ListKalibrasiScreenDestination.route}",
-                            "schedule/${ScheduleScreenDestination.route}",
+                            "laporan/${LaporanGrafisScreenDestination.route}",
                             "notifications/${NotificationScreenDestination.route}",
                             "settings/${SettingsScreenDestination.route}"
                         )
@@ -187,7 +187,7 @@ class MainActivity : ComponentActivity() {
                         scaleOutPopExitTransition()
                     }
                 ),
-                NavGraphs.schedule to NestedNavGraphDefaultAnimations(
+                NavGraphs.laporan to NestedNavGraphDefaultAnimations(
                     enterTransition = {
                         scaleInEnterTransition()
                     },

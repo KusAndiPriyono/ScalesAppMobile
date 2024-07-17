@@ -21,6 +21,18 @@ class ReviewsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun createReviewOnScales(
+        id: String,
+        review: Review,
+    ): Resource<PostReviewsResponse> {
+        return safeApiCall(Dispatchers.IO) {
+            scalesApiService.createReviewOnScale(
+                id = id,
+                review = review
+            )
+        }
+    }
+
     override suspend fun getReviews(): Resource<GetAllReviewsResponse> {
         return safeApiCall(Dispatchers.IO) {
             scalesApiService.getReviews()

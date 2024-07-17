@@ -1,4 +1,4 @@
-package com.bangkit.scalesappmobile.presentatiom.schedule
+package com.bangkit.scalesappmobile.presentatiom.laporan
 
 import androidx.compose.animation.core.EaseInOutCubic
 import androidx.compose.animation.core.Spring
@@ -40,7 +40,7 @@ import ir.ehsannarmani.compose_charts.models.Pie
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
-fun ScheduleScreen(
+fun LaporanGrafisScreen(
 
 ) {
 

@@ -20,4 +20,9 @@ interface DocumentKalibrasiRepository {
         id: String,
         updateForm: UpdateForm,
     ): Resource<UpdateDocumentKalibrasiResponse>
+
+    suspend fun unreleaseDocumentKalibrasi(
+        id: String,
+        updateForm: UpdateForm,
+    ): Resource<UpdateDocumentKalibrasiResponse>
 }

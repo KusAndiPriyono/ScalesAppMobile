@@ -102,6 +102,13 @@ fun ListKalibrasiScreen(
                     newStatus = "rejected"
                 )
                 navigator.openKalibrasi()
+            },
+            onClickUnrelease = {
+                viewModel.unreleaseDocumentKalibrasi(
+                    id = document.id,
+                    newStatus = "waiting"
+                )
+                navigator.openKalibrasi()
             }
         )
     }
@@ -120,7 +127,7 @@ private fun ListKalibrasiScreenContent(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Daftar List Form Kalibrasi", fontSize = 18.sp)
+                    Text(text = "List Form Kalibrasi", fontSize = 18.sp)
                 }
             )
         },

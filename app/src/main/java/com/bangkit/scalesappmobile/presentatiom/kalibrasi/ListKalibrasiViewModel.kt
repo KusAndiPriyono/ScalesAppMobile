@@ -10,6 +10,7 @@ import com.bangkit.scalesappmobile.domain.model.UpdateForm
 import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.ApproveDocumentKalibrasiUseCase
 import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.DeleteDocumentKalibrasiUseCase
 import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.GetDocumentKalibrasiUseCase
+import com.bangkit.scalesappmobile.domain.usecase.documentkalibrasi.UnreleaseDocumentKalibrasiUseCase
 import com.bangkit.scalesappmobile.domain.usecase.user.GetUserRoleUseCase
 import com.bangkit.scalesappmobile.presentatiom.home.component.UserRole
 import com.bangkit.scalesappmobile.presentatiom.kalibrasi.state.DocumentState
@@ -32,6 +33,7 @@ class ListKalibrasiViewModel @Inject constructor(
     private val getDocumentKalibrasiUseCase: GetDocumentKalibrasiUseCase,
     private val deleteDocumentKalibrasiUseCase: DeleteDocumentKalibrasiUseCase,
     private val approveDocumentKalibrasiUseCase: ApproveDocumentKalibrasiUseCase,
+    private val unreleaseDocumentKalibrasiUseCase: UnreleaseDocumentKalibrasiUseCase,
     private val getUserRoleUseCase: GetUserRoleUseCase,
 ) : ViewModel() {
 
@@ -89,6 +91,56 @@ class ListKalibrasiViewModel @Inject constructor(
                 )
 
                 when (val result = approveDocumentKalibrasiUseCase(id, updateForm)) {
+                    is Resource.Success -> {
+                        _documentState.value =
+                            documentState.value.copy(
+                                isLoading = false,
+                                updateForm = result.data?.data
+                            )
+                        _eventsFlow.emit(UiEvents.SnackbarEvent("Document updated Successfully"))
+                        getAllDocumentKalibrasi()
+                    }
+
+                    is Resource.Error -> {
+                        _eventsFlow.emit(
+                            UiEvents.SnackbarEvent(
+                                result.message ?: "An error occurred"
+                            )
+                        )
+                    }
+
+                    else -> {
+                        // Handle other cases if necessary
+                    }
+                }
+            }
+        }
+    }
+
+    fun unreleaseDocumentKalibrasi(id: String, newStatus: String) {
+        viewModelScope.launch {
+            _documentState.value = documentState.value.copy(isLoading = true)
+            _documentState.value.documents.values.flatten().find { it.id == id }?.let { document ->
+                val updatedDocument = document.copy(approval = newStatus)
+                val updateForm = UpdateForm(
+                    approval = updatedDocument.approval,
+                    calibrationMethod = updatedDocument.calibrationMethod,
+                    createdAt = updatedDocument.createdAt,
+                    id = updatedDocument.id,
+                    reference = updatedDocument.reference,
+                    resultCalibration = updatedDocument.resultCalibration,
+                    standardCalibration = updatedDocument.standardCalibration,
+                    suhu = updatedDocument.suhu,
+                    validUntil = updatedDocument.validUntil,
+                    readingCenter = updatedDocument.readingCenter,
+                    readingFront = updatedDocument.readingFront,
+                    readingBack = updatedDocument.readingBack,
+                    readingLeft = updatedDocument.readingLeft,
+                    readingRight = updatedDocument.readingRight,
+                    maxTotalReading = updatedDocument.maxTotalReading
+                )
+
+                when (val result = unreleaseDocumentKalibrasiUseCase(id, updateForm)) {
                     is Resource.Success -> {
                         _documentState.value =
                             documentState.value.copy(

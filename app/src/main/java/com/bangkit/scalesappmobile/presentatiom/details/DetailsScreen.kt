@@ -465,7 +465,6 @@ fun DetailScreenContent(
                     }
 
                     item {
-                        Spacer(modifier = Modifier.height(12.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -498,6 +497,19 @@ fun DetailScreenContent(
                                 )
                             }
                         }
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            thickness = 0.8.dp,
+                            color = Color.Gray
+                        )
+                    }
+
+                    item {
+
                     }
 
 

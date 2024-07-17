@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Undo
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -23,15 +24,17 @@ fun ActionButtonApproved(
     statusApproval: ApprovalStatus,
     onClickApproved: () -> Unit,
     onClickRejected: () -> Unit,
+    onClickUnrelease: () -> Unit,
 ) {
 
-    if (userRole == UserRole.MANAGER && statusApproval == ApprovalStatus.Waiting || statusApproval == ApprovalStatus.Rejected) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        if (userRole == UserRole.MANAGER && statusApproval == ApprovalStatus.Waiting || statusApproval == ApprovalStatus.Rejected) {
             ElevatedButton(
                 colors = ButtonDefaults.elevatedButtonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -64,6 +67,23 @@ fun ActionButtonApproved(
                     tint = MaterialTheme.colorScheme.background
                 )
                 Text(text = "Approve")
+            }
+        } else if (userRole == UserRole.MANAGER && statusApproval == ApprovalStatus.Approved) {
+            ElevatedButton(
+                colors = ButtonDefaults.elevatedButtonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                ),
+                onClick = {
+                    onClickUnrelease()
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Undo,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.background
+                )
+                Text(text = "Unrelease")
             }
         }
     }
