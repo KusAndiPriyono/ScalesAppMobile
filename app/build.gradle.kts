@@ -155,6 +155,9 @@ dependencies {
     //ComposeCharts
     implementation(libs.compose.charts)
 
+    // 3. Android - Use Guava in your implementation only:
+    implementation(libs.guava)
+
 //    // Accompanist System UI Controller Library
 //    implementation(libs.accompanist.systemuicontroller)
 

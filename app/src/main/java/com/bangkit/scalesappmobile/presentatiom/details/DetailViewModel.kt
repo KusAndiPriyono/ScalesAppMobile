@@ -1,15 +1,20 @@
 package com.bangkit.scalesappmobile.presentatiom.details
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bangkit.scalesappmobile.data.remote.scales.GetAllReviewsResponse
+import com.bangkit.scalesappmobile.data.remote.scales.PostReviewsResponse
+import com.bangkit.scalesappmobile.domain.model.Review
 import com.bangkit.scalesappmobile.domain.model.ScalesDetails
+import com.bangkit.scalesappmobile.domain.usecase.review.CreateReviewOnScaleUseCase
 import com.bangkit.scalesappmobile.domain.usecase.review.GetReviewUseCase
 import com.bangkit.scalesappmobile.domain.usecase.scales.DeleteScalesUseCase
 import com.bangkit.scalesappmobile.domain.usecase.scales.GetScalesDetailUseCase
 import com.bangkit.scalesappmobile.domain.usecase.user.GetUserRoleUseCase
+import com.bangkit.scalesappmobile.presentatiom.auth.state.TextFieldState
 import com.bangkit.scalesappmobile.presentatiom.home.component.UserRole
 import com.bangkit.scalesappmobile.util.Resource
 import com.bangkit.scalesappmobile.util.UiEvents
@@ -19,6 +24,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,6 +33,7 @@ class DetailViewModel @Inject constructor(
     private val deleteScalesUseCase: DeleteScalesUseCase,
     private val getUserRoleUseCase: GetUserRoleUseCase,
     private val getReviewUseCase: GetReviewUseCase,
+    private val createReviewOnScaleUseCase: CreateReviewOnScaleUseCase
 ) : ViewModel() {
 
     private val _eventsFlow = MutableSharedFlow<UiEvents>()
@@ -50,8 +57,60 @@ class DetailViewModel @Inject constructor(
     private val _isDeleted = mutableStateOf(false)
     val isDeleted: State<Boolean> = _isDeleted
 
+    private val _fillReview = mutableStateOf(TextFieldState())
+    val fillReview: State<TextFieldState> = _fillReview
+    fun setFillReview(value: String = "", error: String? = null) {
+        _fillReview.value = fillReview.value.copy(
+            text = value,
+            error = error
+        )
+    }
+
+    private val _rating = mutableFloatStateOf(0f)
+    val rating: State<Float> = _rating
+    fun setRating(value: Float) {
+        _rating.floatValue = value
+    }
+
     init {
         getReviews()
+        resetReviewForm()
+    }
+
+
+    // In your ViewModel
+    private fun resetReviewForm() {
+        _fillReview.value = TextFieldState()
+        _rating.floatValue = 0f
+    }
+
+    fun postReview(id: String) {
+        viewModelScope.launch {
+            val reviews = Review(
+                createdAt = Date(),
+                rating = rating.value.toInt(),
+                review = fillReview.value.text,
+                scale = id,
+            )
+            when (val result = createReviewOnScaleUseCase(id, reviews)) {
+                is Resource.Success -> {
+                    _reviewsState.value = reviewsState.value.copy(
+                        createdReview = result.data
+                    )
+                    _eventsFlow.emit(UiEvents.SnackbarEvent("Review created"))
+                    getReviews()
+                    resetReviewForm()
+                }
+
+                is Resource.Error -> {
+                    _eventsFlow.emit(UiEvents.SnackbarEvent(result.message ?: "An error occurred"))
+                }
+
+                else -> {
+                    reviewsState
+                }
+            }
+        }
     }
 
     private fun getReviews() {
@@ -134,4 +193,5 @@ data class ReviewState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val reviews: GetAllReviewsResponse? = null,
+    val createdReview: PostReviewsResponse? = null,
 )

@@ -91,3 +91,12 @@ val cardColorCustom = listOf(
     Color(0xFFF3E5F5), // Purple
     Color(0xFFFFEBEE)  // Red
 )
+
+val pieColorCustom = listOf(
+    Color(0xFFFFEE58),
+    Color(0xFFEC407A),
+    Color(0xFF42A5F5),
+    Color(0xFFFF7043),
+    Color(0xFF8D6E63),
+    Color(0xFF26A69A)
+)

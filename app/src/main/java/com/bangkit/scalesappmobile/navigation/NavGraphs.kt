@@ -61,7 +61,7 @@ object NavGraphs {
             LandingPageScreenDestination,
             SearchScreenDestination,
             ListKalibrasiScreenDestination,
-            NotificationScreenDestination,
+//            NotificationScreenDestination,
             SettingsScreenDestination,
             NextCreateScalesScreenDestination
         ).routedIn(this).associateBy { it.route }
@@ -71,6 +71,7 @@ object NavGraphs {
         override val route = "kalibrasi"
         override val startRoute = ListKalibrasiScreenDestination routedIn this
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
+            HomeScreenDestination,
             ListKalibrasiScreenDestination,
             UpdateDocKalibrasiScreenDestination
         ).routedIn(this).associateBy { it.route }
@@ -84,19 +85,20 @@ object NavGraphs {
         ).routedIn(this).associateBy { it.route }
     }
 
-    val notifications = object : NavGraphSpec {
-        override val route = "notifications"
-        override val startRoute = NotificationScreenDestination routedIn this
-        override val destinationsByRoute = listOf<DestinationSpec<*>>(
-            NotificationScreenDestination
-        ).routedIn(this).associateBy { it.route }
-    }
+//    val notifications = object : NavGraphSpec {
+//        override val route = "notifications"
+//        override val startRoute = NotificationScreenDestination routedIn this
+//        override val destinationsByRoute = listOf<DestinationSpec<*>>(
+//            NotificationScreenDestination
+//        ).routedIn(this).associateBy { it.route }
+//    }
 
     val settings = object : NavGraphSpec {
         override val route = "settings"
         override val startRoute = SettingsScreenDestination routedIn this
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             SettingsScreenDestination,
+            NotificationScreenDestination,
             LandingPageScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
@@ -111,7 +113,7 @@ object NavGraphs {
             home,
             kalibrasi,
             laporan,
-            notifications,
+//            notifications,
             settings
         )
     }

@@ -14,8 +14,6 @@ interface HomeNavigator {
     fun openKalibrasi()
 
     fun openSchedule()
-
-    fun openNotifications()
     fun openSettings()
     fun navigateBackToHome()
 

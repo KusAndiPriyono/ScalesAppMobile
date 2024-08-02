@@ -26,15 +26,16 @@ fun ActionButtonApproved(
     onClickRejected: () -> Unit,
     onClickUnrelease: () -> Unit,
 ) {
-
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceAround
+    if (userRole == UserRole.fromString("manager") && statusApproval == ApprovalStatus.Waiting || userRole == UserRole.fromString(
+            "manager"
+        ) && statusApproval == ApprovalStatus.Rejected
     ) {
-        if (userRole == UserRole.MANAGER && statusApproval == ApprovalStatus.Waiting || statusApproval == ApprovalStatus.Rejected) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
             ElevatedButton(
                 colors = ButtonDefaults.elevatedButtonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -68,7 +69,13 @@ fun ActionButtonApproved(
                 )
                 Text(text = "Approve")
             }
-        } else if (userRole == UserRole.MANAGER && statusApproval == ApprovalStatus.Approved) {
+        }
+    } else if (userRole == UserRole.fromString("manager") && statusApproval == ApprovalStatus.Approved) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
             ElevatedButton(
                 colors = ButtonDefaults.elevatedButtonColors(
                     containerColor = MaterialTheme.colorScheme.secondary,

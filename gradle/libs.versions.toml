@@ -10,6 +10,7 @@ coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.0"
 desugar_jdk_libs = "2.0.4"
 easycrop = "0.1.1"
+guava = "33.2.1-android"
 hiltAndroid = "2.50"
 hiltAndroidCompiler = "2.50"
 hiltNavigationCompose = "1.2.0"
@@ -58,6 +59,7 @@ compose-charts = { module = "io.github.ehsannarmani:compose-charts", version.ref
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 easycrop = { module = "io.github.mr0xf00:easycrop", version.ref = "easycrop" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }

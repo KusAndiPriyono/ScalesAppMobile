@@ -7,9 +7,9 @@ import com.bangkit.scalesappmobile.util.Resource
 
 interface ReviewsRepository {
 
-    suspend fun createReview(
-        review: Review,
-    ): Resource<PostReviewsResponse>
+//    suspend fun createReview(
+//        review: Review,
+//    ): Resource<PostReviewsResponse>
 
     suspend fun createReviewOnScales(
         id: String,

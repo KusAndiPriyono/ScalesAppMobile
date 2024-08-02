@@ -34,6 +34,9 @@ import retrofit2.http.Query
 interface ScalesApiService {
 
     @GET("api/v1/scales")
+    suspend fun getScales(): GetAllScalesResponse
+
+    @GET("api/v1/scales")
     suspend fun searchScales(
         @Query("slug") slug: String,
         @Query("page") page: Int,

@@ -12,4 +12,5 @@ interface ScalesRepository {
     suspend fun searchScales(slug: List<String>): Resource<Flow<PagingData<Scales>>>
     suspend fun getScalesDetail(id: String): Resource<ScalesDetails>
     suspend fun deleteScales(id: String): Resource<Boolean>
+    suspend fun getGrafisScales(): Resource<List<Scales>>
 }

@@ -61,6 +61,7 @@ import com.bangkit.scalesappmobile.presentatiom.common.ErrorStateComponent
 import com.bangkit.scalesappmobile.presentatiom.common.FormatStringToDate
 import com.bangkit.scalesappmobile.presentatiom.common.LoadingStateComponent
 import com.bangkit.scalesappmobile.presentatiom.details.component.ActionButtonDetail
+import com.bangkit.scalesappmobile.presentatiom.details.component.AddReviewDialog
 import com.bangkit.scalesappmobile.presentatiom.details.component.CardReviewContent
 import com.bangkit.scalesappmobile.presentatiom.details.component.ScalesProperties
 import com.bangkit.scalesappmobile.presentatiom.home.HomeNavigator
@@ -86,6 +87,9 @@ fun DetailsScreen(
     val scalesState = viewModel.details.value
     val reviewsState = viewModel.reviewsState.value
     val userRole by viewModel.getUserRole().collectAsState(initial = UserRole.USER)
+    var isDialogOpened by remember { mutableStateOf(false) }
+    val fillReview = viewModel.fillReview.value
+    val rating = viewModel.rating.value
 
     LaunchedEffect(key1 = true, block = {
         if (id != null) {
@@ -113,7 +117,32 @@ fun DetailsScreen(
         },
         userRole = userRole,
         reviewsState = reviewsState,
+        onClickAddReview = {
+            isDialogOpened = true
+        }
     )
+
+    if (isDialogOpened) {
+        AddReviewDialog(
+            onDismissRequest = {
+                isDialogOpened = false
+            },
+            reviewsState = reviewsState,
+            onSubmitReview = {
+                viewModel.postReview(
+                    id = scalesState.scalesDetails?.id ?: "",
+                )
+                isDialogOpened = false
+            },
+            onValueChange = { newReview ->
+                viewModel.setFillReview(newReview)
+            },
+            rating = rating,
+            onRatingChanged = { newRating ->
+                viewModel.setRating(newRating)
+            }
+        )
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -126,6 +155,7 @@ fun DetailScreenContent(
     onClickEditScales: (ScalesDetails) -> Unit,
     onClickCreateDocumentKalibrasi: () -> Unit,
     onClickDeleteScales: () -> Unit,
+    onClickAddReview: () -> Unit,
     userRole: UserRole,
 ) {
     var isDialogOpened by remember {
@@ -488,15 +518,23 @@ fun DetailScreenContent(
 
                     //ReviewsComponent
                     item {
-                        if (reviewsState.isLoading) {
-                            LoadingStateComponent()
-                        } else if (reviewsState.error != null) {
-                            ErrorStateComponent(errorMessage = reviewsState.error)
-                        } else {
-                            reviewsToShow?.forEach { review ->
+                        if (reviewsToShow?.isNotEmpty() == true) {
+                            reviewsToShow.forEach { review ->
                                 CardReviewContent(
                                     allReviews = review,
                                     index = reviewsToShow.indexOf(review)
+                                )
+                            }
+                        } else {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "Belum ada review",
+                                    fontFamily = fontFamily,
+                                    fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
+                                    color = Color.Gray
                                 )
                             }
                         }
@@ -522,7 +560,7 @@ fun DetailScreenContent(
                                     contentColor = MaterialTheme.colorScheme.onPrimary,
                                 ),
                                 onClick = {
-
+                                    onClickAddReview()
                                 }
                             ) {
                                 Icon(

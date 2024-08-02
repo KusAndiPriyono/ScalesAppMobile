@@ -243,11 +243,7 @@ class UpdateViewModel @Inject constructor(
                             message = "Scales Update successfully"
                         )
                     )
-                    _eventFlow.emit(
-                        UiEvents.NavigationEvent(
-                            route = ""
-                        )
-                    )
+                    _eventFlow.emit(UiEvents.NavigationEvent("home"))
                 }
 
                 is Resource.Error -> {

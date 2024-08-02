@@ -102,6 +102,7 @@ fun CreateDocumentKalibrasiScreen(
                 }
 
                 is UiEvents.NavigationEvent -> {
+                    navigator.openKalibrasi()
                     snackbarHostState.showSnackbar(
                         message = event.route,
                         duration = SnackbarDuration.Short
@@ -183,7 +184,7 @@ fun CreateDocumentKalibrasiScreen(
 
                                 keyboardController?.hide()
                                 viewModel.createDocumentKalibrasi(id = id.toString())
-                            }
+                            },
                         )
                     }
                 },

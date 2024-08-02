@@ -36,7 +36,6 @@ import com.bangkit.scalesappmobile.navigation.scaleOutPopExitTransition
 import com.bangkit.scalesappmobile.presentatiom.destinations.HomeScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.LaporanGrafisScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.ListKalibrasiScreenDestination
-import com.bangkit.scalesappmobile.presentatiom.destinations.NotificationScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.destinations.SettingsScreenDestination
 import com.bangkit.scalesappmobile.presentatiom.notifications.NotificationWorker
 import com.bangkit.scalesappmobile.ui.theme.ScalesAppMobileTheme
@@ -88,7 +87,7 @@ class MainActivity : ComponentActivity() {
                         BottomNavItem.Home,
                         BottomNavItem.Kalibrasi,
                         BottomNavItem.Laporan,
-                        BottomNavItem.Notifications,
+//                        BottomNavItem.Notifications,
                         BottomNavItem.Settings
                     )
 
@@ -100,7 +99,7 @@ class MainActivity : ComponentActivity() {
                             "home/${HomeScreenDestination.route}",
                             "kalibrasi/${ListKalibrasiScreenDestination.route}",
                             "laporan/${LaporanGrafisScreenDestination.route}",
-                            "notifications/${NotificationScreenDestination.route}",
+//                            "notifications/${NotificationScreenDestination.route}",
                             "settings/${SettingsScreenDestination.route}"
                         )
                     ) { innerPadding ->
@@ -201,20 +200,20 @@ class MainActivity : ComponentActivity() {
                         scaleOutPopExitTransition()
                     }
                 ),
-                NavGraphs.notifications to NestedNavGraphDefaultAnimations(
-                    enterTransition = {
-                        scaleInEnterTransition()
-                    },
-                    exitTransition = {
-                        scaleOutExitTransition()
-                    },
-                    popEnterTransition = {
-                        scaleInPopEnterTransition()
-                    },
-                    popExitTransition = {
-                        scaleOutPopExitTransition()
-                    }
-                ),
+//                NavGraphs.notifications to NestedNavGraphDefaultAnimations(
+//                    enterTransition = {
+//                        scaleInEnterTransition()
+//                    },
+//                    exitTransition = {
+//                        scaleOutExitTransition()
+//                    },
+//                    popEnterTransition = {
+//                        scaleInPopEnterTransition()
+//                    },
+//                    popExitTransition = {
+//                        scaleOutPopExitTransition()
+//                    }
+//                ),
                 NavGraphs.settings to NestedNavGraphDefaultAnimations(
                     enterTransition = {
                         scaleInEnterTransition()

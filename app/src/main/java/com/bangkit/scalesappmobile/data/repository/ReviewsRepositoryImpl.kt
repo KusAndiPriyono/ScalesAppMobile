@@ -13,13 +13,13 @@ import javax.inject.Inject
 class ReviewsRepositoryImpl @Inject constructor(
     private val scalesApiService: ScalesApiService,
 ) : ReviewsRepository {
-    override suspend fun createReview(review: Review): Resource<PostReviewsResponse> {
-        return safeApiCall(Dispatchers.IO) {
-            scalesApiService.createReview(
-                review = review
-            )
-        }
-    }
+//    override suspend fun createReview(review: Review): Resource<PostReviewsResponse> {
+//        return safeApiCall(Dispatchers.IO) {
+//            scalesApiService.createReview(
+//                review = review
+//            )
+//        }
+//    }
 
     override suspend fun createReviewOnScales(
         id: String,

@@ -98,7 +98,7 @@ fun UpdateDocKalibrasiScreen(
                 }
 
                 is UiEvents.NavigationEvent -> {
-                    navigator.navigateBackToKalibrasi()
+                    navigator.openKalibrasi()
                 }
             }
         }

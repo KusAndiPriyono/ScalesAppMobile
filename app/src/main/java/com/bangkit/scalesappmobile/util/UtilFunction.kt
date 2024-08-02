@@ -1,6 +1,7 @@
 package com.bangkit.scalesappmobile.util
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
@@ -325,5 +326,16 @@ private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
     val stream = ByteArrayOutputStream()
     bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
     return stream.toByteArray()
+}
+
+fun getAppVersionName(context: Context): String {
+    var versionName = ""
+    try {
+        val info = context.packageManager?.getPackageInfo(context.packageName, 0)
+        versionName = info?.versionName ?: ""
+    } catch (e: PackageManager.NameNotFoundException) {
+        Timber.e(e.message)
+    }
+    return versionName
 }
 

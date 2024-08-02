@@ -56,4 +56,11 @@ class ScalesRepositoryImpl @Inject constructor(
             response.toString().isNotEmpty()
         }
     }
+
+    override suspend fun getGrafisScales(): Resource<List<Scales>> {
+        return safeApiCall(Dispatchers.IO) {
+            val response = scalesApiService.getScales()
+            response.data
+        }
+    }
 }

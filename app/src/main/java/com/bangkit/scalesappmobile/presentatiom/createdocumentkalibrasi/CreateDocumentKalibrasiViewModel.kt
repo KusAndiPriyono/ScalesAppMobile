@@ -166,11 +166,7 @@ class CreateDocumentKalibrasiViewModel @Inject constructor(
                             message = "Scales created successfully"
                         )
                     )
-                    _eventFlow.emit(
-                        UiEvents.NavigationEvent(
-                            route = ""
-                        )
-                    )
+                    _eventFlow.emit(UiEvents.NavigationEvent("kalibrasi"))
                 }
 
                 is Resource.Error -> {

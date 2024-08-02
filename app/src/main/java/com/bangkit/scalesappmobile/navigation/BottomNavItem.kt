@@ -22,11 +22,11 @@ sealed class BottomNavItem(var title: String, var icon: Int, var screen: NavGrap
         screen = NavGraphs.laporan
     )
 
-    data object Notifications : BottomNavItem(
-        title = "Notif",
-        icon = R.drawable.ic_notifications,
-        screen = NavGraphs.notifications
-    )
+//    data object Notifications : BottomNavItem(
+//        title = "Notif",
+//        icon = R.drawable.ic_notifications,
+//        screen = NavGraphs.notifications
+//    )
 
     data object Settings : BottomNavItem(
         title = "Settings",
